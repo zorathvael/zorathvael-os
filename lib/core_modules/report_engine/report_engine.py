@@ -36,6 +36,8 @@ class ReportEngine:
     def list_reports(self) -> List[Dict[str, Any]]:
         """Lists all generated reports with error protection."""
         try:
+            if self.reports is None:
+                return []
             return self.reports
         except Exception as e:
             logger.error(f"Error listing reports: {e}")

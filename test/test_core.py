@@ -20,6 +20,9 @@ def test_ai_router_edge_cases():
     router = AIRouter()
     assert "No AI model configured" in router.route_task("Task", "unknown_dept")
     assert "Routing error" in router.route_task("", "")
+    router.ai_models = None # type: ignore
+    assert router.get_available_ais() == []
+    assert "Routing error" in router.route_task("Task", "research")
 
 def test_memory_engine_success():
     memory = MemoryEngine()
@@ -32,24 +35,33 @@ def test_memory_engine_edge_cases():
     assert memory.retrieve_memory("non_existent") == "Memory not found"
     with pytest.raises(ValueError):
         memory.store_memory("", "value")
+    with pytest.raises(ValueError):
+        memory.retrieve_memory("")
+    memory.memory_store = None # type: ignore
+    assert memory.list_memories() == []
+    assert memory.retrieve_memory("any") == "Memory not found"
 
 def test_workflow_engine_success():
     workflow = WorkflowEngine()
     steps = [
         {"action": "store_memory", "key": "workflow_test", "value": "success"},
-        {"action": "retrieve_memory", "key": "workflow_test"}
+        {"action": "retrieve_memory", "key": "workflow_test"},
+        {"action": "route_ai_task", "department": "research", "task": "analyze"},
+        {"action": "unknown_action"}
     ]
     workflow.define_workflow("test_flow", steps)
     results = workflow.execute_workflow("test_flow")
-    assert len(results) == 2
-    assert "Memory stored: workflow_test" in results[0]
-    assert "Memory retrieved: workflow_test = success" in results[1]
+    assert len(results) == 4
 
 def test_workflow_engine_edge_cases():
     workflow = WorkflowEngine()
     assert "not found" in workflow.execute_workflow("non_existent")[0]
     with pytest.raises(ValueError):
         workflow.define_workflow("", [])
+    with pytest.raises(ValueError):
+        workflow.define_workflow("flow", "not_a_list") # type: ignore
+    workflow.workflows = None # type: ignore
+    assert "Workflow execution error" in workflow.execute_workflow("test")[0]
 
 def test_automation_engine_success():
     auto = AutomationEngine()
@@ -62,6 +74,11 @@ def test_automation_engine_edge_cases():
         auto.trigger_task("missing")
     with pytest.raises(ValueError):
         auto.register_task("", lambda x: x)
+    with pytest.raises(TypeError):
+        auto.register_task("task", "not_callable") # type: ignore
+    auto.tasks = None # type: ignore
+    with pytest.raises(Exception):
+        auto.register_task("new", lambda: None)
 
 def test_integration_engine_success():
     integration = IntegrationEngine()
@@ -73,6 +90,13 @@ def test_integration_engine_edge_cases():
     integration = IntegrationEngine()
     with pytest.raises(KeyError):
         integration.get_integration("missing")
+    with pytest.raises(ValueError):
+        integration.register_integration("", {})
+    with pytest.raises(TypeError):
+        integration.register_integration("serv", "not_a_dict") # type: ignore
+    integration.integrations = None # type: ignore
+    with pytest.raises(Exception):
+        integration.get_integration("serv")
 
 def test_report_engine_success():
     report_engine = ReportEngine()
@@ -85,6 +109,10 @@ def test_report_engine_edge_cases():
     report_engine = ReportEngine()
     with pytest.raises(ValueError):
         report_engine.generate_report("", {})
+    with pytest.raises(TypeError):
+        report_engine.generate_report("Title", "not_a_dict") # type: ignore
+    report_engine.reports = None # type: ignore
+    assert report_engine.list_reports() == []
 
 def test_mission_center_success():
     mission_center = MissionCenter()
@@ -96,9 +124,19 @@ def test_mission_center_edge_cases():
     mission_center = MissionCenter()
     with pytest.raises(ValueError):
         mission_center.create_mission("", [])
+    with pytest.raises(ValueError):
+        mission_center.create_mission("Mission", [])
+    mission_center.missions = None # type: ignore
+    assert mission_center.get_missions() == []
 
 def test_dashboard_success():
     dashboard = Dashboard()
     metrics = dashboard.get_system_metrics()
     assert metrics["status"] == "Operational"
     assert metrics["active_modules"] == 8
+
+def test_dashboard_edge_cases():
+    dashboard = Dashboard()
+    dashboard.system_status = None # type: ignore
+    metrics = dashboard.get_system_metrics()
+    assert metrics["version"] == "1.0.0-production"

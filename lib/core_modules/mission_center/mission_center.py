@@ -36,6 +36,8 @@ class MissionCenter:
     def get_missions(self) -> List[Dict[str, Any]]:
         """Returns all registered missions with error protection."""
         try:
+            if self.missions is None:
+                return []
             return self.missions
         except Exception as e:
             logger.error(f"Error retrieving missions: {e}")

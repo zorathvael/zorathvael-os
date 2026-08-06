@@ -29,17 +29,19 @@ class MemoryEngine:
         try:
             if not key or not isinstance(key, str):
                 raise ValueError("Memory key must be a valid non-empty string.")
-            if key not in self.memory_store:
+            if self.memory_store is None or key not in self.memory_store:
                 logger.warning(f"Memory not found for key: {key}")
                 return "Memory not found"
             return self.memory_store[key]
         except Exception as e:
             logger.error(f"Error retrieving memory for key '{key}': {e}")
-            return "Memory not found"
+            raise
 
     def list_memories(self) -> List[str]:
         """Lists all stored memory keys with error protection."""
         try:
+            if self.memory_store is None:
+                return []
             return list(self.memory_store.keys())
         except Exception as e:
             logger.error(f"Error listing memories: {e}")
