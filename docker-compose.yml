@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  zorathvael-os:
+    build: .
+    container_name: zorathvael-os-enterprise
+    environment:
+      - OPENAI_API_KEY=mock-key
+      - ANTHROPIC_API_KEY=mock-key
+      - GEMINI_API_KEY=mock-key
+      - OPENROUTER_API_KEY=mock-key
+    restart: always
