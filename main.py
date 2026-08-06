@@ -1,7 +1,11 @@
 import os
-from dotenv import load_dotenv
+import sys
 
-# Load environment variables from .env file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
+
+from dotenv import load_dotenv
 load_dotenv()
 
 from lib.core_modules.ai_router.ai_router import AIRouter
@@ -23,8 +27,8 @@ print(ai_router.route_task("Write a marketing copy", "non_existent_department"))
 print("\n--- Memory Engine Example ---")
 memory_engine.store_memory("user_preference", "dark_mode")
 memory_engine.store_memory("last_task", "summarize_report")
-print(f"Retrieved user preference: {memory_engine.retrieve_memory("user_preference")}")
-print(f"Retrieved non-existent memory: {memory_engine.retrieve_memory("temp_data")}")
+print(f"Retrieved user preference: {memory_engine.retrieve_memory('user_preference')}")
+print(f"Retrieved non-existent memory: {memory_engine.retrieve_memory('temp_data')}")
 print(f"All memories: {memory_engine.list_memories()}")
 
 # --- Workflow Engine Example ---
