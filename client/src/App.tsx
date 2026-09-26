@@ -5,6 +5,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Sidebar, Topbar } from "./components/Navigation";
 import { DashboardView } from "./components/views/DashboardView";
+import { ScannerView } from "./components/views/ScannerView";
 import { OrgMapView } from "./components/views/OrgMapView";
 import { MissionCenterView } from "./components/views/MissionCenterView";
 import { 
@@ -24,6 +25,7 @@ function MainApp() {
   const renderView = () => {
     switch (currentTab) {
       case "dashboard": return <DashboardView />;
+      case "scanner": return <ScannerView />;
       case "org_map": return <OrgMapView />;
       case "mission_center": return <MissionCenterView />;
       case "workforce": return <WorkforceMonitorView />;
