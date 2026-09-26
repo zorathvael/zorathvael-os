@@ -1,6 +1,7 @@
 import React from "react";
 import { 
-  LayoutDashboard, 
+  LayoutDashboard,
+  CandlestickChart, 
   Network, 
   Target, 
   Users, 
@@ -24,6 +25,7 @@ interface NavigationProps {
 export function Sidebar({ currentTab, setCurrentTab }: NavigationProps) {
   const menuItems = [
     { id: "dashboard", label: "Executive Dashboard", icon: LayoutDashboard },
+    { id: "scanner", label: "Futures Scanner", icon: CandlestickChart },
     { id: "org_map", label: "Visual Org Map", icon: Network },
     { id: "mission_center", label: "Mission Center", icon: Target },
     { id: "workforce", label: "Workforce Monitor", icon: Users },
