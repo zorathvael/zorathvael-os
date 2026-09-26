@@ -10,4 +10,4 @@ COPY . .
 ENV PYTHONPATH=/app
 EXPOSE 8000
 
-CMD ["python3", "verify_modules.py"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
