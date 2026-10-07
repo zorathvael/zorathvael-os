@@ -22,42 +22,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Retry paid delivery
+      - name: Retry product generation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PYTHONPATH=. python - <<'PY'
           import json
-          import os
-          import urllib.request
           from pathlib import Path
-          from lib.profit_engine.order_flow import load_orders
-          from lib.profit_engine.settlement import deliver_order, update_delivery_metric
+          from lib.profit_engine.order_flow import load_orders, mark_status
+          from lib.profit_engine.settlement import deliver_order
 
-          token = os.environ["GITHUB_TOKEN"]
-          api_headers = {
-              "Accept": "application/vnd.github+json",
-              "Authorization": f"Bearer {token}",
-              "X-GitHub-Api-Version": "2026-03-10",
-              "User-Agent": "Zorathvael-Delivery-Recovery",
-          }
           results = []
           for order in load_orders():
               if order.status not in {"paid", "delivery_pending"}:
                   continue
               delivery_path = Path(f"data/delivery_{order.order_id}.md")
               if order.status == "paid" and delivery_path.exists() and "Delivery pending" not in delivery_path.read_text(encoding="utf-8"):
+                  mark_status(order.order_id, "delivery_ready")
                   continue
               try:
                   ok, path = deliver_order(order)
-                  update_delivery_metric()
-                  results.append({"order_id": order.order_id, "issue_number": order.issue_number, "status": "delivered", "path": path})
-                  url = f"https://api.github.com/repos/zorathvael/zorathvael-os/issues/{order.issue_number}/comments"
-                  req = urllib.request.Request(url, data=json.dumps({"body": "<!-- zorathvael-delivery:v1 -->\nPayment verified. Your requested deliverable is ready: " + path}).encode(), headers={**api_headers, "Content-Type": "application/json"}, method="POST")
-                  try:
-                      urllib.request.urlopen(req, timeout=20).read()
-                  except Exception as exc:
-                      results[-1]["notification_error"] = type(exc).__name__
+                  if ok:
+                      mark_status(order.order_id, "delivery_ready")
+                      results.append({"order_id": order.order_id, "issue_number": order.issue_number, "status": "delivery_ready", "path": path})
               except Exception as exc:
                   results.append({"order_id": order.order_id, "issue_number": order.issue_number, "status": "pending", "error": type(exc).__name__})
           Path("/tmp/delivery-recovery.json").write_text(json.dumps({"results": results}, indent=2), encoding="utf-8")
@@ -69,7 +56,7 @@ jobs:
           git config user.name "zorathvael"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
-          git commit -m "chore: recover paid delivery state"
+          git commit -m "chore: recover delivery-ready state"
           for attempt in 1 2 3; do
             git fetch origin main
             if git rebase origin/main; then
@@ -77,19 +64,5 @@ jobs:
             fi
             git rebase --abort || true
             git reset --hard origin/main
-            PYTHONPATH=. python - <<'PY'
-          from lib.profit_engine.order_flow import load_orders
-          from lib.profit_engine.settlement import deliver_order, update_delivery_metric
-          for order in load_orders():
-              if order.status == "delivery_pending":
-                  try:
-                      deliver_order(order)
-                      update_delivery_metric()
-                  except Exception:
-                      pass
-          PY
-            git add data
-            git diff --cached --quiet && exit 0 || true
-            git commit -m "chore: recover paid delivery state" || true
           done
           exit 1
