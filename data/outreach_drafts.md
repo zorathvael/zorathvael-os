@@ -39,7 +39,7 @@ Suggested message:
 - Commercial score: 100/100
 - Buyer-intent score: 55/100
 - Issue: https://github.com/mrchypark/goauthy/issues/113
-- Public profile: https://github.com/mrchypark
+- Public profile: https://mrchypark.github.io/
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: ci failed, workflow, api, failed, 14 comments
 
@@ -72,7 +72,7 @@ Suggested message:
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/softwarebyze/Backgammon-Mastermind/issues/159
-- Public profile: https://github.com/softwarebyze
+- Public profile: https://ebenfeld.tech
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: build failed, integration, workflow, build, failed, 3 comments
 
