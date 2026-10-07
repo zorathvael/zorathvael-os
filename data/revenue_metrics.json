@@ -1,7 +1,7 @@
 {
-  "qualified_leads": 0,
-  "paid_orders": 0,
   "delivered_orders": 0,
-  "revenue_usdt": 0.0,
-  "last_updated": null
+  "last_updated": null,
+  "paid_orders": 0,
+  "qualified_leads": 9,
+  "revenue_usdt": 0.0
 }
