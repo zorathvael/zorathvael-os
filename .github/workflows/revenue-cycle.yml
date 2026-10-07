@@ -34,12 +34,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZORATHVAEL_LEAD_LIMIT: "20"
         run: PYTHONPATH=. python scripts/revenue_cycle.py
+      - name: Discover public contact channels
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZORATHVAEL_CONTACT_DISCOVERY_LIMIT: "10"
+        run: PYTHONPATH=. python scripts/discover_contacts.py
+
       - name: Execute qualified outreach
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           ZORATHVAEL_OUTREACH_LIMIT: "2"
+          ZORATHVAEL_SMTP_HOST: ${{ secrets.ZORATHVAEL_SMTP_HOST }}
+          ZORATHVAEL_SMTP_PORT: ${{ secrets.ZORATHVAEL_SMTP_PORT }}
+          ZORATHVAEL_SMTP_USERNAME: ${{ secrets.ZORATHVAEL_SMTP_USERNAME }}
+          ZORATHVAEL_SMTP_PASSWORD: ${{ secrets.ZORATHVAEL_SMTP_PASSWORD }}
+          ZORATHVAEL_EMAIL_FROM: ${{ secrets.ZORATHVAEL_EMAIL_FROM }}
         run: PYTHONPATH=. python scripts/execute_outreach.py
 
       - name: Persist acquisition state

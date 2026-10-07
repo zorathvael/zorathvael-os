@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import json
 import os
+import smtplib
+import ssl
 import urllib.error
 import urllib.request
+from email.message import EmailMessage
 from pathlib import Path
 
 from lib.profit_engine.outreach import (
     append_event,
+    build_email_outreach_message,
     build_outreach_message,
     load_events,
     make_event,
@@ -28,6 +32,8 @@ def load_leads(path: str = "data/revenue_leads.jsonl") -> list[Lead]:
             evidence=tuple(row.get("evidence", [])), score=int(row["score"]),
             offer_id=row["offer_id"], contact_url=row.get("contact_url", ""),
             discovered_at=row.get("discovered_at", ""),
+            contact_email=row.get("contact_email"),
+            contact_source=row.get("contact_source", "none"),
         )
         for row in rows
     ]
@@ -65,18 +71,57 @@ def post_comment(lead: Lead, message: str, token: str) -> int:
     return int(data["id"])
 
 
+def email_configured() -> bool:
+    return all(
+        os.getenv(name, "").strip()
+        for name in (
+            "ZORATHVAEL_SMTP_HOST",
+            "ZORATHVAEL_SMTP_USERNAME",
+            "ZORATHVAEL_SMTP_PASSWORD",
+            "ZORATHVAEL_EMAIL_FROM",
+        )
+    )
+
+
+def send_email(lead: Lead) -> str:
+    if not lead.contact_email:
+        raise ValueError("public contact email is missing")
+    if not email_configured():
+        raise RuntimeError("email_transport_not_configured")
+
+    host = os.environ["ZORATHVAEL_SMTP_HOST"]
+    username = os.environ["ZORATHVAEL_SMTP_USERNAME"]
+    password = os.environ["ZORATHVAEL_SMTP_PASSWORD"]
+    sender = os.environ["ZORATHVAEL_EMAIL_FROM"]
+    port = int(os.getenv("ZORATHVAEL_SMTP_PORT", "587"))
+    subject = f"Zorathvael — {lead.offer_id.replace('_', ' ')}: {lead.title}"
+
+    message = EmailMessage()
+    message["From"] = sender
+    message["To"] = lead.contact_email
+    message["Subject"] = subject
+    message.set_content(build_email_outreach_message(lead, lead.contact_email))
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP(host, port, timeout=30) as smtp:
+        smtp.starttls(context=context)
+        smtp.login(username, password)
+        smtp.send_message(message)
+    return message["Message-ID"] or ""
+
+
 def main() -> int:
-    # The Actions GITHUB_TOKEN is scoped to this repository and cannot normally
-    # write comments on arbitrary external lead repositories. GitHub requires
-    # Issues or Pull Requests write permission on the target repository for
-    # creating an issue comment.
     token = os.getenv("ZORATHVAEL_OUTREACH_TOKEN", "").strip()
     fallback_token = os.getenv("GITHUB_TOKEN", "").strip()
-    if not token and not fallback_token:
-        raise SystemExit("ZORATHVAEL_OUTREACH_TOKEN or GITHUB_TOKEN is required for outreach execution")
+    if not token and not fallback_token and not email_configured():
+        raise SystemExit("No outreach transport configured")
 
     events = load_events()
-    contacted = {event.lead_url for event in events if event.event_type == "outreach_sent"}
+    contacted = {
+        event.lead_url
+        for event in events
+        if event.event_type in {"outreach_sent", "email_outreach_sent"}
+    }
     leads = load_leads()
     selected = select_auto_outreach(
         leads, contacted, limit=int(os.getenv("ZORATHVAEL_OUTREACH_LIMIT", "3"))
@@ -88,8 +133,38 @@ def main() -> int:
     own_repository = os.getenv("GITHUB_REPOSITORY", "zorathvael/zorathvael-os").lower()
 
     for lead in selected:
-        # External outreach requires the dedicated credential. This prevents a
-        # predictable 403 storm and preserves the lead for the next run.
+        # Email is the primary route when a public email was discovered and
+        # an SMTP transport is configured. GitHub is the fallback route.
+        if lead.contact_email and email_configured():
+            try:
+                message_id = send_email(lead)
+                append_event(make_event(
+                    "email_outreach_sent",
+                    lead,
+                    {
+                        "channel": "email",
+                        "recipient": lead.contact_email,
+                        "contact_source": lead.contact_source,
+                        "message_id": message_id,
+                    },
+                ))
+                sent += 1
+                continue
+            except (OSError, smtplib.SMTPException, ValueError, RuntimeError) as exc:
+                failures.append({
+                    "lead_url": lead.url,
+                    "channel": "email",
+                    "error": f"{type(exc).__name__}: {exc}",
+                })
+                append_event(make_event(
+                    "email_outreach_failed",
+                    lead,
+                    {
+                        "recipient": lead.contact_email,
+                        "error": f"{type(exc).__name__}: {exc}",
+                    },
+                ))
+
         target_token = token
         if lead.repository.lower() == own_repository:
             target_token = token or fallback_token
@@ -97,7 +172,6 @@ def main() -> int:
             blocked.append({
                 "lead_url": lead.url,
                 "reason": "external_write_token_missing",
-                "required_secret": "ZORATHVAEL_OUTREACH_TOKEN",
             })
             append_event(make_event(
                 "outreach_blocked",
@@ -125,6 +199,7 @@ def main() -> int:
         except (OSError, urllib.error.HTTPError, KeyError, ValueError) as exc:
             failures.append({
                 "lead_url": lead.url,
+                "channel": "github_issue_comment",
                 "error": f"{type(exc).__name__}: {exc}",
             })
             append_event(make_event(
@@ -138,10 +213,9 @@ def main() -> int:
         "sent": sent,
         "blocked": blocked,
         "failures": failures,
+        "email_transport_configured": email_configured(),
         "event_log": "data/revenue_events.jsonl",
     }, indent=2, sort_keys=True))
-
-    # Lead-level failures are recorded so state persistence can continue.
     return 0
 
 

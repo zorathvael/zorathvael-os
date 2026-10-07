@@ -42,3 +42,16 @@ def test_learning_payment_rate_is_zero_without_outreach():
         }],
     )
     assert snapshot["offer_stats"]["ci_failure_recovery"]["payment_rate_per_outreach"] == 0.0
+
+
+def test_learning_counts_email_outreach_and_email_response():
+    snapshot = build_learning_snapshot(
+        events=[
+            _event("email_outreach_sent", "ci_failure_recovery"),
+            _event("email_response_observed", "ci_failure_recovery"),
+        ],
+        orders=[],
+    )
+    assert snapshot["outreach_sent"] == 1
+    assert snapshot["responses_observed"] == 1
+    assert snapshot["offer_stats"]["ci_failure_recovery"]["response_rate"] == 1.0

@@ -155,3 +155,41 @@ def test_rank_outreach_leads_excludes_meta_coordination_issues():
     )
     ranked = rank_outreach_leads([meta, actionable], limit=10)
     assert [lead.external_id for lead in ranked] == ["100"]
+
+
+def test_contact_discovery_prefers_public_email_and_rejects_private_or_invalid_values():
+    from lib.profit_engine.contact_discovery import extract_public_email, extract_contact_urls
+
+    assert extract_public_email({"email": "owner@example.com"}) == "owner@example.com"
+    assert extract_public_email({"email": None}) is None
+    assert extract_public_email({"email": "not-an-email"}) is None
+    assert extract_contact_urls({"html_url": "https://github.com/owner", "blog": "https://example.com"}) == [
+        "https://example.com",
+        "https://github.com/owner",
+    ]
+
+
+def test_contact_route_uses_email_before_github():
+    from lib.profit_engine.contact_discovery import choose_contact_route
+
+    assert choose_contact_route("owner@example.com", "https://github.com/owner") == "email"
+    assert choose_contact_route(None, "https://github.com/owner") == "github"
+    assert choose_contact_route(None, None) == "none"
+
+
+def test_email_outreach_message_contains_problem_specific_offer_and_opt_out():
+    from lib.profit_engine.outreach import build_email_outreach_message
+
+    lead = make_lead(
+        "44",
+        "CI failed and deployment is blocked",
+        ("ci failed", "deploy failed"),
+        92,
+    )
+    from dataclasses import replace
+    lead = replace(lead, offer_id="ci_failure_recovery")
+    message = build_email_outreach_message(lead, "owner@example.com")
+    assert "CI Failure Recovery" in message
+    assert lead.url in message
+    assert "no credentials" in message.lower()
+    assert "reply" in message.lower()
