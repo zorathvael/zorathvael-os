@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import urllib.request
+from datetime import datetime, timezone
 
 from lib.profit_engine.outreach import append_event, load_events, make_event
 from lib.profit_engine.revenue import Lead
@@ -34,8 +35,14 @@ def main() -> int:
         for comment in comments if isinstance(comments, list) else []:
             cid = str(comment.get("id", ""))
             body = str(comment.get("body", ""))
+            created_at = str(comment.get("created_at", ""))
             author = str(comment.get("user", {}).get("login", ""))
             if not cid or cid in observed or "zorathvael-outreach:v1" in body or author.lower() in {"github-actions[bot]", "zorathvael"}:
+                continue
+            try:
+                if datetime.fromisoformat(created_at.replace("Z", "+00:00")) <= datetime.fromisoformat(event.occurred_at.replace("Z", "+00:00")):
+                    continue
+            except ValueError:
                 continue
             lead = Lead("github_issue_search", event.issue_number, "", event.lead_url, event.repository, author, (), 0, event.offer_id, "", event.occurred_at)
             append_event(make_event("response_observed", lead, {"comment_id": cid, "author": author, "channel": "github_issue_comment"}))
