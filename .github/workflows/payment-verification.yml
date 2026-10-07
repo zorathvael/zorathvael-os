@@ -43,7 +43,22 @@ jobs:
           ZORATHVAEL_PAYMENT_AMOUNT: ${{ inputs.amount }}
           ZORATHVAEL_PAYMENT_METHOD: "usdt_bep20"
           ZORATHVAEL_PAYMENT_CURRENCY: "USDT"
-        run: python scripts/verify_payment.py --tx-hash "${{ inputs.tx_hash }}"
+        run: python scripts/verify_payment.py --tx-hash "${{ inputs.tx_hash }}" | tee /tmp/manual-payment.json
+      - name: Notify customer for manual settlement
+        if: inputs.tx_hash != '' && inputs.order_id != '' && inputs.amount != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          payload = json.load(open('/tmp/manual-payment.json', encoding='utf-8'))
+          path = payload.get('delivery_path')
+          issue = payload.get('issue_number')
+          if payload.get('delivered') and path and issue and os.path.exists(path):
+              subprocess.run(['gh', 'issue', 'comment', str(issue), '--body-file', path], check=True)
+              os.remove(path)
+          PY
+
       - name: Scan pending USDT orders
         if: inputs.tx_hash == ''
         run: python scripts/scan_usdt_payments.py | tee /tmp/payment-scan.json
