@@ -1,16 +1,32 @@
 from __future__ import annotations
-import argparse, json
+
+import argparse
+import json
 import os
-from lib.profit_engine.payment_verification import PaymentVerifier, intent_from_env
-from lib.profit_engine.ledger import ProfitLedger
+
+from lib.profit_engine.order_flow import load_orders
+from lib.profit_engine.settlement import verify_and_settle
+
+
 def main() -> int:
-    parser=argparse.ArgumentParser(description='Verify an actual Zorathvael USDT payment.')
-    parser.add_argument('--tx-hash', required=True); args=parser.parse_args()
-    r=PaymentVerifier().verify_usdt_tx(intent_from_env(), args.tx_hash)
-    recorded = False
-    if r.verified:
-        ledger = ProfitLedger(os.getenv('ZORATHVAEL_PROFIT_LEDGER','data/profit_ledger.jsonl'))
-        recorded = ledger.record_verified_payment(r.order_id, r.tx_hash or '', float(r.amount), r.method)
-    print(json.dumps({'verified':r.verified,'recorded':recorded,'order_id':r.order_id,'method':r.method,'amount':str(r.amount),'tx_hash':r.tx_hash,'status':r.status,'reason':r.reason},indent=2,sort_keys=True))
-    return 0 if r.verified else 1
-if __name__ == '__main__': raise SystemExit(main())
+    parser = argparse.ArgumentParser(description="Verify and settle an actual Zorathvael USDT payment.")
+    parser.add_argument("--tx-hash", required=True)
+    args = parser.parse_args()
+
+    order_id = os.environ.get("ZORATHVAEL_ORDER_ID", "")
+    orders = load_orders(os.environ.get("ZORATHVAEL_PAYMENT_ORDERS", "data/revenue_orders.jsonl"))
+    order = next((item for item in orders if item.order_id == order_id and item.status == "pending"), None)
+    if order is None:
+        print(json.dumps({"verified": False, "status": "rejected", "reason": "pending order not found", "order_id": order_id}))
+        return 1
+    if order.method != "usdt_bep20":
+        print(json.dumps({"verified": False, "status": "manual_review", "reason": "only USDT BEP20 is automatically verifiable"}))
+        return 1
+
+    result = verify_and_settle(order, args.tx_hash)
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0 if result["verified"] else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
