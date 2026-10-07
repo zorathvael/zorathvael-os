@@ -73,17 +73,18 @@ def offers() -> dict[str, ProductOffer]:
 
 
 def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str, ...]]:
-    text = f"{title}\n{body}".lower()
+    text = f"{title}
+{body}".lower()
     score = 0
     evidence: list[str] = []
     strong_hit = False
     for phrase, weight in STRONG_SIGNALS:
-        if re.search(r"\b" + re.escape(phrase) + r"\b", text):
+        if re.search(r"" + re.escape(phrase) + r"", text):
             score += weight
             evidence.append(phrase)
             strong_hit = True
     for phrase, weight in WEAK_SIGNALS:
-        if re.search(r"\b" + re.escape(phrase) + r"\b", text):
+        if re.search(r"" + re.escape(phrase) + r"", text):
             score += weight
             evidence.append(phrase)
     score += min(max(int(comments), 0) * 2, 8)
@@ -95,13 +96,33 @@ def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str
 
 
 def is_commercial_noise(title: str, body: str) -> bool:
-    text = f"{title}\n{body}".lower()
+    text = f"{title}
+{body}".lower()
     return any(signal in text for signal in PROMOTIONAL_NOISE)
+
+
+def buyer_intent_score(lead: Lead) -> int:
+    evidence = set(lead.evidence)
+    score = 0
+    failure = {"github actions failed", "actions failed", "workflow failed", "failing workflow", "ci failed", "build failed", "deployment failed", "deploy failed", "pipeline failed", "cant deploy", "cannot deploy"}
+    if evidence & failure:
+        score += 45
+    if "need help" in evidence:
+        score += 35
+    if "looking for" in evidence:
+        score += 30
+    if "want to automate" in evidence or "is there a way to automate" in evidence:
+        score += 25
+    if "manual process" in evidence or "reduce manual" in evidence:
+        score += 20
+    if any(item.endswith(" comments") and int(item.split()[0]) >= 10 for item in evidence):
+        score += 10
+    return min(score, 100)
 
 
 def commercial_relevance_score(lead: Lead) -> int:
     evidence = set(lead.evidence)
-    score = lead.score
+    score = lead.score + buyer_intent_score(lead) // 2
     failure = {
         "github actions failed", "actions failed", "workflow failed", "failing workflow",
         "ci failed", "build failed", "deployment failed", "deploy failed",
@@ -130,7 +151,7 @@ def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
             deduped[lead.url] = lead
     return sorted(
         deduped.values(),
-        key=lambda lead: (commercial_relevance_score(lead), lead.score, lead.discovered_at),
+        key=lambda lead: (buyer_intent_score(lead), commercial_relevance_score(lead), lead.score, lead.discovered_at),
         reverse=True,
     )[: max(limit, 0)]
 
@@ -157,7 +178,7 @@ def make_opportunity(lead: Lead, prior_conversion: float = 0.02) -> Opportunity:
         probability=probability,
         effort_minutes=offer.effort_minutes,
         risk=max(0.0, 1.0 - commercial_relevance_score(lead) / 100.0),
-        evidence={"source": lead.source, "lead_url": lead.url, "lead_score": lead.score, "commercial_score": commercial_relevance_score(lead), "prior_conversion": prior_conversion, "estimated": True},
+        evidence={"source": lead.source, "lead_url": lead.url, "lead_score": lead.score, "commercial_score": commercial_relevance_score(lead), "buyer_intent_score": buyer_intent_score(lead), "prior_conversion": prior_conversion, "estimated": True},
     )
 
 
@@ -196,7 +217,7 @@ class GitHubLeadScout:
                 continue
             offer = select_offer(score, evidence)
             results.append(Lead("github_issue_search", str(item.get("number")), item.get("title", "").strip(), item.get("html_url", ""), repository, author, evidence, score, offer.product_id, item.get("user", {}).get("html_url", ""), now))
-        return sorted(results, key=lambda lead: (commercial_relevance_score(lead), lead.score, lead.discovered_at), reverse=True)
+        return sorted(results, key=lambda lead: (buyer_intent_score(lead), commercial_relevance_score(lead), lead.score, lead.discovered_at), reverse=True)
 
 
 def load_conversion_prior(path: str = "data/revenue_metrics.json") -> float:
@@ -220,7 +241,8 @@ def write_leads(leads: list[Lead], path: str = "data/revenue_leads.jsonl") -> No
     target.parent.mkdir(parents=True, exist_ok=True)
     with target.open("w", encoding="utf-8") as handle:
         for lead in leads:
-            handle.write(json.dumps(asdict(lead), sort_keys=True) + "\n")
+            handle.write(json.dumps(asdict(lead), sort_keys=True) + "
+")
 
 
 def render_drafts(leads: list[Lead], path: str = "data/outreach_drafts.md") -> None:
@@ -230,15 +252,33 @@ def render_drafts(leads: list[Lead], path: str = "data/outreach_drafts.md") -> N
     for index, lead in enumerate(leads, 1):
         offer = offers()[lead.offer_id]
         evidence = ", ".join(lead.evidence) if lead.evidence else "intent signal"
+        if offer.product_id == "ci_failure_recovery":
+            message = (
+                f"I found your public issue: {lead.title}. The issue contains a concrete CI/deployment failure signal. "
+                "I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. "
+                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the recovery diagnostic, open the Zorathvael order form."
+            )
+        elif offer.product_id == "automation_blueprint":
+            message = (
+                f"I found your public issue: {lead.title}. The issue shows a concrete automation/integration need. "
+                "I can map the current workflow, prioritize the highest-value automation opportunities, and provide implementation steps. "
+                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the blueprint, open the Zorathvael order form."
+            )
+        else:
+            message = (
+                f"I found your public issue: {lead.title}. I can audit this public repository for concrete automation bottlenecks, "
+                "prioritize the highest-value opportunities, and give you an actionable report. "
+                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the audit, open the Zorathvael order form."
+            )
         lines.extend([
             f"## {index}. {lead.repository}#{lead.external_id} — score {lead.score}/100",
             f"- Commercial score: {commercial_relevance_score(lead)}/100",
+            f"- Buyer-intent score: {buyer_intent_score(lead)}/100",
             f"- Issue: {lead.url}",
             f"- Public profile: {lead.contact_url}",
             f"- Offer: {offer.name} — {offer.price_usdt:g} USDT / Rp{offer.price_idr:,}",
             f"- Evidence: {evidence}", "", "Suggested message:",
-            f"> I found your public issue: {lead.title}. Detected intent signals: {evidence}. "
-            f"I can provide a {offer.name} focused on this repository, with prioritized automation opportunities and implementation steps. "
-            f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the audit, open the Zorathvael order form.", "",
+            f"> {message}", "",
         ])
-    target.write_text("\n".join(lines), encoding="utf-8")
+    target.write_text("
+".join(lines), encoding="utf-8")
