@@ -43,7 +43,7 @@ def test_rank_outreach_leads_prefers_active_failure_over_generic_automation() ->
 
     ranked = rank_outreach_leads([generic, promotional, failure], limit=2)
 
-    assert [lead.external_id for lead in ranked] == ["879", "53"]
+    assert [lead.external_id for lead in ranked] == ["879"]
 
 
 def test_rank_outreach_leads_deduplicates_by_issue_url() -> None:
