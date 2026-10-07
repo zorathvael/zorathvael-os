@@ -40,11 +40,31 @@ jobs:
               raise SystemExit("AGENTMAIL_INBOX_ID secret is missing")
 
           client = AgentMail(api_key=api_key)
-          inbox = client.inboxes.get(inbox_id)
-          resolved = str(getattr(inbox, "inbox_id", "") or "")
-          if resolved != inbox_id:
-              raise SystemExit(f"AgentMail inbox mismatch: configured={inbox_id!r} resolved={resolved!r}")
-          print(f"AgentMail authenticated; inbox={resolved}")
+          try:
+              inbox = client.inboxes.get(inbox_id)
+          except Exception as exc:
+              body = getattr(exc, "body", {}) or {}
+              code = body.get("code") if isinstance(body, dict) else None
+              if code == "missing_permission":
+                  message = str(body.get("message", "")).strip()
+                  fix = str(body.get("fix", "")).strip()
+                  print(
+                      "AgentMail key is accepted but inbox_read is unavailable; "
+                      "this is valid for a send-only delivery key."
+                  )
+                  if message:
+                      print(f"AgentMail response: {message}")
+                  if fix:
+                      print(f"AgentMail permission note: {fix}")
+              else:
+                  raise
+          else:
+              resolved = str(getattr(inbox, "inbox_id", "") or "")
+              if resolved != inbox_id:
+                  raise SystemExit(
+                      f"AgentMail inbox mismatch: configured={inbox_id!r} resolved={resolved!r}"
+                  )
+              print(f"AgentMail authenticated; inbox={resolved}")
           PY
       - name: Send ready deliveries
         run: PYTHONPATH=. python scripts/send_delivery_email.py | tee /tmp/email-delivery.json
