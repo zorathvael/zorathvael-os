@@ -1,8 +1,6 @@
 name: Zorathvael Revenue Acquisition
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
   schedule:
     - cron: "17 */2 * * *"
@@ -20,8 +18,7 @@ jobs:
   discover-and-rank:
     if: >-
       (github.event_name != 'issues' ||
-       (github.event.issue.title == '[REVENUE-RUN]' && github.actor == 'zorathvael')) &&
-      !(github.event_name == 'push' && github.actor == 'github-actions[bot]')
+       (github.event.issue.title == '[REVENUE-RUN]' && github.actor == 'zorathvael'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -39,7 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZORATHVAEL_CONTACT_DISCOVERY_LIMIT: "10"
         run: PYTHONPATH=. python scripts/discover_contacts.py
-
       - name: Execute qualified outreach
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,33 +48,23 @@ jobs:
           ZORATHVAEL_SMTP_PASSWORD: ${{ secrets.ZORATHVAEL_SMTP_PASSWORD }}
           ZORATHVAEL_EMAIL_FROM: ${{ secrets.ZORATHVAEL_EMAIL_FROM }}
         run: PYTHONPATH=. python scripts/execute_outreach.py
-
       - name: Persist acquisition state
         run: |
           if [ -z "$(git status --porcelain -- data)" ]; then
             echo "No acquisition state changes."
             exit 0
           fi
-
           git config user.name "zorathvael"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json data/revenue_events.jsonl
           git commit -m "chore: refresh revenue acquisition queue"
-
-          # The Core/revenue workflows can update main while this run is executing.
-          # Rebase the state commit onto the latest main before pushing so a stale
-          # checkout cannot fail with a non-fast-forward ref-lock rejection.
-          git fetch origin main
-          if ! git rebase origin/main; then
-            git rebase --abort
-            git reset --hard origin/main
-            PYTHONPATH=. python scripts/revenue_cycle.py
-            git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json data/revenue_events.jsonl
-            if ! git diff --cached --quiet; then
-              git commit -m "chore: refresh revenue acquisition queue"
-            fi
+          for attempt in 1 2 3; do
             git fetch origin main
-            git rebase origin/main
-          fi
-
-          git push origin HEAD:main
+            if git rebase origin/main; then
+              git push origin HEAD:main && exit 0
+            fi
+            git rebase --abort || true
+            git reset --hard origin/main
+            echo "Retrying acquisition state persistence..."
+          done
+          exit 1
