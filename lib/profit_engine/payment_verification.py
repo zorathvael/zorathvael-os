@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import urllib.request
+from datetime import datetime, timezone
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Any
@@ -77,6 +78,17 @@ class PaymentVerifier:
             if tx_hash:
                 matches.append({"tx_hash": tx_hash, "amount": amount, "block_number": int(log.get("blockNumber", "0x0"), 16)})
         return matches
+
+    def verify_usdt_tx(self, intent: PaymentIntent, tx_hash: str) -> VerificationResult:
+        if intent.expires_at:
+            try:
+                expires = datetime.fromisoformat(intent.expires_at.replace("Z", "+00:00"))
+                if expires.tzinfo is None:
+                    expires = expires.replace(tzinfo=timezone.utc)
+                if datetime.now(timezone.utc) > expires:
+                    return VerificationResult(False, intent.order_id, intent.method, ZERO, tx_hash, "rejected", "payment order expired")
+            except ValueError:
+                return VerificationResult(False, intent.order_id, intent.method, ZERO, tx_hash, "rejected", "invalid payment order expiry")
 
     def verify_usdt_tx(self, intent: PaymentIntent, tx_hash: str) -> VerificationResult:
         if intent.method != 'usdt_bep20': return VerificationResult(False,intent.order_id,intent.method,ZERO,tx_hash,'rejected','intent method is not USDT BEP20')
