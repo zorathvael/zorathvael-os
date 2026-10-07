@@ -6,7 +6,7 @@
 - Commercial score: 100/100
 - Buyer-intent score: 80/100
 - Issue: https://github.com/harshii0509/Fork/issues/36
-- Public profile: https://github.com/harshii0509
+- Public profile: https://www.harshux.com/
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: need help, build failed, api, ai, build, failed, 1 comments
 
@@ -30,7 +30,7 @@ Suggested message:
 - Issue: https://github.com/JiRaska/open-bank-oss/issues/11442
 - Public profile: https://github.com/JiRaska
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: automation, build failed, workflow, api, build, failed, 116 comments
+- Evidence: automation, build failed, workflow, api, build, failed, 118 comments
 
 Suggested message:
 > I found your public issue: CI: measure and reduce required aggregate queue latency. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
@@ -39,7 +39,7 @@ Suggested message:
 - Commercial score: 100/100
 - Buyer-intent score: 55/100
 - Issue: https://github.com/mrchypark/goauthy/issues/113
-- Public profile: https://github.com/mrchypark
+- Public profile: https://mrchypark.github.io/
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: ci failed, workflow, api, failed, 14 comments
 
