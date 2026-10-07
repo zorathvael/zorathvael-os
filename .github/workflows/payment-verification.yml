@@ -1,0 +1,38 @@
+name: Zorathvael Payment Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      order_id:
+        description: Existing order ID
+        required: true
+        type: string
+      amount:
+        description: Expected USDT amount
+        required: true
+        type: string
+      tx_hash:
+        description: BSC transaction hash
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify-usdt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      ZORATHVAEL_ORDER_ID: ${{ inputs.order_id }}
+      ZORATHVAEL_PAYMENT_AMOUNT: ${{ inputs.amount }}
+      ZORATHVAEL_PAYMENT_METHOD: usdt_bep20
+      ZORATHVAEL_PAYMENT_CURRENCY: USDT
+      ZORATHVAEL_USDT_BEP20_ADDRESS: 0x4ce7004e7127f8b2386eb355e088f127c24b3fac
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run payment verification
+        run: PYTHONPATH=. python scripts/verify_payment.py --tx-hash '${{ inputs.tx_hash }}'
