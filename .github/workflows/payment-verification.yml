@@ -5,34 +5,55 @@ on:
     inputs:
       order_id:
         description: Existing order ID
-        required: true
+        required: false
         type: string
       amount:
-        description: Expected USDT amount
-        required: true
+        description: Expected USDT amount for one-off verification
+        required: false
         type: string
       tx_hash:
-        description: BSC transaction hash
-        required: true
+        description: Optional BSC transaction hash; blank means automatic scan
+        required: false
         type: string
+  schedule:
+    - cron: '*/10 * * * *'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  verify-usdt:
+  verify:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      ZORATHVAEL_ORDER_ID: ${{ inputs.order_id }}
-      ZORATHVAEL_PAYMENT_AMOUNT: ${{ inputs.amount }}
-      ZORATHVAEL_PAYMENT_METHOD: usdt_bep20
-      ZORATHVAEL_PAYMENT_CURRENCY: USDT
       ZORATHVAEL_USDT_BEP20_ADDRESS: 0x4ce7004e7127f8b2386eb355e088f127c24b3fac
+      ZORATHVAEL_PAYMENT_ORDERS: data/payment_orders.jsonl
+      ZORATHVAEL_PROFIT_LEDGER: data/profit_ledger.jsonl
+      ZORATHVAEL_SCAN_BLOCKS: '1500'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run payment verification
+      - name: Verify supplied transaction
+        if: ${{ inputs.tx_hash != '' && inputs.order_id != '' && inputs.amount != '' }}
+        env:
+          ZORATHVAEL_ORDER_ID: ${{ inputs.order_id }}
+          ZORATHVAEL_PAYMENT_AMOUNT: ${{ inputs.amount }}
+          ZORATHVAEL_PAYMENT_METHOD: usdt_bep20
+          ZORATHVAEL_PAYMENT_CURRENCY: USDT
         run: PYTHONPATH=. python scripts/verify_payment.py --tx-hash '${{ inputs.tx_hash }}'
+      - name: Scan pending USDT orders
+        if: ${{ inputs.tx_hash == '' }}
+        run: PYTHONPATH=. python scripts/scan_usdt_payments.py
+      - name: Persist payment state
+        run: |
+          if [ -n "$(git status --porcelain -- data)" ]; then
+            git config user.name 'zorathvael'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data
+            git commit -m 'chore: persist payment verification state'
+            git push
+          else
+            echo 'No payment state changes.'
+          fi
