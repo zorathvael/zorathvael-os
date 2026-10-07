@@ -24,6 +24,32 @@ class ProfitLedger:
                 "net_profit": outcome.net_profit,
             }, sort_keys=True) + "\n")
 
+    def record_verified_payment(self, order_id: str, tx_hash: str, revenue: float, method: str = "usdt_bep20") -> bool:
+        """Record a verified payment once. Returns False when already recorded."""
+        existing = []
+        if self.path.exists():
+            existing = [json.loads(line) for line in self.path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        if any(row.get("payment", {}).get("tx_hash") == tx_hash for row in existing):
+            return False
+        outcome = Outcome(
+            opportunity=order_id,
+            revenue=float(revenue),
+            cost=0.0,
+            status="won",
+        )
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with self.path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps({
+                "opportunity": outcome.opportunity,
+                "revenue": outcome.revenue,
+                "cost": outcome.cost,
+                "status": outcome.status,
+                "recorded_at": outcome.recorded_at,
+                "net_profit": outcome.net_profit,
+                "payment": {"method": method, "tx_hash": tx_hash},
+            }, sort_keys=True) + "\n")
+        return True
+
     def summary(self) -> dict[str, Any]:
         if not self.path.exists():
             return {"trades": 0, "wins": 0, "losses": 0, "revenue": 0.0, "cost": 0.0, "net_profit": 0.0, "win_rate": 0.0}
