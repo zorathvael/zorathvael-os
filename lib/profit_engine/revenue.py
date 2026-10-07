@@ -85,7 +85,7 @@ def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str
     score = 0
     evidence: list[str] = []
     for phrase, weight in SIGNALS:
-        if re.search(r"\\b" + re.escape(phrase) + r"\\b", text):
+        if re.search(r"\b" + re.escape(phrase) + r"\b", text):
             score += weight
             evidence.append(phrase)
     score += min(max(int(comments), 0) * 2, 10)
