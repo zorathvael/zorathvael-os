@@ -38,27 +38,29 @@ jobs:
             python - <<'PY'
             import json
             p=json.load(open("/tmp/order.json"))
-            body=f"""## Payment instructions
-
-**Order:** {p['order_id']}
-
-**Product:** {p['product_id']}
-
-**Amount:** {p['amount']} {p['currency']}
-
-**Method:** {p['method']}
-
-**Destination:** {p['destination']}
-
-**Expires:** {p['expires_at']}
-
-After payment, comment on this issue with the BSC transaction hash in this form:
-
-TX: 0xYOUR_64_CHARACTER_BSC_TRANSACTION_HASH
-
-The system verifies the transfer before recording revenue and starting delivery.
-
-Do not post private keys, seed phrases, passwords, or API tokens."""
+            body = "\n".join([
+                "## Payment instructions",
+                "",
+                f"**Order:** {p['order_id']}",
+                "",
+                f"**Product:** {p['product_id']}",
+                "",
+                f"**Amount:** {p['amount']} {p['currency']}",
+                "",
+                f"**Method:** {p['method']}",
+                "",
+                f"**Destination:** {p['destination']}",
+                "",
+                f"**Expires:** {p['expires_at']}",
+                "",
+                "After payment, comment on this issue with the BSC transaction hash in this form:",
+                "",
+                "TX: 0xYOUR_64_CHARACTER_BSC_TRANSACTION_HASH",
+                "",
+                "The system verifies the transfer before recording revenue and starting delivery.",
+                "",
+                "Do not post private keys, seed phrases, passwords, or API tokens.",
+            ])
             open("/tmp/comment.md","w",encoding="utf-8").write(body)
             PY
             gh issue comment "$ISSUE_NUMBER" --body-file /tmp/comment.md

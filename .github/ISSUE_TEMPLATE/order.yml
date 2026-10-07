@@ -1,5 +1,5 @@
 name: "Buy a Zorathvael Automation Product"
-description: "Request a paid public-repository audit or automation blueprint."
+description: "Request a paid public-repository outcome diagnostic or automation blueprint."
 title: "[ORDER] "
 body:
   - type: markdown
@@ -13,6 +13,7 @@ body:
     attributes:
       label: Product
       options:
+        - ci_failure_recovery
         - public_repo_audit
         - automation_blueprint
     validations:

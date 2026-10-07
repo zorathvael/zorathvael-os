@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   verify:
@@ -27,7 +28,7 @@ jobs:
     timeout-minutes: 5
     env:
       ZORATHVAEL_USDT_BEP20_ADDRESS: "0x4ce7004e7127f8b2386eb355e088f127c24b3fac"
-      ZORATHVAEL_PAYMENT_ORDERS: "data/payment_orders.jsonl"
+      ZORATHVAEL_PAYMENT_ORDERS: "data/revenue_orders.jsonl"
       ZORATHVAEL_PROFIT_LEDGER: "data/profit_ledger.jsonl"
       ZORATHVAEL_SCAN_BLOCKS: "1500"
     steps:
@@ -42,10 +43,41 @@ jobs:
           ZORATHVAEL_PAYMENT_AMOUNT: ${{ inputs.amount }}
           ZORATHVAEL_PAYMENT_METHOD: "usdt_bep20"
           ZORATHVAEL_PAYMENT_CURRENCY: "USDT"
-        run: python scripts/verify_payment.py --tx-hash "${{ inputs.tx_hash }}"
+        run: python scripts/verify_payment.py --tx-hash "${{ inputs.tx_hash }}" | tee /tmp/manual-payment.json
+      - name: Notify customer for manual settlement
+        if: inputs.tx_hash != '' && inputs.order_id != '' && inputs.amount != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          payload = json.load(open('/tmp/manual-payment.json', encoding='utf-8'))
+          path = payload.get('delivery_path')
+          issue = payload.get('issue_number')
+          if payload.get('delivered') and path and issue and os.path.exists(path):
+              subprocess.run(['gh', 'issue', 'comment', str(issue), '--body-file', path], check=True)
+              os.remove(path)
+          PY
+
       - name: Scan pending USDT orders
         if: inputs.tx_hash == ''
-        run: python scripts/scan_usdt_payments.py
+        run: python scripts/scan_usdt_payments.py | tee /tmp/payment-scan.json
+      - name: Notify customers for scheduled settlements
+        if: inputs.tx_hash == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          payload = json.load(open('/tmp/payment-scan.json', encoding='utf-8'))
+          for item in payload.get('results', []):
+              path = item.get('delivery_path')
+              issue = item.get('issue_number')
+              if item.get('delivered') and path and issue and os.path.exists(path):
+                  subprocess.run(['gh', 'issue', 'comment', str(issue), '--body-file', path], check=True)
+                  os.remove(path)
+          PY
+
       - name: Persist payment state
         run: |
           if [ -n "$(git status --porcelain -- data)" ]; then
