@@ -1,8 +1,6 @@
 name: "Buy a Zorathvael Automation Product"
 description: "Request a paid public-repository audit or automation blueprint."
 title: "[ORDER] "
-labels:
-  - "revenue-order"
 body:
   - type: markdown
     attributes:
