@@ -17,10 +17,22 @@ def main() -> int:
     orders = load_orders(os.environ.get("ZORATHVAEL_PAYMENT_ORDERS", "data/revenue_orders.jsonl"))
     order = next((item for item in orders if item.order_id == order_id and item.status == "pending"), None)
     if order is None:
-        print(json.dumps({"verified": False, "status": "rejected", "reason": "pending order not found", "order_id": order_id, "issue_number": order.issue_number}))
+        print(json.dumps({
+            "verified": False,
+            "status": "rejected",
+            "reason": "pending order not found",
+            "order_id": order_id,
+            "issue_number": None,
+        }))
         return 1
     if order.method != "usdt_bep20":
-        print(json.dumps({"verified": False, "status": "manual_review", "reason": "only USDT BEP20 is automatically verifiable", "issue_number": order.issue_number}))
+        print(json.dumps({
+            "verified": False,
+            "status": "manual_review",
+            "reason": "only USDT BEP20 is automatically verifiable",
+            "order_id": order.order_id,
+            "issue_number": order.issue_number,
+        }))
         return 1
 
     result = verify_and_settle(order, args.tx_hash)
