@@ -3,9 +3,9 @@ google-generativeai==0.4.1
 anthropic==0.20.0
 requests==2.31.0
 python-dotenv==1.0.1
-agentmail==2.0.12
+agentmail==2.0.13
 pytest==8.1.1
 pytest-cov==4.1.0
-pydantic==2.6.4
+pydantic>=2.11,<3
 uvicorn==0.28.0
-fastapi[standard]>=0.115,<1
+fastapi==0.115.12

@@ -26,6 +26,26 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
+      - name: Validate AgentMail configuration
+        run: |
+          PYTHONPATH=. python - <<'PY'
+          import os
+          from agentmail import AgentMail
+
+          api_key = os.environ.get("AGENTMAIL_API_KEY", "").strip()
+          inbox_id = os.environ.get("AGENTMAIL_INBOX_ID", "").strip()
+          if not api_key:
+              raise SystemExit("AGENTMAIL_API_KEY secret is missing")
+          if not inbox_id:
+              raise SystemExit("AGENTMAIL_INBOX_ID secret is missing")
+
+          client = AgentMail(api_key=api_key)
+          inbox = client.inboxes.get(inbox_id)
+          resolved = str(getattr(inbox, "inbox_id", "") or "")
+          if resolved != inbox_id:
+              raise SystemExit(f"AgentMail inbox mismatch: configured={inbox_id!r} resolved={resolved!r}")
+          print(f"AgentMail authenticated; inbox={resolved}")
+          PY
       - name: Send ready deliveries
         run: PYTHONPATH=. python scripts/send_delivery_email.py | tee /tmp/email-delivery.json
       - name: Persist delivery state
