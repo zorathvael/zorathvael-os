@@ -26,7 +26,7 @@ def main() -> int:
         try:
             matches = verifier.discover_usdt(order.destination, start, latest, Decimal(str(order.amount)))
         except Exception as exc:
-            results.append({"order_id": order.order_id, "status": "scan_error", "reason": str(exc)})
+            results.append({"order_id": order.order_id, "issue_number": order.issue_number, "status": "scan_error", "reason": str(exc)})
             continue
 
         intent = PaymentIntent(
@@ -38,6 +38,7 @@ def main() -> int:
             if not result.verified:
                 results.append({
                     "order_id": order.order_id,
+                    "issue_number": order.issue_number,
                     "tx_hash": match["tx_hash"],
                     "status": result.status,
                     "reason": result.reason,
@@ -46,6 +47,7 @@ def main() -> int:
             settlement = settle_verified_order(order, result)
             results.append({
                 "order_id": order.order_id,
+                "issue_number": order.issue_number,
                 "tx_hash": match["tx_hash"],
                 "status": settlement["status"],
                 "amount": str(result.amount),
