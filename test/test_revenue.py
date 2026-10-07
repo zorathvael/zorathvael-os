@@ -104,3 +104,6 @@ def test_conversion_funnel_matches_orders_to_leads_without_inventing_attribution
     assert funnel["attributed_paid_orders"] == 1
     assert funnel["unattributed_paid_orders"] == 1
     assert funnel["paid_revenue_orders"] == 2
+
+
+# autonomous outreach tests follow
