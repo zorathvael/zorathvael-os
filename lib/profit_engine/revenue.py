@@ -38,6 +38,8 @@ class Lead:
     offer_id: str
     contact_url: str
     discovered_at: str
+    contact_email: str | None = None
+    contact_source: str = "none"
 
 
 DEFAULT_OFFERS = (
