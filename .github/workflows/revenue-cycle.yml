@@ -36,12 +36,28 @@ jobs:
         run: PYTHONPATH=. python scripts/revenue_cycle.py
       - name: Persist acquisition state
         run: |
-          if [ -n "$(git status --porcelain -- data)" ]; then
-            git config user.name "zorathvael"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain -- data)" ]; then
+            echo "No acquisition state changes."
+            exit 0
+          fi
+
+          git config user.name "zorathvael"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json
+          git commit -m "chore: refresh revenue acquisition queue"
+
+          # The Core/revenue workflows can update main while this run is executing.
+          # Rebase the state commit onto the latest main before pushing so a stale
+          # checkout cannot fail with a non-fast-forward ref-lock rejection.
+          git fetch origin main
+          if ! git rebase origin/main; then
+            git rebase --abort
+            git reset --hard origin/main
+            PYTHONPATH=. python scripts/revenue_cycle.py
             git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json
             git commit -m "chore: refresh revenue acquisition queue"
-            git push
-          else
-            echo "No acquisition state changes."
+            git fetch origin main
+            git rebase origin/main
           fi
+
+          git push origin HEAD:main
