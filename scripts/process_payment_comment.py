@@ -6,7 +6,7 @@ import os
 import re
 from pathlib import Path
 
-from lib.profit_engine.delivery import audit_repository
+from lib.profit_engine.delivery import audit_repository, ci_failure_recovery
 from lib.profit_engine.ledger import ProfitLedger
 from lib.profit_engine.order_flow import find_pending_issue, mark_paid
 from lib.profit_engine.payment_verification import PaymentIntent, PaymentVerifier
@@ -83,7 +83,10 @@ def main() -> int:
 
     mark_paid(order.order_id)
     try:
-        report = audit_repository(order.target_repository, os.getenv("GITHUB_TOKEN", ""), order.product_id)
+        if order.product_id == "ci_failure_recovery":
+            report = ci_failure_recovery(order.target_repository, os.getenv("GITHUB_TOKEN", ""))
+        else:
+            report = audit_repository(order.target_repository, os.getenv("GITHUB_TOKEN", ""), order.product_id)
         delivered = True
     except Exception as exc:
         report = "# Delivery pending\n\nPayment was verified and recorded. Automatic analysis failed with " + type(exc).__name__ + "; the paid order can be retried."
