@@ -5,7 +5,16 @@ import os
 from pathlib import Path
 
 from lib.profit_engine.engine import ProfitEngine
-from lib.profit_engine.revenue import GitHubLeadScout, Lead, STRONG_SIGNALS, load_conversion_prior, make_opportunity, render_drafts
+from lib.profit_engine.revenue import (
+    GitHubLeadScout,
+    Lead,
+    STRONG_SIGNALS,
+    commercial_relevance_score,
+    load_conversion_prior,
+    make_opportunity,
+    rank_outreach_leads,
+    render_drafts,
+)
 
 
 def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
@@ -32,21 +41,34 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
     }
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in existing.values()), encoding="utf-8")
-    return [Lead(
-        source=row["source"], external_id=str(row["external_id"]), title=row["title"],
-        url=row["url"], repository=row["repository"], author=row["author"],
-        evidence=tuple(row.get("evidence", [])), score=int(row["score"]),
-        offer_id=row["offer_id"], contact_url=row.get("contact_url", ""),
-        discovered_at=row.get("discovered_at", ""),
-    ) for row in existing.values()]
+    return [
+        Lead(
+            source=row["source"], external_id=str(row["external_id"]), title=row["title"],
+            url=row["url"], repository=row["repository"], author=row["author"],
+            evidence=tuple(row.get("evidence", [])), score=int(row["score"]),
+            offer_id=row["offer_id"], contact_url=row.get("contact_url", ""),
+            discovered_at=row.get("discovered_at", ""),
+        )
+        for row in existing.values()
+    ]
 
 
-def refresh_metrics(qualified: int, path: str = "data/revenue_metrics.json") -> None:
+def refresh_metrics(qualified: int, commercially_relevant: int, outreach_ready: int, path: str = "data/revenue_metrics.json") -> None:
     target = Path(path)
-    data = {"qualified_leads": qualified, "paid_orders": 0, "delivered_orders": 0, "revenue_usdt": 0.0, "last_updated": None}
+    data = {
+        "qualified_leads": qualified,
+        "commercially_relevant_leads": commercially_relevant,
+        "outreach_ready_leads": outreach_ready,
+        "paid_orders": 0,
+        "delivered_orders": 0,
+        "revenue_usdt": 0.0,
+        "last_updated": None,
+    }
     if target.exists():
         data.update(json.loads(target.read_text(encoding="utf-8")))
     data["qualified_leads"] = qualified
+    data["commercially_relevant_leads"] = commercially_relevant
+    data["outreach_ready_leads"] = outreach_ready
     target.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
@@ -63,17 +85,30 @@ def main() -> int:
     for query in queries:
         for lead in scout.discover(query, limit=limit):
             current = fresh_by_url.get(lead.url)
-            if current is None or lead.score > current.score:
+            if current is None or commercial_relevance_score(lead) > commercial_relevance_score(current):
                 fresh_by_url[lead.url] = lead
-    fresh = sorted(fresh_by_url.values(), key=lambda lead: (lead.score, lead.discovered_at), reverse=True)
+    fresh = sorted(
+        fresh_by_url.values(),
+        key=lambda lead: (commercial_relevance_score(lead), lead.score, lead.discovered_at),
+        reverse=True,
+    )
     all_leads = merge_leads("data/revenue_leads.jsonl", fresh)
-    refresh_metrics(len(all_leads))
+    outreach_ready = rank_outreach_leads(all_leads, limit=10)
+    commercially_relevant = [lead for lead in all_leads if commercial_relevance_score(lead) >= 55]
+    refresh_metrics(len(all_leads), len(commercially_relevant), len(outreach_ready))
     prior = load_conversion_prior()
-    render_drafts(fresh)
-    ranked = ProfitEngine().select([make_opportunity(lead, prior) for lead in fresh], limit=10)
+    render_drafts(outreach_ready)
+    ranked = ProfitEngine().select(
+        [make_opportunity(lead, prior) for lead in outreach_ready],
+        limit=10,
+    )
     print(json.dumps({
-        "new_leads": len(fresh), "qualified_leads_total": len(all_leads),
-        "conversion_prior": prior, "ranked_opportunities": ranked,
+        "new_leads": len(fresh),
+        "qualified_leads_total": len(all_leads),
+        "commercially_relevant_leads": len(commercially_relevant),
+        "outreach_ready_leads": len(outreach_ready),
+        "conversion_prior": prior,
+        "ranked_opportunities": ranked,
         "outputs": ["data/revenue_leads.jsonl", "data/outreach_drafts.md", "data/revenue_metrics.json"],
     }, indent=2, sort_keys=True))
     return 0
