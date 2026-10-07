@@ -124,6 +124,12 @@ Zorathvael now has an executable zero-budget revenue acquisition loop.
 | AI Automation Audit | Rp149,000 / 10 USDT | Automated public-repository audit |
 | Automation Blueprint | Rp299,000 / 20 USDT | Automated implementation blueprint |
 
+### Start a paid order
+
+**[Open the Zorathvael order form](https://github.com/zorathvael/zorathvael-os/issues/new?template=order.yml)**
+
+The customer selects the product, target public repository, and payment rail. USDT BEP20 can proceed through autonomous on-chain verification and automatic delivery.
+
 ### Autonomous loop
 
 The Core now runs:
