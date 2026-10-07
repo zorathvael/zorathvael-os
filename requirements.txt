@@ -3,6 +3,7 @@ google-generativeai==0.4.1
 anthropic==0.20.0
 requests==2.31.0
 python-dotenv==1.0.1
+agentmail==2.0.12
 pytest==8.1.1
 pytest-cov==4.1.0
 pydantic==2.6.4
