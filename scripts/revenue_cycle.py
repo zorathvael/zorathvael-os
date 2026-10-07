@@ -51,9 +51,21 @@ def refresh_metrics(qualified: int, path: str = "data/revenue_metrics.json") -> 
 
 
 def main() -> int:
-    query = os.getenv("ZORATHVAEL_LEAD_QUERY", 'is:issue is:open ("need help" OR "looking for" OR "automate" OR "automation")')
+    default_queries = [
+        'is:issue is:open ("need help" OR "looking for" OR "automate" OR "automation")',
+        'is:issue is:open ("workflow failed" OR "actions failed" OR "ci failed" OR "build failed")',
+    ]
+    configured = os.getenv("ZORATHVAEL_LEAD_QUERY", "").strip()
+    queries = [configured] if configured else default_queries
     limit = int(os.getenv("ZORATHVAEL_LEAD_LIMIT", "20"))
-    fresh = GitHubLeadScout().discover(query, limit=limit)
+    scout = GitHubLeadScout()
+    fresh_by_url: dict[str, Lead] = {}
+    for query in queries:
+        for lead in scout.discover(query, limit=limit):
+            current = fresh_by_url.get(lead.url)
+            if current is None or lead.score > current.score:
+                fresh_by_url[lead.url] = lead
+    fresh = sorted(fresh_by_url.values(), key=lambda lead: (lead.score, lead.discovered_at), reverse=True)
     all_leads = merge_leads("data/revenue_leads.jsonl", fresh)
     refresh_metrics(len(all_leads))
     prior = load_conversion_prior()
