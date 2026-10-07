@@ -78,6 +78,14 @@ jobs:
                 subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body",f"Payment verification rejected: {p.get('reason','unknown reason')}"],check=True)
             PY
           fi
+      - name: Publish paid delivery artifact
+        if: ${{ github.event_name == 'issue_comment' && hashFiles('data/delivery_*.md') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: zorathvael-delivery-${{ github.event.issue.number }}
+          path: data/delivery_*.md
+          if-no-files-found: error
+          retention-days: 7
       - name: Persist order and ledger state
         run: |
           if [ -n "$(git status --porcelain -- data)" ]; then
