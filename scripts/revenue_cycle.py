@@ -98,8 +98,10 @@ def refresh_metrics(qualified: int, commercially_relevant: int, outreach_ready: 
             "paid_orders": funnel["paid_orders"],
             "attributed_paid_orders": funnel["attributed_paid_orders"],
             "unattributed_paid_orders": funnel["unattributed_paid_orders"],
+            "paid_revenue_orders": funnel["paid_revenue_orders"],
             "paid_revenue_usdt": funnel["paid_revenue_usdt"],
             "paid_revenue_idr": funnel["paid_revenue_idr"],
+            "revenue_usdt": funnel["paid_revenue_usdt"],
         })
     data["last_updated"] = datetime.now(timezone.utc).isoformat()
     target.parent.mkdir(parents=True, exist_ok=True)
