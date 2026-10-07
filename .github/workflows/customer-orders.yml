@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
       - name: Process order or payment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,7 +59,7 @@ jobs:
                 "",
                 "TX: 0xYOUR_64_CHARACTER_BSC_TRANSACTION_HASH",
                 "",
-                "The system verifies the transfer before recording revenue and starting delivery.",
+                "The system verifies the transfer before recording revenue and starting autonomous delivery.",
                 "",
                 "Do not post private keys, seed phrases, passwords, or API tokens.",
             ])
@@ -69,23 +71,23 @@ jobs:
             python - <<'PY'
             import json, os, subprocess
             p=json.load(open("/tmp/payment.json"))
-            path=p.get("delivery_path")
-            if p.get("verified") and path and os.path.exists(path):
-                subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body-file",path],check=True)
-            elif p.get("status") == "pending":
-                subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body","Payment detected but still awaiting required BSC confirmations."],check=True)
-            elif p.get("status") == "rejected":
-                subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body",f"Payment verification rejected: {p.get('reason','unknown reason')}"],check=True)
+            issue=os.environ["ISSUE_NUMBER"]
+            status=p.get("status")
+            if p.get("verified"):
+                body = (
+                    f"Payment verified for order **{p.get('order_id','unknown')}**. "
+                    "The product has been generated and queued for autonomous AgentMail delivery. "
+                    "No manual delivery action is required."
+                )
+            elif status == "pending":
+                body = "Payment detected but still awaiting required BSC confirmations. The payment scanner will retry automatically."
+            elif status == "rejected":
+                body = f"Payment verification rejected: {p.get('reason','unknown reason')}"
+            else:
+                body = p.get("reason", "Payment update received; the automation will continue monitoring.")
+            subprocess.run(["gh","issue","comment",issue,"--body",body],check=True)
             PY
           fi
-      - name: Publish paid delivery artifact
-        if: ${{ github.event_name == 'issue_comment' && hashFiles('data/delivery_*.md') != '' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: zorathvael-delivery-${{ github.event.issue.number }}
-          path: data/delivery_*.md
-          if-no-files-found: error
-          retention-days: 7
       - name: Persist order and ledger state
         run: |
           if [ -n "$(git status --porcelain -- data)" ]; then
@@ -93,7 +95,16 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data
             git commit -m "chore: persist revenue order state"
-            git push
+            for attempt in 1 2 3; do
+              git fetch origin main
+              if git rebase origin/main; then
+                git push origin HEAD:main && exit 0
+              fi
+              git rebase --abort || true
+              git reset --hard origin/main
+              echo "Retrying state persistence..."
+            done
+            exit 1
           else
             echo "No revenue state changes."
           fi
