@@ -73,18 +73,17 @@ def offers() -> dict[str, ProductOffer]:
 
 
 def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str, ...]]:
-    text = f"{title}
-{body}".lower()
+    text = f"{title}\\n{body}".lower()
     score = 0
     evidence: list[str] = []
     strong_hit = False
     for phrase, weight in STRONG_SIGNALS:
-        if re.search(r"" + re.escape(phrase) + r"", text):
+        if re.search(r"\\b" + re.escape(phrase) + r"\\b", text):
             score += weight
             evidence.append(phrase)
             strong_hit = True
     for phrase, weight in WEAK_SIGNALS:
-        if re.search(r"" + re.escape(phrase) + r"", text):
+        if re.search(r"\\b" + re.escape(phrase) + r"\\b", text):
             score += weight
             evidence.append(phrase)
     score += min(max(int(comments), 0) * 2, 8)
