@@ -60,19 +60,31 @@ DEFAULT_OFFERS = (
     ),
 )
 
-SIGNALS: tuple[tuple[str, int], ...] = (
-    ("need help", 24),
-    ("looking for", 20),
-    ("automation", 18),
-    ("automate", 18),
-    ("manual", 15),
-    ("workflow", 14),
-    ("integration", 14),
-    ("webhook", 12),
-    ("api", 10),
-    ("bot", 10),
-    ("ai", 8),
-    ("cron", 8),
+STRONG_SIGNALS: tuple[tuple[str, int], ...] = (
+    ("need help", 32),
+    ("looking for", 30),
+    ("how to automate", 30),
+    ("automate", 26),
+    ("automation", 26),
+    ("manual process", 24),
+    ("repetitive", 22),
+    ("workflow automation", 22),
+    ("webhook integration", 20),
+    ("reduce manual", 20),
+    ("script this", 20),
+    ("want to automate", 28),
+    ("is there a way to automate", 30),
+    ("automating", 24),
+)
+
+WEAK_SIGNALS: tuple[tuple[str, int], ...] = (
+    ("webhook", 8),
+    ("integration", 7),
+    ("workflow", 6),
+    ("api", 4),
+    ("bot", 4),
+    ("ai", 3),
+    ("cron", 3),
 )
 
 
@@ -84,13 +96,21 @@ def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str
     text = f"{title}\n{body}".lower()
     score = 0
     evidence: list[str] = []
-    for phrase, weight in SIGNALS:
+    strong_hit = False
+    for phrase, weight in STRONG_SIGNALS:
         if re.search(r"\b" + re.escape(phrase) + r"\b", text):
             score += weight
             evidence.append(phrase)
-    score += min(max(int(comments), 0) * 2, 10)
+            strong_hit = True
+    for phrase, weight in WEAK_SIGNALS:
+        if re.search(r"\b" + re.escape(phrase) + r"\b", text):
+            score += weight
+            evidence.append(phrase)
+    score += min(max(int(comments), 0) * 2, 8)
     if comments:
         evidence.append(f"{comments} comments")
+    if not strong_hit:
+        return 0, tuple(evidence)
     return min(score, 100), tuple(evidence)
 
 
@@ -149,6 +169,9 @@ class GitHubLeadScout:
         for item in data.get("items", []):
             if item.get("pull_request"):
                 continue
+            author = item.get("user", {}).get("login", "")
+            if author.endswith("[bot]"):
+                continue
             repository_url = item.get("repository_url", "")
             repository = repository_url.rsplit("/repos/", 1)[-1] if "/repos/" in repository_url else ""
             if not repository:
@@ -164,7 +187,7 @@ class GitHubLeadScout:
                     title=item.get("title", "").strip(),
                     url=item.get("html_url", ""),
                     repository=repository,
-                    author=item.get("user", {}).get("login", ""),
+                    author=author,
                     evidence=evidence,
                     score=score,
                     offer_id=offer.product_id,
@@ -219,11 +242,12 @@ def render_drafts(leads: list[Lead], path: str = "data/outreach_drafts.md") -> N
             f"- Evidence: {evidence}",
             "",
             "Suggested message:",
-            f"> I noticed your issue {lead.title} and the repeated {evidence}. "
-            f"I can provide a concrete {offer.name.lower()} focused on this repository, "
-            "with prioritized automation actions and implementation steps. "
-            f"The fixed price is {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
-            "If useful, I can prepare the order instructions.",
+            f"> I found your public issue: {lead.title}. "
+            f"Detected intent signals: {evidence}. "
+            f"I can provide a {offer.name} focused on this repository, "
+            "with prioritized automation opportunities and implementation steps. "
+            f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
+            "If you want the audit, open the Zorathvael order form.",
             "",
         ])
     target.write_text("\n".join(lines), encoding="utf-8")
