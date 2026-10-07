@@ -123,6 +123,7 @@ Zorathvael now has an executable zero-budget revenue acquisition loop.
 |---|---:|---|
 | AI Automation Audit | Rp149,000 / 10 USDT | Automated public-repository audit |
 | Automation Blueprint | Rp299,000 / 20 USDT | Automated implementation blueprint |
+| Instant Automation Scorecard | Rp79,000 / 5 USDT | Instant deterministic scorecard from public GitHub data |
 
 ### Start a paid order
 
