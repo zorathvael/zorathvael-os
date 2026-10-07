@@ -11,7 +11,7 @@ from .revenue import Lead
 
 
 EMAIL_RE = re.compile(r"(?<![\w.+-])([A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+)")
-URL_RE = re.compile(r"https?://[^\\s<>]+")
+URL_RE = re.compile(r"https?://[^\s<>]+")
 
 
 @dataclass(frozen=True)
