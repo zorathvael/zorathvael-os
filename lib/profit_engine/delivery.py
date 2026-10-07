@@ -40,7 +40,7 @@ def _failure_fingerprint(log: str) -> tuple[str, str]:
         ("authentication", ("401 Unauthorized", "403 Forbidden", "authentication failed", "permission denied")),
         ("missing-secret", ("secret", "environment variable", "not set", "required variable")),
         ("network", ("timeout", "timed out", "connection refused", "Temporary failure in name resolution")),
-        ("build", ("build failed", "compilation failed", "syntax error", "exit code 1")),
+        ("build", ("build failed", "compilation failed", "syntax error")),
         ("deployment", ("deployment failed", "deploy failed", "release failed")),
     )
     lower = log.lower()
