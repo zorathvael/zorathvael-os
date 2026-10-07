@@ -17,11 +17,13 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
                 row = json.loads(line)
                 existing[row["url"]] = row
     for lead in fresh:
+        prior = existing.get(lead.url, {})
         existing[lead.url] = {
             "source": lead.source, "external_id": lead.external_id, "title": lead.title,
             "url": lead.url, "repository": lead.repository, "author": lead.author,
             "evidence": list(lead.evidence), "score": lead.score, "offer_id": lead.offer_id,
-            "contact_url": lead.contact_url, "discovered_at": lead.discovered_at,
+            "contact_url": lead.contact_url,
+            "discovered_at": prior.get("discovered_at", lead.discovered_at),
         }
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in existing.values()), encoding="utf-8")
