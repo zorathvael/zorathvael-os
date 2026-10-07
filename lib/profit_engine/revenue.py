@@ -182,7 +182,7 @@ class GitHubLeadScout:
             if not repository:
                 repository = item.get("repository", {}).get("full_name", "")
             score, evidence = score_lead(item.get("title", ""), item.get("body") or "", item.get("comments", 0))
-            if score < 20:
+            if score < 30:
                 continue
             offer = select_offer(score)
             results.append(
