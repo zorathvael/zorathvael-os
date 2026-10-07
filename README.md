@@ -121,6 +121,7 @@ Zorathvael now has an executable zero-budget revenue acquisition loop.
 
 | Product | Price | Delivery |
 |---|---:|---|
+| CI Failure Recovery | Rp149,000 / 10 USDT | Evidence-based failed GitHub Actions diagnostic |
 | AI Automation Audit | Rp149,000 / 10 USDT | Automated public-repository audit |
 | Automation Blueprint | Rp299,000 / 20 USDT | Automated implementation blueprint |
 
@@ -134,11 +135,11 @@ The customer selects the product, target public repository, and payment rail. US
 
 The Core now runs:
 
-1. **Opportunity discovery** — scans public GitHub issues for high-intent automation problems.
+1. **Opportunity discovery** — scans public GitHub issues for high-intent automation problems and explicit CI/deployment failures.
 2. **Economic ranking** — scores lead intent and estimates expected value using a conservative conversion prior.
 3. **Customer checkout** — customer opens the order issue form and receives a unique payment order.
 4. **USDT settlement verification** — BSC transaction, token contract, destination, amount, and confirmations are checked before revenue is recorded.
-5. **Automatic delivery** — after verified USDT payment, the public-repository audit is generated and posted to the order issue.
+5. **Automatic delivery** — after verified USDT payment, the selected outcome diagnostic is generated from live public repository evidence and posted to the order issue. CI Failure Recovery inspects recent failed GitHub Actions runs, failed jobs, steps, and logs before recommending remediation.
 6. **Measurement** — qualified leads, paid orders, delivered orders, and realized USDT revenue are persisted for recalibration.
 
 The acquisition engine intentionally does not auto-send unsolicited messages to third parties. It produces a ranked acquisition queue and targeted drafts; the transaction begins from customer-initiated checkout.
