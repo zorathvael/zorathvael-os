@@ -38,7 +38,23 @@ Likewise, a proposed fix is not treated as a verified result without evidence.
 ### Deliver results
 The system produces a concrete deliverable rather than only a conversational answer.
 
-Depending on the service, this can be a diagnostic report, automation blueprint, recovery analysis, implementation guidance, or evidence package.
+For paid orders, the delivery lifecycle is:
+
+```
+Payment verified
+      ↓
+Product generated
+      ↓
+delivery_ready
+      ↓
+AgentMail delivery worker
+      ↓
+Customer email + report attachment
+      ↓
+delivered
+```
+
+AgentMail is used as the autonomous email transport; SMTP configuration is not required.
 
 ### Learn from outcomes
 The Core records measurable events such as leads, outreach, responses, orders, verified payments, deliveries, and realized revenue. These measurements are used to improve future opportunity selection.
@@ -62,7 +78,7 @@ Core executes
         ↓
 Verify the outcome
         ↓
-Deliver the result
+Autonomous email delivery
         ↓
 Measure and improve
 ~~~
@@ -95,17 +111,38 @@ For example, CI Failure Recovery can analyze a public GitHub repository where wo
 
 1. Select a service.
 2. Provide the target public repository.
-3. Receive payment instructions.
-4. Payment is verified through the configured verification process.
-5. The Core executes the selected analysis.
-6. The result is generated from repository evidence.
-7. The result is delivered through the available delivery channel.
+3. Provide the email address where the completed product should be delivered.
+4. Receive payment instructions.
+5. Payment is verified through the configured verification process.
+6. The Core executes the selected analysis.
+7. The result is generated from repository evidence.
+8. The autonomous delivery workflow sends the completed report through AgentMail.
 
 ### Do I need to give access to a private repository?
 
 Not for the current public-repository services.
 
 The Core does not assume private repository access. A different access model would require explicit authorization.
+
+---
+
+## Autonomous Customer Delivery
+
+Zorathvael Core now separates **product generation** from **customer delivery**.
+
+- `delivery_ready` means payment is verified and the product artifact exists.
+- The autonomous email worker picks up `delivery_ready` orders.
+- AgentMail sends the report to the customer's submitted email address.
+- The AgentMail message ID and delivery event are persisted.
+- Only after the email send succeeds does the order become `delivered`.
+- AgentMail's send idempotency key prevents workflow retries from sending the same order twice.
+
+The GitHub Actions worker requires these repository secrets:
+
+- `AGENTMAIL_API_KEY`
+- `AGENTMAIL_INBOX_ID`
+
+The AgentMail free tier currently supports 3 inboxes and 3,000 emails/month without a credit card. The Core does not require a paid AI API or SMTP server for this delivery path.
 
 ---
 
@@ -142,7 +179,7 @@ The goal is to be better at turning specific real-world problems into measurable
    AI Router              Workflow Engine          Profit Engine
    Memory Engine          Automation Engine        Revenue Engine
                           Integration Engine       Payment & Settlement
-                          Report Engine            Delivery & Learning
+                          Report Engine            Delivery + AgentMail
 ~~~
 
 ### AI Router
@@ -174,8 +211,10 @@ Zorathvael Core follows explicit operational boundaries:
 
 - Payment instructions are not revenue.
 - Revenue is recorded only after payment verification.
+- Product generation and customer delivery are separate states.
+- An order becomes `delivered` only after successful AgentMail submission.
+- AgentMail credentials are supplied through GitHub Actions secrets.
 - The Core does not custody or transfer customer funds.
-- Secrets are supplied through secure environment variables or GitHub Actions secrets.
 - Public contact discovery uses only publicly supplied contact information.
 - The system does not attempt to reveal private email addresses.
 - External GitHub outreach requires appropriate write authorization.
@@ -196,6 +235,8 @@ The repository currently contains an executable foundation for:
 - Customer order intake
 - USDT payment verification
 - Evidence-based delivery generation
+- Autonomous AgentMail email delivery
+- Idempotent delivery tracking
 - Revenue and conversion measurement
 - Automated learning from outreach and delivery events
 - GitHub Actions CI/CD
