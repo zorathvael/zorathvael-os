@@ -15,3 +15,10 @@ def test_verifies_matching_confirmed_transfer():
 def test_rejects_wrong_destination():
     r=PaymentVerifier(rpc=FakeRpc(),confirmations=12).verify_usdt_tx(intent(destination='0x1111111111111111111111111111111111111111'),'0xabc')
     assert not r.verified and r.status == 'rejected'
+
+def test_verified_payment_is_idempotent(tmp_path):
+    from lib.profit_engine import ProfitLedger
+    ledger = ProfitLedger(str(tmp_path / 'ledger.jsonl'))
+    assert ledger.record_verified_payment('ORD-9', '0xtx', 50.0) is True
+    assert ledger.record_verified_payment('ORD-9', '0xtx', 50.0) is False
+    assert ledger.summary()['revenue'] == 50.0
