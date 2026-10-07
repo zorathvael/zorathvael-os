@@ -21,7 +21,7 @@ def _api_get(url: str, token: str) -> dict[str, Any]:
         return json.loads(response.read().decode("utf-8"))
 
 
-def audit_repository(repository_url: str, token: str) -> str:
+def audit_repository(repository_url: str, token: str, product_id: str = "public_repo_audit") -> str:
     parts = [part for part in urllib.parse.urlparse(repository_url).path.split("/") if part]
     if len(parts) != 2:
         raise ValueError("invalid GitHub repository URL")
@@ -44,6 +44,20 @@ def audit_repository(repository_url: str, token: str) -> str:
     if not gaps:
         gaps.append("Existing automation is present; next value is optimization, observability, and measurable cost/time reduction.")
     now = datetime.now(timezone.utc).isoformat()
+    blueprint = []
+    if product_id == "automation_blueprint":
+        blueprint = [
+            "",
+            "## Implementation blueprint",
+            "### Phase 1 — deterministic automation",
+            "Define one trigger, one input contract, one processing step, and one measurable output.",
+            "### Phase 2 — reliability",
+            "Add idempotency keys, retries with backoff, failure notifications, and execution logs.",
+            "### Phase 3 — economics",
+            "Track minutes saved, execution success rate, operating cost, and payback period.",
+            "### Phase 4 — scale",
+            "Only after positive measured ROI, add more workflows and external integrations.",
+        ]
     return "\n".join([
         f"# Zorathvael AI Automation Audit — {metadata.get('full_name', repository_url)}",
         "",
@@ -69,6 +83,7 @@ def audit_repository(repository_url: str, token: str) -> str:
         "",
         "## Delivery boundary",
         "This audit uses public repository data only. It does not claim access to private systems or credentials.",
+        *blueprint,
     ])
 
 
