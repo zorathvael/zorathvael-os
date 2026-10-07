@@ -13,7 +13,18 @@
 Suggested message:
 > I found your public issue: [9.0][source-build] Could not find BROTLIDEC using the following names: brotlidec. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 2. remotion-dev/remotion#8375 — score 81/100
+## 2. JiRaska/open-bank-oss#11442 — score 86/100
+- Commercial score: 100/100
+- Buyer-intent score: 55/100
+- Issue: https://github.com/JiRaska/open-bank-oss/issues/11442
+- Public profile: https://github.com/JiRaska
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: automation, build failed, workflow, api, build, failed, 116 comments
+
+Suggested message:
+> I found your public issue: CI: measure and reduce required aggregate queue latency. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
+
+## 3. remotion-dev/remotion#8375 — score 81/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/remotion-dev/remotion/issues/8375
@@ -24,7 +35,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: CI: Track flaky tests. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 3. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
+## 4. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/vinayakss007/nucrm-bigplan-by-vm-enterprise-v2/issues/2426
@@ -35,7 +46,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: CI Build fails non-deterministically on next/font/google: builds need live egress to Google Fonts and nothing caches or vendors it. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 4. shubhodeep1/coding-workflows#6608 — score 56/100
+## 5. shubhodeep1/coding-workflows#6608 — score 56/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/6608
@@ -46,7 +57,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: Workflow heal: Internal: AI Review & Autofix [pr:6594] failed 18x for shubhodeep1/coding-workflows#6594 (identical_failure_cap). The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 5. FastLED/FastLED#4737 — score 52/100
+## 6. FastLED/FastLED#4737 — score 52/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/FastLED/FastLED/issues/4737
@@ -57,7 +68,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: meta(memory): reduce default flash/RAM usage across all measured platforms. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 6. dotnet/runtime#130133 — score 50/100
+## 7. dotnet/runtime#130133 — score 50/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/dotnet/runtime/issues/130133
@@ -68,7 +79,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: [ci-scan] Wasm.Build.Tests ManagedToNativeGenerator task host node crash. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 7. dotnet/runtime#130858 — score 48/100
+## 8. dotnet/runtime#130858 — score 48/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/dotnet/runtime/issues/130858
@@ -79,7 +90,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: CI failure on 8.0: Failed to install xharness because of missing DotnetToolSettings.xml. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 8. aliezzat4321/hyperliquid-copy-engine#130 — score 48/100
+## 9. aliezzat4321/hyperliquid-copy-engine#130 — score 48/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/aliezzat4321/hyperliquid-copy-engine/issues/130
@@ -90,7 +101,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: AI TEAM RUNTIME STATUS. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 9. QwenLM/qwen-code#13581 — score 45/100
+## 10. QwenLM/qwen-code#13581 — score 45/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/QwenLM/qwen-code/issues/13581
@@ -100,14 +111,3 @@ Suggested message:
 
 Suggested message:
 > I found your public issue: Main CI failed: Qwen Code CI on 1753948e3ecb. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
-
-## 10. nickderobertis/ai-orchestrator#1574 — score 68/100
-- Commercial score: 100/100
-- Buyer-intent score: 30/100
-- Issue: https://github.com/nickderobertis/ai-orchestrator/issues/1574
-- Public profile: https://github.com/nickderobertis
-- Offer: Automation Blueprint — 20 USDT / Rp299,000
-- Evidence: looking for, automation, api, ai, failed
-
-Suggested message:
-> I found your public issue: fix(deps): adopt the engine that lets a waiting human approval be reparented. The issue shows a concrete automation/integration need. I can map the current workflow, prioritize the highest-value automation opportunities, and provide implementation steps. Fixed price: 20 USDT or Rp299,000. If you want the blueprint, open the Zorathvael order form.
