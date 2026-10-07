@@ -2,56 +2,83 @@
 
 > Drafts only. Zorathvael does not automatically contact third parties.
 
-## 1. digoal/blog#315 — score 65/100
-- Issue: https://github.com/digoal/blog/issues/315
-- Public profile: https://github.com/webivalue
+## 1. CodySwannGT/lisa#4347 — score 79/100
+- Issue: https://github.com/CodySwannGT/lisa/issues/4347
+- Public profile: https://github.com/CodySwannGT
 - Offer: Automation Blueprint — 20 USDT / Rp299,000
-- Evidence: automation, workflow automation, integration, workflow, api
+- Evidence: automation, integration, workflow, api, bot, github actions, deployment, build, failed, 6 comments
 
 Suggested message:
-> I found your public issue: Best AngularJS Development company in  Chennai. Detected intent signals: automation, workflow automation, integration, workflow, api. I can provide a Automation Blueprint focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 20 USDT or Rp299,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: [lisa] Add an opt-in npm update producer with per-update work items. Detected intent signals: automation, integration, workflow, api, bot, github actions, deployment, build, failed, 6 comments. I can provide a Automation Blueprint focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 20 USDT or Rp299,000. If you want the audit, open the Zorathvael order form.
 
-## 2. openclaw/openclaw#97616 — score 41/100
-- Issue: https://github.com/openclaw/openclaw/issues/97616
-- Public profile: https://github.com/avp717
+## 2. Agent-Clubhouse/Goobers#4423 — score 62/100
+- Issue: https://github.com/Agent-Clubhouse/Goobers/issues/4423
+- Public profile: https://github.com/jeffstei
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: ci failed, integration, workflow, api, failed, 94 comments
+
+Suggested message:
+> I found your public issue: [EPIC] First-class per-gaggle health watchdog and bounded self-repair. Detected intent signals: ci failed, integration, workflow, api, failed, 94 comments. I can provide a CI Failure Recovery focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+
+## 3. wasichai/wasichai#57 — score 49/100
+- Issue: https://github.com/wasichai/wasichai/issues/57
+- Public profile: https://github.com/hneyra
 - Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: automation, api, cron, 19 comments
+- Evidence: automation, webhook, workflow, api, failed
 
 Suggested message:
-> I found your public issue: [Bug]: OpenClaw leaks unreaped hook/tool child processes, causing zombie accumulation and runtime degradation. Detected intent signals: automation, api, cron, 19 comments. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: Notifications: an optional module with an in-app inbox and a delivery channel SPI. Detected intent signals: automation, webhook, workflow, api, failed. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
 
-## 3. Bharath-code/git-scope#46 — score 37/100
-- Issue: https://github.com/Bharath-code/git-scope/issues/46
-- Public profile: https://github.com/bharathwebivalue
+## 4. FastLED/FastLED#4737 — score 48/100
+- Issue: https://github.com/FastLED/FastLED/issues/4737
+- Public profile: https://github.com/zackees
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: build failed, workflow, build, failed
+
+Suggested message:
+> I found your public issue: meta(memory): reduce default flash/RAM usage across all measured platforms. Detected intent signals: build failed, workflow, build, failed. I can provide a CI Failure Recovery focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+
+## 5. Cheekyfellastef/stephan-os#1889 — score 48/100
+- Issue: https://github.com/Cheekyfellastef/stephan-os/issues/1889
+- Public profile: https://github.com/Cheekyfellastef
 - Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: looking for, integration
+- Evidence: automation, ai, deployment, failed, 23 comments
 
 Suggested message:
-> I found your public issue: Best E-commerce web development company in Ethiopia. Detected intent signals: looking for, integration. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: Goal: Autonomous Battle Bridge Outbound Health Beacon V1. Detected intent signals: automation, ai, deployment, failed, 23 comments. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
 
-## 4. jamshih/coordinator_cli#2 — score 34/100
-- Issue: https://github.com/jamshih/coordinator_cli/issues/2
-- Public profile: https://github.com/jamshih
+## 6. wasichai/wasichai#51 — score 48/100
+- Issue: https://github.com/wasichai/wasichai/issues/51
+- Public profile: https://github.com/hneyra
 - Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: automation, 15 comments
+- Evidence: automation, integration, workflow, api, failed
 
 Suggested message:
-> I found your public issue: Team R — Prove macOS Brave/ChatGPT automation feasibility. Detected intent signals: automation, 15 comments. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: Records: optimistic locking (If-Match) and partial update, so concurrent writes stop overwriting each other. Detected intent signals: automation, integration, workflow, api, failed. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
 
-## 5. elastic/elasticsearch#161201 — score 32/100
-- Issue: https://github.com/elastic/elasticsearch/issues/161201
-- Public profile: https://github.com/elasticsearchmachine
+## 7. wasichai/wasichai#50 — score 33/100
+- Issue: https://github.com/wasichai/wasichai/issues/50
+- Public profile: https://github.com/hneyra
 - Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: automation, 3 comments
+- Evidence: automation, api, ai
 
 Suggested message:
-> I found your public issue: [CI] UpdateMappingIntegrationIT testUpdateMappingConcurrently failing. Detected intent signals: automation, 3 comments. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: Audit: store a correlation id and the origin of the change on every audit row. Detected intent signals: automation, api, ai. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
 
-## 6. ypcipansor/cipansor#667 — score 32/100
-- Issue: https://github.com/ypcipansor/cipansor/issues/667
-- Public profile: https://github.com/adminypc
+## 8. wasichai/wasichai#60 — score 30/100
+- Issue: https://github.com/wasichai/wasichai/issues/60
+- Public profile: https://github.com/hneyra
 - Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: automation, 3 comments
+- Evidence: automation, api
 
 Suggested message:
-> I found your public issue: [SDLC smoke] Architecture reviewer fixture. Detected intent signals: automation, 3 comments. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: Metadata: apply a field's defaultValue when a record is created without that field. Detected intent signals: automation, api. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+
+## 9. wasichai/wasichai#53 — score 30/100
+- Issue: https://github.com/wasichai/wasichai/issues/53
+- Public profile: https://github.com/hneyra
+- Offer: AI Automation Audit — 10 USDT / Rp149,000
+- Evidence: automation, api
+
+Suggested message:
+> I found your public issue: Permissions: report tenant-level capabilities in GET /api/auth/me/permissions. Detected intent signals: automation, api. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
