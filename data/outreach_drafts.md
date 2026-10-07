@@ -2,65 +2,38 @@
 
 > Drafts only. Zorathvael does not automatically contact third parties.
 
-## 1. LowcountryDigitalWorks/gas-engine#85 — score 57/100
-- Issue: https://github.com/LowcountryDigitalWorks/gas-engine/issues/85
-- Public profile: https://github.com/Eddie-LowcountryDigitalWorks
+## 1. nickderobertis/ai-orchestrator#1574 — score 68/100
+- Issue: https://github.com/nickderobertis/ai-orchestrator/issues/1574
+- Public profile: https://github.com/nickderobertis
 - Offer: Automation Blueprint — 20 USDT / Rp299,000
-- Evidence: automation, integration, api, ai, deployment, build, 3 comments
+- Evidence: looking for, automation, api, ai, failed
 
 Suggested message:
-> I found your public issue: GAS-BUY-001 — Canonry maintained-OSS build-vs-configure/adopt evaluation. Detected intent signals: automation, integration, api, ai, deployment, build, 3 comments. I can provide a Automation Blueprint focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 20 USDT or Rp299,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: fix(deps): adopt the engine that lets a waiting human approval be reparented. Detected intent signals: looking for, automation, api, ai, failed. I can provide a Automation Blueprint focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 20 USDT or Rp299,000. If you want the audit, open the Zorathvael order form.
 
-## 2. Swooshz-com/swooshz-design#1 — score 55/100
-- Issue: https://github.com/Swooshz-com/swooshz-design/issues/1
-- Public profile: https://github.com/weijunswj
+## 2. sjevans1/OpenJM-Enterprise-AI#45 — score 60/100
+- Issue: https://github.com/sjevans1/OpenJM-Enterprise-AI/issues/45
+- Public profile: https://github.com/sjevans1
 - Offer: Automation Blueprint — 20 USDT / Rp299,000
-- Evidence: automation, integration, ai, deployment, build, 791 comments
+- Evidence: automation, integration, workflow, api, github actions, build, 2 comments
 
 Suggested message:
-> I found your public issue: [ PARENT THREAD ] Swooshz Design Full-Suite MVP — Rolling Work Queue. Detected intent signals: automation, integration, ai, deployment, build, 791 comments. I can provide a Automation Blueprint focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 20 USDT or Rp299,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: Hardening & Business Value Realization — post-VS8 product phase. Detected intent signals: automation, integration, workflow, api, github actions, build, 2 comments. I can provide a Automation Blueprint focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 20 USDT or Rp299,000. If you want the audit, open the Zorathvael order form.
 
-## 3. aliezzat4321/hyperliquid-copy-engine#130 — score 48/100
-- Issue: https://github.com/aliezzat4321/hyperliquid-copy-engine/issues/130
-- Public profile: https://github.com/aliezzat4321
+## 3. dotnet/runtime#130133 — score 50/100
+- Issue: https://github.com/dotnet/runtime/issues/130133
+- Public profile: https://github.com/kotlarmilos
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: ci failed, ai, failed, 4 comments
+- Evidence: build failed, build, failed, 4 comments
 
 Suggested message:
-> I found your public issue: AI TEAM RUNTIME STATUS. Detected intent signals: ci failed, ai, failed, 4 comments. I can provide a CI Failure Recovery focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: [ci-scan] Wasm.Build.Tests ManagedToNativeGenerator task host node crash. Detected intent signals: build failed, build, failed, 4 comments. I can provide a CI Failure Recovery focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
 
-## 4. Cheekyfellastef/stephan-os#1889 — score 48/100
-- Issue: https://github.com/Cheekyfellastef/stephan-os/issues/1889
-- Public profile: https://github.com/Cheekyfellastef
+## 4. Guillaume0385/ha-hoben-community#40 — score 44/100
+- Issue: https://github.com/Guillaume0385/ha-hoben-community/issues/40
+- Public profile: https://github.com/Guillaume0385
 - Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: automation, ai, deployment, failed, 23 comments
+- Evidence: automation, workflow, api, github actions
 
 Suggested message:
-> I found your public issue: Goal: Autonomous Battle Bridge Outbound Health Beacon V1. Detected intent signals: automation, ai, deployment, failed, 23 comments. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
-
-## 5. devmuaz/CoreDeck#53 — score 40/100
-- Issue: https://github.com/devmuaz/CoreDeck/issues/53
-- Public profile: https://github.com/RaafatTurki
-- Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: automation, workflow, github actions
-
-Suggested message:
-> I found your public issue: Arch Linux (AUR) package available: coredeck-bin. Detected intent signals: automation, workflow, github actions. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
-
-## 6. anesthetised/agenthesia#89 — score 36/100
-- Issue: https://github.com/anesthetised/agenthesia/issues/89
-- Public profile: https://github.com/anesthetised
-- Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: automation, build, failed
-
-Suggested message:
-> I found your public issue: Build the first native demo session interface. Detected intent signals: automation, build, failed. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
-
-## 7. marctjones/capabledeputy#489 — score 32/100
-- Issue: https://github.com/marctjones/capabledeputy/issues/489
-- Public profile: https://github.com/marctjones
-- Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: automation, workflow
-
-Suggested message:
-> I found your public issue: Epic: practical confidential document processing and approved routing. Detected intent signals: automation, workflow. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
+> I found your public issue: [release] Add safe manual GitHub release workflow. Detected intent signals: automation, workflow, api, github actions. I can provide a AI Automation Audit focused on this repository, with prioritized automation opportunities and implementation steps. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form.
