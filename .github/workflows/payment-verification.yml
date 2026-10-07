@@ -61,7 +61,7 @@ jobs:
 
       - name: Scan pending USDT orders
         if: inputs.tx_hash == ''
-        run: python scripts/scan_usdt_payments.py | tee /tmp/payment-scan.json
+        run: PYTHONPATH=. python scripts/scan_usdt_payments.py | tee /tmp/payment-scan.json
       - name: Notify customers for scheduled settlements
         if: inputs.tx_hash == ''
         env:
