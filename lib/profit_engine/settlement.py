@@ -7,7 +7,7 @@ from pathlib import Path
 from .delivery import audit_repository, ci_failure_recovery
 from .ledger import ProfitLedger
 from .order_flow import RevenueOrder, mark_paid, mark_status
-from .payment_verification import PaymentVerifier, PaymentIntent, VerificationResult
+from .payment_verification import PaymentIntent, PaymentVerifier, VerificationResult
 
 
 def update_metrics(revenue: float, delivered: bool, path: str = "data/revenue_metrics.json") -> None:
@@ -50,7 +50,6 @@ def deliver_order(order: RevenueOrder, path: str | None = None) -> tuple[bool, s
         report = audit_repository(order.target_repository, os.getenv("GITHUB_TOKEN", ""), order.product_id)
     delivery_path = Path(path or f"data/delivery_{order.order_id}.md")
     delivery_path.write_text(report, encoding="utf-8")
-    mark_status(order.order_id, "delivered")
     return True, str(delivery_path)
 
 
@@ -65,20 +64,43 @@ def settle_verified_order(order: RevenueOrder, result: VerificationResult, ledge
 
     mark_paid(order.order_id)
     try:
-        delivered, delivery_path = deliver_order(order)
-        update_metrics(float(result.amount), delivered)
-        return {"recorded": True, "delivered": delivered, "delivery_path": delivery_path, "status": "delivered", "reason": result.reason}
+        _, delivery_path = deliver_order(order)
+        update_metrics(float(result.amount), False)
+        mark_status(order.order_id, "delivery_ready")
+        return {
+            "recorded": True,
+            "delivered": False,
+            "delivery_path": delivery_path,
+            "status": "delivery_ready",
+            "reason": result.reason,
+        }
     except Exception as exc:
         mark_status(order.order_id, "delivery_pending")
-        report = "# Delivery pending\n\nPayment was verified and recorded, but automatic delivery failed. The order is queued for retry.\n"
+        report = "# Delivery pending\n\nPayment was verified and recorded, but product generation failed. The order is queued for retry.\n"
         delivery_path = Path(f"data/delivery_{order.order_id}.md")
         delivery_path.write_text(report, encoding="utf-8")
         update_metrics(float(result.amount), False)
-        return {"recorded": True, "delivered": False, "delivery_path": str(delivery_path), "status": "delivery_pending", "reason": f"{type(exc).__name__}: {exc}"}
+        return {
+            "recorded": True,
+            "delivered": False,
+            "delivery_path": str(delivery_path),
+            "status": "delivery_pending",
+            "reason": f"{type(exc).__name__}: {exc}",
+        }
 
 
 def verify_and_settle(order: RevenueOrder, tx_hash: str, verifier: PaymentVerifier | None = None) -> dict:
     intent = PaymentIntent(order.order_id, order.amount, order.currency, order.method, order.destination, order.created_at, order.expires_at)
     result = (verifier or PaymentVerifier()).verify_usdt_tx(intent, tx_hash)
     settlement = settle_verified_order(order, result)
-    return {"verified": result.verified, "order_id": order.order_id, "amount": str(result.amount), "tx_hash": result.tx_hash, "status": settlement["status"], "reason": settlement["reason"], "recorded": settlement["recorded"], "delivered": settlement["delivered"], "delivery_path": settlement["delivery_path"]}
+    return {
+        "verified": result.verified,
+        "order_id": order.order_id,
+        "amount": str(result.amount),
+        "tx_hash": result.tx_hash,
+        "status": settlement["status"],
+        "reason": settlement["reason"],
+        "recorded": settlement["recorded"],
+        "delivered": settlement["delivered"],
+        "delivery_path": settlement["delivery_path"],
+    }
