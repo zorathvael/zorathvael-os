@@ -15,7 +15,7 @@ def _repo(value: str) -> str:
 def build_conversion_funnel(leads: list[dict[str, Any]], orders: list[dict[str, Any]]) -> dict[str, Any]:
     lead_repositories = {_repo(row.get("repository", "")) for row in leads if row.get("repository")}
     lead_by_repo = Counter(_repo(row.get("repository", "")) for row in leads if row.get("repository"))
-    paid = [row for row in orders if row.get("status") == "paid"]
+    paid = [row for row in orders if row.get("status") in {"paid", "delivered"}]
     attributed = [row for row in paid if _repo(row.get("target_repository", "")) in lead_repositories]
     unattributed = [row for row in paid if _repo(row.get("target_repository", "")) not in lead_repositories]
 
