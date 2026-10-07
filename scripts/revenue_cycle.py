@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 from lib.profit_engine.engine import ProfitEngine
@@ -9,6 +10,7 @@ from lib.profit_engine.revenue import (
     GitHubLeadScout,
     Lead,
     STRONG_SIGNALS,
+    buyer_intent_score,
     commercial_relevance_score,
     load_conversion_prior,
     make_opportunity,
@@ -69,6 +71,8 @@ def refresh_metrics(qualified: int, commercially_relevant: int, outreach_ready: 
     data["qualified_leads"] = qualified
     data["commercially_relevant_leads"] = commercially_relevant
     data["outreach_ready_leads"] = outreach_ready
+    data["last_updated"] = datetime.now(timezone.utc).isoformat()
+    target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
@@ -85,11 +89,11 @@ def main() -> int:
     for query in queries:
         for lead in scout.discover(query, limit=limit):
             current = fresh_by_url.get(lead.url)
-            if current is None or commercial_relevance_score(lead) > commercial_relevance_score(current):
+            if current is None or (buyer_intent_score(lead), commercial_relevance_score(lead)) > (buyer_intent_score(current), commercial_relevance_score(current)):
                 fresh_by_url[lead.url] = lead
     fresh = sorted(
         fresh_by_url.values(),
-        key=lambda lead: (commercial_relevance_score(lead), lead.score, lead.discovered_at),
+        key=lambda lead: (buyer_intent_score(lead), commercial_relevance_score(lead), lead.score, lead.discovered_at),
         reverse=True,
     )
     all_leads = merge_leads("data/revenue_leads.jsonl", fresh)
