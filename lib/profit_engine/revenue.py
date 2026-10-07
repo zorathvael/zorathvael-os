@@ -59,6 +59,15 @@ DEFAULT_OFFERS = (
         60,
         "Markdown implementation blueprint delivered in the order issue.",
     ),
+    ProductOffer(
+        "instant_automation_scorecard",
+        "Instant Automation Scorecard",
+        "A deterministic public-repository scorecard covering automation maturity, CI reliability signals, maintenance pressure, and the highest-value next actions.",
+        79000,
+        5.0,
+        5,
+        "Instant Markdown scorecard generated from public GitHub data and delivered in the order issue.",
+    ),
 )
 
 STRONG_SIGNALS: tuple[tuple[str, int], ...] = (
