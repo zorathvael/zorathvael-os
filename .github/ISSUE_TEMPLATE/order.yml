@@ -1,5 +1,5 @@
 name: "Buy a Zorathvael Automation Product"
-description: "Request a paid public-repository audit or automation blueprint."
+description: "Request a paid public-repository audit, automation blueprint, or instant scorecard."
 title: "[ORDER] "
 body:
   - type: markdown
@@ -15,6 +15,7 @@ body:
       options:
         - public_repo_audit
         - automation_blueprint
+        - instant_automation_scorecard
     validations:
       required: true
   - type: input
