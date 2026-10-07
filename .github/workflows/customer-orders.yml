@@ -72,7 +72,6 @@ jobs:
             path=p.get("delivery_path")
             if p.get("verified") and path and os.path.exists(path):
                 subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body-file",path],check=True)
-                os.remove(path)
             elif p.get("status") == "pending":
                 subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body","Payment detected but still awaiting required BSC confirmations."],check=True)
             elif p.get("status") == "rejected":
