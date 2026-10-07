@@ -72,6 +72,7 @@ def build_email_outreach_message(lead: Lead, recipient: str) -> str:
     return (
         f"Hello @{lead.author},\n\n"
         f"I found your public issue: {lead.title}\n"
+        f"Zorathvael can provide a {offer.name} for this specific problem.\n"
         f"{lead.url}\n\n"
         f"Zorathvael can provide a {offer.name} for this specific problem. "
         "The deliverable is based only on public repository evidence; no repository credentials are required.\n\n"
