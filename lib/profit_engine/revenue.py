@@ -145,7 +145,7 @@ def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
         if is_commercial_noise(lead.title, ""):
             continue
         current = deduped.get(lead.url)
-        if current is None or commercial_relevance_score(lead) > commercial_relevance_score(current):
+        if current is None or (commercial_relevance_score(lead), lead.score, buyer_intent_score(lead)) > (commercial_relevance_score(current), current.score, buyer_intent_score(current)):
             deduped[lead.url] = lead
     return sorted(
         deduped.values(),
