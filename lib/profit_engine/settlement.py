@@ -28,6 +28,21 @@ def update_metrics(revenue: float, delivered: bool, path: str = "data/revenue_me
     target.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def update_delivery_metric(path: str = "data/revenue_metrics.json") -> None:
+    target = Path(path)
+    data = {"qualified_leads": 0, "paid_orders": 0, "delivered_orders": 0, "revenue_usdt": 0.0, "last_updated": None}
+    if target.exists():
+        try:
+            data.update(json.loads(target.read_text(encoding="utf-8")))
+        except (ValueError, OSError):
+            pass
+    data["delivered_orders"] = int(data.get("delivered_orders", 0)) + 1
+    from datetime import datetime, timezone
+    data["last_updated"] = datetime.now(timezone.utc).isoformat()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def deliver_order(order: RevenueOrder, path: str | None = None) -> tuple[bool, str]:
     if order.product_id == "ci_failure_recovery":
         report = ci_failure_recovery(order.target_repository, os.getenv("GITHUB_TOKEN", ""))
