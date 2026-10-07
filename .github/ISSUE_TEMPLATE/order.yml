@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         ## Zorathvael Revenue Engine
-        Select a product, provide a public GitHub repository, and choose a payment rail.
+        Select a product, provide a public GitHub repository, your delivery email, and a payment rail.
         Do not post passwords, private keys, API tokens, or other secrets.
   - type: dropdown
     id: product
@@ -24,6 +24,14 @@ body:
       label: Target repository
       description: "Public GitHub repository to analyze, e.g. https://github.com/owner/repo"
       placeholder: "https://github.com/owner/repo"
+    validations:
+      required: true
+  - type: input
+    id: customer_email
+    attributes:
+      label: Customer email
+      description: "Email address where the completed product will be delivered through Zorathvael's autonomous AgentMail delivery."
+      placeholder: "you@example.com"
     validations:
       required: true
   - type: dropdown
