@@ -12,10 +12,11 @@ from .revenue import offers
 def _api_get(url: str, token: str) -> dict[str, Any]:
     headers = {
         "Accept": "application/vnd.github+json",
-        "Authorization": f"Bearer {token}",
         "X-GitHub-Api-Version": "2026-03-10",
         "User-Agent": "Zorathvael-Revenue-Engine",
     }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
     request = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(request, timeout=20) as response:
         return json.loads(response.read().decode("utf-8"))
