@@ -21,10 +21,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Observe outreach responses
+      - name: Observe GitHub outreach responses
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: PYTHONPATH=. python scripts/observe_outreach_responses.py
+
+      - name: Observe email outreach responses
+        env:
+          ZORATHVAEL_IMAP_HOST: ${{ secrets.ZORATHVAEL_IMAP_HOST }}
+          ZORATHVAEL_IMAP_PORT: ${{ secrets.ZORATHVAEL_IMAP_PORT }}
+          ZORATHVAEL_IMAP_USERNAME: ${{ secrets.ZORATHVAEL_IMAP_USERNAME }}
+          ZORATHVAEL_IMAP_PASSWORD: ${{ secrets.ZORATHVAEL_IMAP_PASSWORD }}
+        run: PYTHONPATH=. python scripts/observe_email_responses.py
       - name: Build learning snapshot
         run: PYTHONPATH=. python -c "from lib.profit_engine.revenue_learning import write_learning_snapshot; import json; print(json.dumps(write_learning_snapshot(), indent=2))"
       - name: Persist learning state
