@@ -67,6 +67,22 @@ def select_auto_outreach(
     )[: max(0, limit)]
 
 
+def build_email_outreach_message(lead: Lead, recipient: str) -> str:
+    offer = offers()[lead.offer_id]
+    return (
+        f"Hello @{lead.author},\n\n"
+        f"I found your public issue: {lead.title}\n"
+        f"{lead.url}\n\n"
+        f"Zorathvael can provide a {offer.name} for this specific problem. "
+        "The deliverable is based only on public repository evidence; no repository credentials are required.\n\n"
+        f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}.\n"
+        "If you want the diagnostic, reply to this email and I will send the order instructions. "
+        "If this is not relevant, reply with 'no thanks' and we will not contact this address again.\n\n"
+        "— Zorathvael Core\n"
+        f"Reference: {lead.url}\n"
+    )
+
+
 def build_outreach_message(lead: Lead) -> str:
     offer = offers()[lead.offer_id]
     return (
