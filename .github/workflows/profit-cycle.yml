@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: zorathvael-profit-cycle
+  cancel-in-progress: false
+
 jobs:
   profit-cycle:
     runs-on: ubuntu-latest
@@ -25,5 +29,6 @@ jobs:
         run: PYTHONPATH=. pytest -q test/test_profit_engine.py
       - name: Execute economic selection cycle
         env:
+          PYTHONPATH: .
           ZORATHVAEL_OPPORTUNITIES: '[{"name":"Crypto-Signal validation","kind":"market","expected_value":20.0,"cost":0.0,"probability":0.0,"effort_minutes":30,"risk":0.5,"evidence":{"mode":"measurement_only"}}]'
-        run: PYTHONPATH=. python scripts/profit_cycle.py
+        run: python scripts/profit_cycle.py
