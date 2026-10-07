@@ -37,6 +37,8 @@ jobs:
       - name: Execute qualified outreach
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           ZORATHVAEL_OUTREACH_LIMIT: "2"
         run: PYTHONPATH=. python scripts/execute_outreach.py
 
