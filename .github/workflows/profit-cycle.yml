@@ -26,4 +26,4 @@ jobs:
       - name: Execute economic selection cycle
         env:
           ZORATHVAEL_OPPORTUNITIES: '[{"name":"Crypto-Signal validation","kind":"market","expected_value":20.0,"cost":0.0,"probability":0.0,"effort_minutes":30,"risk":0.5,"evidence":{"mode":"measurement_only"}}]'
-        run: python scripts/profit_cycle.py
+        run: PYTHONPATH=. python scripts/profit_cycle.py
