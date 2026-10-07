@@ -193,3 +193,23 @@ def test_email_outreach_message_contains_problem_specific_offer_and_opt_out():
     assert lead.url in message
     assert "no credentials" in message.lower()
     assert "reply" in message.lower()
+
+
+def test_conversion_funnel_counts_delivered_order_as_paid_revenue(tmp_path):
+    from lib.profit_engine.conversion import build_conversion_funnel
+
+    funnel = build_conversion_funnel(
+        [{"repository": "acme/app"}],
+        [{
+            "order_id": "ZOR-DELIVERED",
+            "target_repository": "https://github.com/acme/app",
+            "product_id": "ci_failure_recovery",
+            "status": "delivered",
+            "amount": "10",
+            "currency": "USDT",
+        }],
+    )
+
+    assert funnel["paid_orders"] == 1
+    assert funnel["paid_revenue_usdt"] == 10.0
+    assert funnel["attributed_paid_orders"] == 1
