@@ -16,3 +16,8 @@ def test_revenue_opportunity_uses_measured_prior_as_estimate():
     assert opportunity.cost == 0.0
     assert opportunity.evidence["estimated"] is True
     assert 0.01 <= opportunity.probability <= 0.20
+
+
+def test_generic_bug_issue_is_not_a_sales_lead():
+    score, _ = score_lead("API crash", "Manual workaround is possible")
+    assert score == 0
