@@ -9,7 +9,7 @@ from typing import Any
 
 TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55aebf7f2d7"
 DEFAULT_USDT_BEP20_CONTRACT = "0x55d398326f99059fF775485246999027B3197955"
-DEFAULT_RPCS = ("https://bsc.nodereal.io", "https://bsc-dataseed.bnbchain.org")
+DEFAULT_RPCS = ("https://bsc-rpc.publicnode.com", "https://bsc.nodereal.io")
 ZERO = Decimal("0")
 
 @dataclass(frozen=True)
