@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import urllib.parse
 import urllib.request
 from dataclasses import asdict, dataclass
@@ -84,7 +85,7 @@ def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str
     score = 0
     evidence: list[str] = []
     for phrase, weight in SIGNALS:
-        if phrase in text:
+        if re.search(r"\\b" + re.escape(phrase) + r"\\b", text):
             score += weight
             evidence.append(phrase)
     score += min(max(int(comments), 0) * 2, 10)
