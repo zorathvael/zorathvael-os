@@ -1,0 +1,47 @@
+name: "Buy a Zorathvael Automation Product"
+description: "Request a paid public-repository audit or automation blueprint."
+title: "[ORDER] "
+labels:
+  - "revenue-order"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Zorathvael Revenue Engine
+        Select a product, provide a public GitHub repository, and choose a payment rail.
+        Do not post passwords, private keys, API tokens, or other secrets.
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product
+      options:
+        - public_repo_audit
+        - automation_blueprint
+    validations:
+      required: true
+  - type: input
+    id: target_repository
+    attributes:
+      label: Target repository
+      description: "Public GitHub repository to analyze, e.g. https://github.com/owner/repo"
+      placeholder: "https://github.com/owner/repo"
+    validations:
+      required: true
+  - type: dropdown
+    id: payment_method
+    attributes:
+      label: Payment method
+      options:
+        - usdt_bep20
+        - qris
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmation
+      options:
+        - label: "I confirm the target repository is public and I have not included secrets."
+          required: true
+        - label: "I understand delivery starts only after verified payment."
+          required: true
