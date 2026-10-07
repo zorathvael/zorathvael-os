@@ -186,6 +186,8 @@ def test_email_outreach_message_contains_problem_specific_offer_and_opt_out():
         ("ci failed", "deploy failed"),
         92,
     )
+    from dataclasses import replace
+    lead = replace(lead, offer_id="ci_failure_recovery")
     message = build_email_outreach_message(lead, "owner@example.com")
     assert "CI Failure Recovery" in message
     assert lead.url in message
