@@ -95,8 +95,7 @@ def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str
 
 
 def is_commercial_noise(title: str, body: str) -> bool:
-    text = f"{title}
-{body}".lower()
+    text = f"{title}\n{body}".lower()
     return any(signal in text for signal in PROMOTIONAL_NOISE)
 
 
