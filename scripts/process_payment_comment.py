@@ -83,7 +83,7 @@ def main() -> int:
 
     mark_paid(order.order_id)
     try:
-        report = audit_repository(order.target_repository, os.getenv("GITHUB_TOKEN", ""))
+        report = audit_repository(order.target_repository, os.getenv("GITHUB_TOKEN", ""), order.product_id)
         delivered = True
     except Exception as exc:
         report = "# Delivery pending\n\nPayment was verified and recorded. Automatic analysis failed with " + type(exc).__name__ + "; the paid order can be retried."
