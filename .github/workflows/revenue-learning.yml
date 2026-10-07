@@ -1,0 +1,42 @@
+name: Zorathvael Revenue Learning
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zorathvael-revenue-learning
+  cancel-in-progress: false
+
+jobs:
+  learn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Observe outreach responses
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: PYTHONPATH=. python scripts/observe_outreach_responses.py
+      - name: Build learning snapshot
+        run: PYTHONPATH=. python -c "from lib.profit_engine.revenue_learning import write_learning_snapshot; import json; print(json.dumps(write_learning_snapshot(), indent=2))"
+      - name: Persist learning state
+        run: |
+          if [ -z "$(git status --porcelain -- data)" ]; then
+            echo "No learning state changes."
+            exit 0
+          fi
+          git config user.name "zorathvael"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/revenue_events.jsonl data/revenue_learning.json
+          git commit -m "chore: update revenue learning state"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main

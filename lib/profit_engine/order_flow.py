@@ -57,19 +57,7 @@ def build_order(issue_number: int, product_id: str, repository: str, method: str
     amount = Decimal(str(offer.price_idr if method == "qris" else offer.price_usdt))
     currency = "IDR" if method == "qris" else "USDT"
     now = datetime.now(timezone.utc)
-    return RevenueOrder(
-        order_id=f"ZOR-{uuid.uuid4().hex[:12].upper()}",
-        issue_number=int(issue_number),
-        product_id=product_id,
-        target_repository=repository,
-        amount=amount,
-        currency=currency,
-        method=method,
-        destination=PaymentRouter.get(method).destination,
-        status="pending",
-        created_at=now.isoformat(),
-        expires_at=(now + timedelta(hours=24)).isoformat(),
-    )
+    return RevenueOrder(f"ZOR-{uuid.uuid4().hex[:12].upper()}", int(issue_number), product_id, repository, amount, currency, method, PaymentRouter.get(method).destination, "pending", now.isoformat(), (now + timedelta(hours=24)).isoformat())
 
 
 def save_order(order: RevenueOrder, path: str = "data/revenue_orders.jsonl") -> None:
@@ -83,24 +71,11 @@ def load_orders(path: str = "data/revenue_orders.jsonl") -> list[RevenueOrder]:
     target = Path(path)
     if not target.exists():
         return []
-    orders: list[RevenueOrder] = []
+    orders = []
     for line in target.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        row = json.loads(line)
-        orders.append(RevenueOrder(
-            order_id=row["order_id"],
-            issue_number=int(row["issue_number"]),
-            product_id=row["product_id"],
-            target_repository=row["target_repository"],
-            amount=Decimal(str(row["amount"])),
-            currency=row["currency"],
-            method=row["method"],
-            destination=row["destination"],
-            status=row.get("status", "pending"),
-            created_at=row.get("created_at", ""),
-            expires_at=row.get("expires_at", ""),
-        ))
+        if line.strip():
+            row = json.loads(line)
+            orders.append(RevenueOrder(row["order_id"], int(row["issue_number"]), row["product_id"], row["target_repository"], Decimal(str(row["amount"])), row["currency"], row["method"], row["destination"], row.get("status", "pending"), row.get("created_at", ""), row.get("expires_at", "")))
     return orders
 
 
@@ -109,7 +84,7 @@ def find_pending_issue(issue_number: int, path: str = "data/revenue_orders.jsonl
     return matches[-1] if matches else None
 
 
-def mark_paid(order_id: str, path: str = "data/revenue_orders.jsonl") -> None:
+def mark_status(order_id: str, status: str, path: str = "data/revenue_orders.jsonl") -> None:
     target = Path(path)
     if not target.exists():
         return
@@ -117,7 +92,11 @@ def mark_paid(order_id: str, path: str = "data/revenue_orders.jsonl") -> None:
     changed = False
     for row in rows:
         if row.get("order_id") == order_id:
-            row["status"] = "paid"
+            row["status"] = status
             changed = True
     if changed:
         target.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows), encoding="utf-8")
+
+
+def mark_paid(order_id: str, path: str = "data/revenue_orders.jsonl") -> None:
+    mark_status(order_id, "paid", path)
