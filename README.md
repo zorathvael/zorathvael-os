@@ -62,7 +62,7 @@ Zorathvael now includes a zero-budget economic execution layer. It ranks opportu
 The economic loop is:
 `opportunity → expected value → selection → execution boundary → measured outcome → ledger → optimization`.
 
-GitHub Actions is the default automation backbone for the public repository; standard runners are free for public repositories. citeturn0search0
+GitHub Actions is the default automation backbone for the public repository; standard runners are free for public repositories. External outreach requires a separate repository-scoped credential because GitHub issue comments require write permission on the target repository. citeturn0search0
 
 ## Features
 - **AI Router:** Dynamic dispatching of agent tasks to specialized AI providers.
@@ -151,6 +151,6 @@ The Core now runs:
 5. **Automatic delivery** — after verified USDT payment, the selected outcome diagnostic is generated from live public repository evidence and posted to the order issue. CI Failure Recovery inspects recent failed GitHub Actions runs, failed jobs, steps, and logs before recommending remediation.
 6. **Measurement** — qualified leads, paid orders, delivered orders, and realized USDT revenue are persisted for recalibration.
 
-The acquisition engine intentionally does not auto-send unsolicited messages to third parties. It produces a ranked acquisition queue and targeted drafts; the transaction begins from customer-initiated checkout.
+The acquisition engine is fail-closed for outreach permissions. It ranks recent, actionable problems, rejects roadmap/status/coordination noise, and can send a tightly capped contextual comment only when `ZORATHVAEL_OUTREACH_TOKEN` is explicitly configured with write access to the target repository. The normal Actions `GITHUB_TOKEN` is not treated as an external outreach credential. Without that secret, the Core preserves the lead as `outreach_blocked` instead of repeatedly producing HTTP 403 failures. The transaction still begins from a customer-initiated order form and a verified payment.
 
 See [Revenue Engine](docs/REVENUE_ENGINE.md) for the full flow.
