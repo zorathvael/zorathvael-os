@@ -99,3 +99,15 @@ Contributions are welcome. Please ensure all pull requests pass CI quality check
 
 ## License
 MIT License. Created by Zorathvael and Manus AI.
+
+
+## Payment & Settlement
+
+Zorathvael has a centralized payment router with two owner-configured settlement options:
+
+1. **QRIS** — the supplied merchant QRIS reference is stored at `assets/payment_qris_reference.txt`.
+2. **USDT (BEP20)** — the supplied settlement address is the default destination in `PaymentRouter`.
+
+The payment router is separate from the profit ledger. A payment instruction is **not** revenue. Revenue is recorded only after an actual payment is confirmed.
+
+The system does not custody funds or move funds between wallets. The selected payment network settles directly to the configured destination.

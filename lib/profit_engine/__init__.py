@@ -1,5 +1,6 @@
 from .engine import ProfitEngine
 from .ledger import ProfitLedger
 from .models import Opportunity, Outcome
+from .payments import PaymentOption, PaymentRouter
 
-__all__ = ["ProfitEngine", "ProfitLedger", "Opportunity", "Outcome"]
+__all__ = ["ProfitEngine", "ProfitLedger", "Opportunity", "Outcome", "PaymentOption", "PaymentRouter"]
