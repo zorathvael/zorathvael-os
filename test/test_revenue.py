@@ -83,3 +83,24 @@ def test_refresh_metrics_records_timestamp_and_preserves_revenue() -> None:
     assert data["commercially_relevant_leads"] == 3
     assert data["outreach_ready_leads"] == 2
     assert data["last_updated"]
+
+
+def test_conversion_funnel_matches_orders_to_leads_without_inventing_attribution(tmp_path):
+    from lib.profit_engine.conversion import build_conversion_funnel
+
+    leads = [
+        {"url": "https://github.com/acme/app/issues/1", "repository": "acme/app", "offer_id": "ci_failure_recovery"},
+        {"url": "https://github.com/acme/other/issues/2", "repository": "acme/other", "offer_id": "automation_blueprint"},
+    ]
+    orders = [
+        {"order_id": "ZOR-1", "target_repository": "https://github.com/acme/app", "product_id": "ci_failure_recovery", "status": "paid"},
+        {"order_id": "ZOR-2", "target_repository": "https://github.com/acme/unknown", "product_id": "ci_failure_recovery", "status": "paid"},
+    ]
+
+    funnel = build_conversion_funnel(leads, orders)
+
+    assert funnel["lead_count"] == 2
+    assert funnel["paid_orders"] == 2
+    assert funnel["attributed_paid_orders"] == 1
+    assert funnel["unattributed_paid_orders"] == 1
+    assert funnel["paid_revenue_orders"] == 2

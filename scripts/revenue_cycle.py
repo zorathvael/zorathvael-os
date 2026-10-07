@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from lib.profit_engine.engine import ProfitEngine
+from lib.profit_engine.conversion import build_conversion_funnel
 from lib.profit_engine.revenue import (
     GitHubLeadScout,
     Lead,
@@ -71,6 +72,19 @@ def refresh_metrics(qualified: int, commercially_relevant: int, outreach_ready: 
     data["qualified_leads"] = qualified
     data["commercially_relevant_leads"] = commercially_relevant
     data["outreach_ready_leads"] = outreach_ready
+    orders_path = Path("data/revenue_orders.jsonl")
+    if orders_path.exists():
+        orders = [json.loads(line) for line in orders_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        leads_path = Path("data/revenue_leads.jsonl")
+        leads = [json.loads(line) for line in leads_path.read_text(encoding="utf-8").splitlines() if line.strip()] if leads_path.exists() else []
+        funnel = build_conversion_funnel(leads, orders)
+        data.update({
+            "paid_orders": funnel["paid_orders"],
+            "attributed_paid_orders": funnel["attributed_paid_orders"],
+            "unattributed_paid_orders": funnel["unattributed_paid_orders"],
+            "paid_revenue_usdt": funnel["paid_revenue_usdt"],
+            "paid_revenue_idr": funnel["paid_revenue_idr"],
+        })
     data["last_updated"] = datetime.now(timezone.utc).isoformat()
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
