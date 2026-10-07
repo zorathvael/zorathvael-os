@@ -25,6 +25,11 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
             "contact_url": lead.contact_url,
             "discovered_at": prior.get("discovered_at", lead.discovered_at),
         }
+    existing = {
+        url: row for url, row in existing.items()
+        if int(row.get("score", 0)) >= 30
+        and any(signal in set(row.get("evidence", [])) for signal, _ in STRONG_SIGNALS)
+    }
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in existing.values()), encoding="utf-8")
     return [Lead(
