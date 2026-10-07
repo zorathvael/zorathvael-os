@@ -26,14 +26,28 @@ class RevenueOrder:
     status: str
     created_at: str
     expires_at: str
+    customer_email: str = ""
 
 
 FIELD_PATTERN = re.compile(r"^###\s+([^\n]+)\n\s*([^\n]+)", re.MULTILINE)
+EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def _fields(body: str) -> dict[str, str]:
+    return {key.strip().lower(): value.strip() for key, value in FIELD_PATTERN.findall(body or "")}
 
 
 def parse_order_body(body: str) -> tuple[str, str, str]:
-    fields = {key.strip().lower(): value.strip() for key, value in FIELD_PATTERN.findall(body or "")}
+    fields = _fields(body)
     return fields.get("product", ""), fields.get("target repository", ""), fields.get("payment method", "").lower()
+
+
+def parse_customer_email(body: str) -> str:
+    fields = _fields(body)
+    value = fields.get("customer email", fields.get("email", "")).strip()
+    if value and not EMAIL_PATTERN.match(value):
+        raise ValueError("customer email is invalid")
+    return value
 
 
 def validate_repository_url(value: str) -> str:
@@ -46,18 +60,33 @@ def validate_repository_url(value: str) -> str:
     return f"https://github.com/{parts[0]}/{parts[1]}"
 
 
-def build_order(issue_number: int, product_id: str, repository: str, method: str) -> RevenueOrder:
+def build_order(issue_number: int, product_id: str, repository: str, method: str, customer_email: str = "") -> RevenueOrder:
     catalog = offers()
     if product_id not in catalog:
         raise ValueError(f"unknown product: {product_id}")
     repository = validate_repository_url(repository)
     if method not in {"qris", "usdt_bep20"}:
         raise ValueError("payment method must be qris or usdt_bep20")
+    if customer_email and not EMAIL_PATTERN.match(customer_email):
+        raise ValueError("customer email is invalid")
     offer: ProductOffer = catalog[product_id]
     amount = Decimal(str(offer.price_idr if method == "qris" else offer.price_usdt))
     currency = "IDR" if method == "qris" else "USDT"
     now = datetime.now(timezone.utc)
-    return RevenueOrder(f"ZOR-{uuid.uuid4().hex[:12].upper()}", int(issue_number), product_id, repository, amount, currency, method, PaymentRouter.get(method).destination, "pending", now.isoformat(), (now + timedelta(hours=24)).isoformat())
+    return RevenueOrder(
+        f"ZOR-{uuid.uuid4().hex[:12].upper()}",
+        int(issue_number),
+        product_id,
+        repository,
+        amount,
+        currency,
+        method,
+        PaymentRouter.get(method).destination,
+        "pending",
+        now.isoformat(),
+        (now + timedelta(hours=24)).isoformat(),
+        customer_email,
+    )
 
 
 def save_order(order: RevenueOrder, path: str = "data/revenue_orders.jsonl") -> None:
@@ -75,7 +104,12 @@ def load_orders(path: str = "data/revenue_orders.jsonl") -> list[RevenueOrder]:
     for line in target.read_text(encoding="utf-8").splitlines():
         if line.strip():
             row = json.loads(line)
-            orders.append(RevenueOrder(row["order_id"], int(row["issue_number"]), row["product_id"], row["target_repository"], Decimal(str(row["amount"])), row["currency"], row["method"], row["destination"], row.get("status", "pending"), row.get("created_at", ""), row.get("expires_at", "")))
+            orders.append(RevenueOrder(
+                row["order_id"], int(row["issue_number"]), row["product_id"], row["target_repository"],
+                Decimal(str(row["amount"])), row["currency"], row["method"], row["destination"],
+                row.get("status", "pending"), row.get("created_at", ""), row.get("expires_at", ""),
+                row.get("customer_email", ""),
+            ))
     return orders
 
 
