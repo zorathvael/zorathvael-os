@@ -46,7 +46,7 @@ def refresh_metrics(qualified: int, path: str = "data/revenue_metrics.json") -> 
 
 
 def main() -> int:
-    query = os.getenv("ZORATHVAEL_LEAD_QUERY", 'is:issue is:open ("need help" OR "looking for" OR "how to automate" OR "automate" OR "automation" OR "manual process" OR "repetitive" OR "workflow automation" OR "webhook integration" OR "reduce manual" OR "script this" OR "want to automate") -author:renovate[bot] -author:dependabot[bot] -author:github-actions[bot]')
+    query = os.getenv("ZORATHVAEL_LEAD_QUERY", 'is:issue is:open ("need help" OR "looking for" OR "how to automate" OR "automate" OR "automation" OR "manual process" OR "repetitive" OR "workflow automation" OR "webhook integration" OR "reduce manual" OR "script this" OR "want to automate")')
     limit = int(os.getenv("ZORATHVAEL_LEAD_LIMIT", "20"))
     fresh = GitHubLeadScout().discover(query, limit=limit)
     all_leads = merge_leads("data/revenue_leads.jsonl", fresh)
