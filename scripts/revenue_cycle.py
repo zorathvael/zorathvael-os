@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from lib.profit_engine.engine import ProfitEngine
@@ -17,6 +17,7 @@ from lib.profit_engine.revenue import (
     make_opportunity,
     rank_outreach_leads,
     render_drafts,
+    is_non_buying_meta_issue,
 )
 
 
@@ -37,11 +38,23 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
             "contact_url": lead.contact_url,
             "discovered_at": prior.get("discovered_at", lead.discovered_at),
         }
-    existing = {
-        url: row for url, row in existing.items()
-        if int(row.get("score", 0)) >= 30
-        and any(signal in set(row.get("evidence", [])) for signal, _ in STRONG_SIGNALS)
-    }
+    cutoff = datetime.now(timezone.utc) - timedelta(days=int(os.getenv("ZORATHVAEL_LEAD_RETENTION_DAYS", "30")))
+    retained = {}
+    for url, row in existing.items():
+        if int(row.get("score", 0)) < 30:
+            continue
+        if not any(signal in set(row.get("evidence", [])) for signal, _ in STRONG_SIGNALS):
+            continue
+        if is_non_buying_meta_issue(row.get("title", ""), ""):
+            continue
+        try:
+            discovered = datetime.fromisoformat(str(row.get("discovered_at", "")).replace("Z", "+00:00"))
+            if discovered < cutoff:
+                continue
+        except ValueError:
+            continue
+        retained[url] = row
+    existing = retained
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in existing.values()), encoding="utf-8")
     return [
@@ -91,9 +104,10 @@ def refresh_metrics(qualified: int, commercially_relevant: int, outreach_ready: 
 
 
 def main() -> int:
+    recent_since = (datetime.now(timezone.utc) - timedelta(days=int(os.getenv("ZORATHVAEL_DISCOVERY_DAYS", "14")))).date().isoformat()
     default_queries = [
-        'is:issue is:open ("need help" OR "looking for" OR "automate" OR "automation")',
-        'is:issue is:open ("workflow failed" OR "actions failed" OR "ci failed" OR "build failed")',
+        f'is:issue is:open updated:>={recent_since} ("need help" OR "looking for" OR "how to automate" OR "want to automate" OR "manual process")',
+        f'is:issue is:open updated:>={recent_since} ("workflow failed" OR "actions failed" OR "ci failed" OR "build failed" OR "deployment failed" OR "deploy failed")',
     ]
     configured = os.getenv("ZORATHVAEL_LEAD_QUERY", "").strip()
     queries = [configured] if configured else default_queries
