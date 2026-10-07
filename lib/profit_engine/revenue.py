@@ -51,6 +51,15 @@ DEFAULT_OFFERS = (
         "Markdown audit delivered in the order issue.",
     ),
     ProductOffer(
+        "ci_failure_recovery",
+        "CI Failure Recovery",
+        "Evidence-based diagnosis of a recent GitHub Actions failure with the failing job/step, error fingerprint, likely cause, and concrete remediation path.",
+        149000,
+        10.0,
+        10,
+        "Markdown recovery diagnostic delivered in the order issue.",
+    ),
+    ProductOffer(
         "automation_blueprint",
         "Automation Blueprint",
         "A practical implementation blueprint for turning a public repository workflow into a measurable automation system.",
@@ -76,6 +85,17 @@ STRONG_SIGNALS: tuple[tuple[str, int], ...] = (
     ("want to automate", 28),
     ("is there a way to automate", 30),
     ("automating", 24),
+    ("github actions failed", 36),
+    ("actions failed", 34),
+    ("workflow failed", 34),
+    ("failing workflow", 34),
+    ("ci failed", 32),
+    ("build failed", 32),
+    ("deployment failed", 34),
+    ("deploy failed", 32),
+    ("pipeline failed", 30),
+    ("cant deploy", 30),
+    ("cannot deploy", 30),
 )
 
 WEAK_SIGNALS: tuple[tuple[str, int], ...] = (
@@ -86,6 +106,10 @@ WEAK_SIGNALS: tuple[tuple[str, int], ...] = (
     ("bot", 4),
     ("ai", 3),
     ("cron", 3),
+    ("github actions", 8),
+    ("deployment", 6),
+    ("build", 5),
+    ("failed", 5),
 )
 
 
@@ -115,7 +139,14 @@ def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str
     return min(score, 100), tuple(evidence)
 
 
-def select_offer(score: int) -> ProductOffer:
+def select_offer(score: int, evidence: tuple[str, ...] = ()) -> ProductOffer:
+    failure_signals = {
+        "github actions failed", "actions failed", "workflow failed",
+        "failing workflow", "ci failed", "build failed", "deployment failed",
+        "deploy failed", "pipeline failed", "cant deploy", "cannot deploy",
+    }
+    if failure_signals.intersection(evidence):
+        return offers()["ci_failure_recovery"]
     return offers()["automation_blueprint"] if score >= 55 else offers()["public_repo_audit"]
 
 
@@ -184,7 +215,7 @@ class GitHubLeadScout:
             score, evidence = score_lead(item.get("title", ""), item.get("body") or "", item.get("comments", 0))
             if score < 30:
                 continue
-            offer = select_offer(score)
+            offer = select_offer(score, evidence)
             results.append(
                 Lead(
                     source="github_issue_search",
