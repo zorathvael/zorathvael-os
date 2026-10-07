@@ -18,8 +18,8 @@ def _load_orders(path: str = "data/revenue_orders.jsonl") -> list[dict[str, Any]
 def build_learning_snapshot(events: list[OutreachEvent] | None = None, orders: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     events = events if events is not None else load_events()
     orders = orders if orders is not None else _load_orders()
-    sent = [e for e in events if e.event_type == "outreach_sent"]
-    responses = [e for e in events if e.event_type == "response_observed"]
+    sent = [e for e in events if e.event_type in {"outreach_sent", "email_outreach_sent"}]
+    responses = [e for e in events if e.event_type in {"response_observed", "email_response_observed"}]
     paid = [o for o in orders if o.get("status") in {"paid", "delivered"}]
     delivered = [o for o in orders if o.get("status") == "delivered"]
     sent_by_offer = Counter(e.offer_id for e in sent)
