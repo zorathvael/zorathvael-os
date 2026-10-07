@@ -41,7 +41,12 @@ def _request(url: str, token: str, method: str = "GET", payload: dict | None = N
         "User-Agent": "Zorathvael-Revenue-Engine",
     }
     data = json.dumps(payload).encode("utf-8") if payload is not None else None
-    request = urllib.request.Request(url, data=data, method=method, headers={**headers, "Content-Type": "application/json"})
+    request = urllib.request.Request(
+        url,
+        data=data,
+        method=method,
+        headers={**headers, "Content-Type": "application/json"},
+    )
     with urllib.request.urlopen(request, timeout=20) as response:
         return json.loads(response.read().decode("utf-8"))
 
@@ -61,9 +66,14 @@ def post_comment(lead: Lead, message: str, token: str) -> int:
 
 
 def main() -> int:
-    token = os.getenv("GITHUB_TOKEN", "")
-    if not token:
-        raise SystemExit("GITHUB_TOKEN is required for outreach execution")
+    # The Actions GITHUB_TOKEN is scoped to this repository and cannot normally
+    # write comments on arbitrary external lead repositories. GitHub requires
+    # Issues or Pull Requests write permission on the target repository for
+    # creating an issue comment.
+    token = os.getenv("ZORATHVAEL_OUTREACH_TOKEN", "").strip()
+    fallback_token = os.getenv("GITHUB_TOKEN", "").strip()
+    if not token and not fallback_token:
+        raise SystemExit("ZORATHVAEL_OUTREACH_TOKEN or GITHUB_TOKEN is required for outreach execution")
 
     events = load_events()
     contacted = {event.lead_url for event in events if event.event_type == "outreach_sent"}
@@ -74,31 +84,64 @@ def main() -> int:
 
     sent = 0
     failures = []
+    blocked = []
+    own_repository = os.getenv("GITHUB_REPOSITORY", "zorathvael/zorathvael-os").lower()
+
     for lead in selected:
-        try:
-            if remote_outreach_exists(lead, token):
-                append_event(make_event("outreach_sent", lead, {"channel": "github_issue_comment", "deduplicated": True}))
-                continue
-            comment_id = post_comment(lead, build_outreach_message(lead), token)
+        # External outreach requires the dedicated credential. This prevents a
+        # predictable 403 storm and preserves the lead for the next run.
+        target_token = token
+        if lead.repository.lower() == own_repository:
+            target_token = token or fallback_token
+        elif not token:
+            blocked.append({
+                "lead_url": lead.url,
+                "reason": "external_write_token_missing",
+                "required_secret": "ZORATHVAEL_OUTREACH_TOKEN",
+            })
             append_event(make_event(
-                "outreach_sent", lead,
+                "outreach_blocked",
+                lead,
+                {"reason": "external_write_token_missing"},
+            ))
+            continue
+
+        try:
+            if remote_outreach_exists(lead, target_token):
+                append_event(make_event(
+                    "outreach_sent",
+                    lead,
+                    {"channel": "github_issue_comment", "deduplicated": True},
+                ))
+                continue
+
+            comment_id = post_comment(lead, build_outreach_message(lead), target_token)
+            append_event(make_event(
+                "outreach_sent",
+                lead,
                 {"comment_id": comment_id, "channel": "github_issue_comment"},
             ))
             sent += 1
         except (OSError, urllib.error.HTTPError, KeyError, ValueError) as exc:
-            failures.append({"lead_url": lead.url, "error": f"{type(exc).__name__}: {exc}"})
+            failures.append({
+                "lead_url": lead.url,
+                "error": f"{type(exc).__name__}: {exc}",
+            })
             append_event(make_event(
-                "outreach_failed", lead,
+                "outreach_failed",
+                lead,
                 {"error": f"{type(exc).__name__}: {exc}"},
             ))
 
     print(json.dumps({
         "selected": len(selected),
         "sent": sent,
+        "blocked": blocked,
         "failures": failures,
         "event_log": "data/revenue_events.jsonl",
     }, indent=2, sort_keys=True))
-    # Failures are recorded per lead so state persistence can continue.
+
+    # Lead-level failures are recorded so state persistence can continue.
     return 0
 
 
