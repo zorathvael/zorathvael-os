@@ -60,6 +60,24 @@ class PaymentVerifier:
     def __init__(self, rpc: BscRpcClient | None = None, token_contract: str = DEFAULT_USDT_BEP20_CONTRACT, token_decimals: int = 18, confirmations: int = 12) -> None:
         self.rpc = rpc or BscRpcClient(); self.token_contract = token_contract.lower(); self.token_decimals = token_decimals; self.confirmations = confirmations
 
+    def discover_usdt(self, destination: str, from_block: int, to_block: int, minimum_amount: Decimal = ZERO) -> list[dict[str, Any]]:
+        """Discover candidate USDT transfers to the configured destination."""
+        matches = []
+        for log in self.rpc.logs(from_block, to_block, self.token_contract, destination):
+            topics = log.get("topics", [])
+            if len(topics) < 3 or topics[0].lower() != TRANSFER_TOPIC:
+                continue
+            try:
+                amount = Decimal(int(log.get("data", "0x0"), 16)) / (Decimal(10) ** self.token_decimals)
+            except (ValueError, TypeError):
+                continue
+            if amount < minimum_amount:
+                continue
+            tx_hash = log.get("transactionHash")
+            if tx_hash:
+                matches.append({"tx_hash": tx_hash, "amount": amount, "block_number": int(log.get("blockNumber", "0x0"), 16)})
+        return matches
+
     def verify_usdt_tx(self, intent: PaymentIntent, tx_hash: str) -> VerificationResult:
         if intent.method != 'usdt_bep20': return VerificationResult(False,intent.order_id,intent.method,ZERO,tx_hash,'rejected','intent method is not USDT BEP20')
         receipt = self.rpc.receipt(tx_hash)
