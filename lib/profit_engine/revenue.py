@@ -67,6 +67,12 @@ PROMOTIONAL_NOISE: tuple[str, ...] = (
     "hire us", "our services", "agency", "digital marketing", "sponsored",
 )
 
+NON_BUYING_META_NOISE: tuple[str, ...] = (
+    "roadmap", "owner acceptance", "acceptance board", "tracking issue", "status board",
+    "status snapshot", "masterplan", "coordination", "coordinator", "watchdog",
+    "epic", "spec:", "specification", "proposal", "release checkpoint", "weekly execution log",
+)
+
 
 def offers() -> dict[str, ProductOffer]:
     return {offer.product_id: offer for offer in DEFAULT_OFFERS}
@@ -97,6 +103,11 @@ def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str
 def is_commercial_noise(title: str, body: str) -> bool:
     text = f"{title}\n{body}".lower()
     return any(signal in text for signal in PROMOTIONAL_NOISE)
+
+
+def is_non_buying_meta_issue(title: str, body: str) -> bool:
+    text = f"{title}\n{body}".lower()
+    return any(signal in text for signal in NON_BUYING_META_NOISE)
 
 
 def buyer_intent_score(lead: Lead) -> int:
@@ -142,7 +153,7 @@ def commercial_relevance_score(lead: Lead) -> int:
 def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
     deduped: dict[str, Lead] = {}
     for lead in leads:
-        if is_commercial_noise(lead.title, ""):
+        if is_commercial_noise(lead.title, "") or is_non_buying_meta_issue(lead.title, ""):
             continue
         current = deduped.get(lead.url)
         if current is None or (commercial_relevance_score(lead), lead.score, buyer_intent_score(lead)) > (commercial_relevance_score(current), current.score, buyer_intent_score(current)):
@@ -210,8 +221,10 @@ class GitHubLeadScout:
                 continue
             repository_url = item.get("repository_url", "")
             repository = repository_url.rsplit("/repos/", 1)[-1] if "/repos/" in repository_url else item.get("repository", {}).get("full_name", "")
-            score, evidence = score_lead(item.get("title", ""), item.get("body") or "", item.get("comments", 0))
-            if score < 30 or is_commercial_noise(item.get("title", ""), item.get("body") or ""):
+            title = item.get("title", "").strip()
+            body = item.get("body") or ""
+            score, evidence = score_lead(title, body, item.get("comments", 0))
+            if score < 30 or is_commercial_noise(title, body) or is_non_buying_meta_issue(title, body):
                 continue
             offer = select_offer(score, evidence)
             results.append(Lead("github_issue_search", str(item.get("number")), item.get("title", "").strip(), item.get("html_url", ""), repository, author, evidence, score, offer.product_id, item.get("user", {}).get("html_url", ""), now))

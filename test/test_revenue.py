@@ -1,4 +1,4 @@
-from lib.profit_engine.revenue import Lead, rank_outreach_leads, is_commercial_noise
+from lib.profit_engine.revenue import Lead, rank_outreach_leads, is_commercial_noise, is_non_buying_meta_issue
 
 
 def make_lead(number: str, title: str, evidence: tuple[str, ...], score: int) -> Lead:
@@ -43,7 +43,7 @@ def test_rank_outreach_leads_prefers_active_failure_over_generic_automation() ->
 
     ranked = rank_outreach_leads([generic, promotional, failure], limit=2)
 
-    assert [lead.external_id for lead in ranked] == ["879", "53"]
+    assert [lead.external_id for lead in ranked] == ["879"]
 
 
 def test_rank_outreach_leads_deduplicates_by_issue_url() -> None:
@@ -132,3 +132,26 @@ def test_auto_outreach_does_not_contact_generic_low_intent_leads() -> None:
 
     lead = make_lead("43", "Automation ideas", ("automation", "workflow"), 80)
     assert select_auto_outreach([lead], already_contacted=set(), limit=3) == []
+
+
+def test_non_buying_meta_issues_are_not_outreach_candidates():
+    assert is_non_buying_meta_issue("Roadmap + Owner Acceptance Board", "") is True
+    assert is_non_buying_meta_issue("[EPIC] First-class watchdog", "") is True
+    assert is_non_buying_meta_issue("CI failed on deploy", "") is False
+
+
+def test_rank_outreach_leads_excludes_meta_coordination_issues():
+    meta = make_lead(
+        "99",
+        "Roadmap + Owner Acceptance Board",
+        ("need help", "workflow failed"),
+        99,
+    )
+    actionable = make_lead(
+        "100",
+        "CI failed and need help deploying",
+        ("ci failed", "need help", "deploy failed"),
+        92,
+    )
+    ranked = rank_outreach_leads([meta, actionable], limit=10)
+    assert [lead.external_id for lead in ranked] == ["100"]
