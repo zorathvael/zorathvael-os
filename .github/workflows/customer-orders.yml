@@ -1,0 +1,90 @@
+name: Zorathvael Customer Orders
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  intake:
+    if: >-
+      (github.event_name == 'issues' &&
+       contains(github.event.issue.title, '[ORDER]')) ||
+      (github.event_name == 'issue_comment' &&
+       !github.event.issue.pull_request &&
+       contains(github.event.comment.body, '0x'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Process order or payment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_COMMENT: ${{ github.event.comment.body }}
+          ZORATHVAEL_PROFIT_LEDGER: data/profit_ledger.jsonl
+        run: |
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            PYTHONPATH=. python scripts/order_intake.py --issue-number "$ISSUE_NUMBER" --body "$ISSUE_BODY" > /tmp/order.json
+            python - <<'PY'
+            import json
+            p=json.load(open("/tmp/order.json"))
+            body=f"""## Payment instructions
+
+**Order:** {p['order_id']}
+
+**Product:** {p['product_id']}
+
+**Amount:** {p['amount']} {p['currency']}
+
+**Method:** {p['method']}
+
+**Destination:** {p['destination']}
+
+**Expires:** {p['expires_at']}
+
+After payment, comment on this issue with the BSC transaction hash in this form:
+
+TX: 0xYOUR_64_CHARACTER_BSC_TRANSACTION_HASH
+
+The system verifies the transfer before recording revenue and starting delivery.
+
+Do not post private keys, seed phrases, passwords, or API tokens."""
+            open("/tmp/comment.md","w",encoding="utf-8").write(body)
+            PY
+            gh issue comment "$ISSUE_NUMBER" --body-file /tmp/comment.md
+          else
+            PYTHONPATH=. python scripts/process_payment_comment.py --issue-number "$ISSUE_NUMBER" --comment "$ISSUE_COMMENT" > /tmp/payment.json
+            python - <<'PY'
+            import json, os, subprocess
+            p=json.load(open("/tmp/payment.json"))
+            path=p.get("delivery_path")
+            if p.get("verified") and path and os.path.exists(path):
+                subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body-file",path],check=True)
+                os.remove(path)
+            elif p.get("status") == "pending":
+                subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body","Payment detected but still awaiting required BSC confirmations."],check=True)
+            elif p.get("status") == "rejected":
+                subprocess.run(["gh","issue","comment",os.environ["ISSUE_NUMBER"],"--body",f"Payment verification rejected: {p.get('reason','unknown reason')}"],check=True)
+            PY
+          fi
+      - name: Persist order and ledger state
+        run: |
+          if [ -n "$(git status --porcelain -- data)" ]; then
+            git config user.name "zorathvael"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data
+            git commit -m "chore: persist revenue order state"
+            git push
+          else
+            echo "No revenue state changes."
+          fi
