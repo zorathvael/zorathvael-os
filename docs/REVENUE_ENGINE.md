@@ -53,3 +53,18 @@ The delivery engine uses public GitHub repository data only and does not request
 ## Zero-budget architecture
 
 The engine runs on standard GitHub-hosted runners. GitHub documents standard runners as free for public repositories. The repository can therefore run the acquisition and payment-verification loops without a paid server.
+
+
+## Instant Automation Scorecard
+
+**Price:** Rp79,000 / 5 USDT
+
+This product is designed for fully automatic fulfillment. After a verified USDT BEP20 payment, Zorathvael reads only public GitHub repository data and generates a deterministic scorecard covering:
+
+- automation workflow presence
+- recent workflow success-rate signals
+- maintenance pressure from open issues
+- repository/language baseline
+- prioritized next actions
+
+The generated Markdown is posted directly to the customer's order issue. No human review, private repository access, credentials, or manual report preparation is required.
