@@ -153,6 +153,6 @@ The Core now runs:
 
 The acquisition engine uses a contact router. It first discovers only publicly supplied contact channels: a public GitHub profile email, an email published in the public repository README, or a public website/contact URL. Email is the primary outreach channel when a public email and SMTP transport are configured; GitHub issue comments remain the fallback when no usable email route exists. The Core never attempts to reveal private email addresses.
 
-For email transport, configure these GitHub Actions secrets: `ZORATHVAEL_SMTP_HOST`, `ZORATHVAEL_SMTP_PORT`, `ZORATHVAEL_SMTP_USERNAME`, `ZORATHVAEL_SMTP_PASSWORD`, and `ZORATHVAEL_EMAIL_FROM`. Keep the existing `ZORATHVAEL_OUTREACH_TOKEN` only for the GitHub fallback. Secrets are injected into the workflow and are never committed to the repository.
+For email transport, configure these GitHub Actions secrets: `ZORATHVAEL_SMTP_HOST`, `ZORATHVAEL_SMTP_PORT`, `ZORATHVAEL_SMTP_USERNAME`, `ZORATHVAEL_SMTP_PASSWORD`, and `ZORATHVAEL_EMAIL_FROM`. For response learning, configure `ZORATHVAEL_IMAP_HOST`, `ZORATHVAEL_IMAP_PORT`, `ZORATHVAEL_IMAP_USERNAME`, and `ZORATHVAEL_IMAP_PASSWORD` for the same inbox. Keep the existing `ZORATHVAEL_OUTREACH_TOKEN` only for the GitHub fallback. Secrets are injected into workflows and are never committed to the repository.
 
 See [Revenue Engine](docs/REVENUE_ENGINE.md) for the full flow.
