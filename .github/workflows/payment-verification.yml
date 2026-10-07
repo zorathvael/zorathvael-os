@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   verify:
@@ -45,7 +46,23 @@ jobs:
         run: python scripts/verify_payment.py --tx-hash "${{ inputs.tx_hash }}"
       - name: Scan pending USDT orders
         if: inputs.tx_hash == ''
-        run: python scripts/scan_usdt_payments.py
+        run: python scripts/scan_usdt_payments.py | tee /tmp/payment-scan.json
+      - name: Notify customers for scheduled settlements
+        if: inputs.tx_hash == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          payload = json.load(open('/tmp/payment-scan.json', encoding='utf-8'))
+          for item in payload.get('results', []):
+              path = item.get('delivery_path')
+              issue = item.get('issue_number')
+              if item.get('delivered') and path and issue and os.path.exists(path):
+                  subprocess.run(['gh', 'issue', 'comment', str(issue), '--body-file', path], check=True)
+                  os.remove(path)
+          PY
+
       - name: Persist payment state
         run: |
           if [ -n "$(git status --porcelain -- data)" ]; then
