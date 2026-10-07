@@ -60,7 +60,7 @@ jobs:
             git rebase --abort
             git reset --hard origin/main
             PYTHONPATH=. python scripts/revenue_cycle.py
-            git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json
+            git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json data/revenue_events.jsonl
             if ! git diff --cached --quiet; then
               git commit -m "chore: refresh revenue acquisition queue"
             fi
