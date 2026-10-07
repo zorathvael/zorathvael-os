@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 from lib.profit_engine.engine import ProfitEngine
-from lib.profit_engine.revenue import GitHubLeadScout, Lead, load_conversion_prior, make_opportunity, render_drafts
+from lib.profit_engine.revenue import GitHubLeadScout, Lead, STRONG_SIGNALS, load_conversion_prior, make_opportunity, render_drafts
 
 
 def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
