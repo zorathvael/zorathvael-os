@@ -24,7 +24,7 @@ jobs:
           python-version: "3.12"
       - name: Retry paid delivery
         env:
-          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PYTHONPATH=. python - <<'PY'
           import json
