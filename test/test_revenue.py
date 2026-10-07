@@ -54,3 +54,32 @@ def test_rank_outreach_leads_deduplicates_by_issue_url() -> None:
 
     assert len(ranked) == 1
     assert ranked[0].score == 95
+
+
+def test_buyer_intent_prioritizes_explicit_failure_and_help() -> None:
+    failure = make_lead("2", "CI failed", ("ci failed", "failed", "12 comments"), 60)
+    generic = make_lead("3", "Automation", ("automation",), 90)
+
+    from lib.profit_engine.revenue import buyer_intent_score
+
+    assert buyer_intent_score(failure) > buyer_intent_score(generic)
+
+
+def test_refresh_metrics_records_timestamp_and_preserves_revenue() -> None:
+    import json
+    from pathlib import Path
+    from tempfile import TemporaryDirectory
+    from scripts.revenue_cycle import refresh_metrics
+
+    with TemporaryDirectory() as tmp:
+        path = Path(tmp) / "metrics.json"
+        path.write_text(json.dumps({"paid_orders": 2, "revenue_usdt": 20.0}), encoding="utf-8")
+        refresh_metrics(5, 3, 2, str(path))
+        data = json.loads(path.read_text(encoding="utf-8"))
+
+    assert data["paid_orders"] == 2
+    assert data["revenue_usdt"] == 20.0
+    assert data["qualified_leads"] == 5
+    assert data["commercially_relevant_leads"] == 3
+    assert data["outreach_ready_leads"] == 2
+    assert data["last_updated"]
