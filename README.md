@@ -131,12 +131,21 @@ Zorathvael now has an executable zero-budget revenue acquisition loop.
 
 The customer selects the product, target public repository, and payment rail. USDT BEP20 can proceed through autonomous on-chain verification and automatic delivery.
 
+### Acquisition pipeline
+
+The Core separates discovery from commercial readiness:
+
+`discovered → qualified → commercially relevant → outreach-ready → paid → delivered`
+
+Promotional/SEO-like noise is filtered before the outreach queue. Active CI/deployment failures and explicit help/automation requests receive higher commercial priority. `revenue_metrics.json` records `qualified_leads`, `commercially_relevant_leads`, `outreach_ready_leads`, `paid_orders`, `delivered_orders`, and realized `revenue_usdt`.
+
 ### Autonomous loop
 
 The Core now runs:
 
-1. **Opportunity discovery** — scans public GitHub issues for high-intent automation problems and explicit CI/deployment failures.
-2. **Economic ranking** — scores lead intent and estimates expected value using a conservative conversion prior.
+1. **Opportunity discovery** — scans public GitHub issues for automation problems and explicit CI/deployment failures.
+2. **Commercial qualification** — removes promotional noise and scores evidence of an actual problem or buying intent.
+3. **Economic ranking** — ranks the best candidates using commercial relevance, expected value, effort, risk, and the measured conversion prior.
 3. **Customer checkout** — customer opens the order issue form and receives a unique payment order.
 4. **USDT settlement verification** — BSC transaction, token contract, destination, amount, and confirmations are checked before revenue is recorded.
 5. **Automatic delivery** — after verified USDT payment, the selected outcome diagnostic is generated from live public repository evidence and posted to the order issue. CI Failure Recovery inspects recent failed GitHub Actions runs, failed jobs, steps, and logs before recommending remediation.
