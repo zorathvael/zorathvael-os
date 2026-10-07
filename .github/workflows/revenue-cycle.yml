@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "17 */2 * * *"
   issues:
     types: [opened]
 
@@ -34,6 +34,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZORATHVAEL_LEAD_LIMIT: "20"
         run: PYTHONPATH=. python scripts/revenue_cycle.py
+      - name: Execute qualified outreach
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZORATHVAEL_OUTREACH_LIMIT: "2"
+        run: PYTHONPATH=. python scripts/execute_outreach.py
+
       - name: Persist acquisition state
         run: |
           if [ -z "$(git status --porcelain -- data)" ]; then
@@ -43,7 +49,7 @@ jobs:
 
           git config user.name "zorathvael"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json
+          git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json data/revenue_events.jsonl
           git commit -m "chore: refresh revenue acquisition queue"
 
           # The Core/revenue workflows can update main while this run is executing.

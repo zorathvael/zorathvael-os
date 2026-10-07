@@ -104,3 +104,31 @@ def test_conversion_funnel_matches_orders_to_leads_without_inventing_attribution
     assert funnel["attributed_paid_orders"] == 1
     assert funnel["unattributed_paid_orders"] == 1
     assert funnel["paid_revenue_orders"] == 2
+
+
+def test_auto_outreach_requires_explicit_buyer_intent_and_is_idempotent() -> None:
+    from lib.profit_engine.outreach import build_outreach_message, select_auto_outreach
+
+    lead = make_lead(
+        "42",
+        "CI failed and I need help deploying",
+        ("ci failed", "need help", "deploy failed"),
+        92,
+    )
+    selected = select_auto_outreach([lead], already_contacted=set(), limit=3)
+
+    assert len(selected) == 1
+    message = build_outreach_message(lead)
+    assert "CI failed" in message
+    assert "Zorathvael" in message
+    assert "order" in message.lower()
+
+    selected_again = select_auto_outreach([lead], already_contacted={lead.url}, limit=3)
+    assert selected_again == []
+
+
+def test_auto_outreach_does_not_contact_generic_low_intent_leads() -> None:
+    from lib.profit_engine.outreach import select_auto_outreach
+
+    lead = make_lead("43", "Automation ideas", ("automation", "workflow"), 80)
+    assert select_auto_outreach([lead], already_contacted=set(), limit=3) == []
