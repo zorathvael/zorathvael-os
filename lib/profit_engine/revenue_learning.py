@@ -20,7 +20,7 @@ def build_learning_snapshot(events: list[OutreachEvent] | None = None, orders: l
     orders = orders if orders is not None else _load_orders()
     sent = [e for e in events if e.event_type == "outreach_sent"]
     responses = [e for e in events if e.event_type == "response_observed"]
-    paid = [o for o in orders if o.get("status") == "paid"]
+    paid = [o for o in orders if o.get("status") in {"paid", "delivered"}]
     delivered = [o for o in orders if o.get("status") == "delivered"]
     sent_by_offer = Counter(e.offer_id for e in sent)
     response_by_offer = Counter(e.offer_id for e in responses)
