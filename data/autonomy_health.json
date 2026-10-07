@@ -1,0 +1,26 @@
+{
+  "actions": [],
+  "checked_at": "2026-10-07T13:13:20.671327+00:00",
+  "orders": {},
+  "stale": {
+    "delivery": false,
+    "payment": false,
+    "recovery": false
+  },
+  "workers": {
+    "autonomous-email-delivery.yml": null,
+    "delivery-recovery.yml": null,
+    "payment-verification.yml": {
+      "conclusion": "success",
+      "createdAt": "2026-10-07T13:11:32Z",
+      "databaseId": 37626571776,
+      "status": "completed"
+    },
+    "revenue-cycle.yml": {
+      "conclusion": "success",
+      "createdAt": "2026-10-07T13:04:41Z",
+      "databaseId": 37625700775,
+      "status": "completed"
+    }
+  }
+}
