@@ -70,6 +70,7 @@ def select_auto_outreach(
 def build_outreach_message(lead: Lead) -> str:
     offer = offers()[lead.offer_id]
     return (
+        "<!-- zorathvael-outreach:v1 -->\n"
         f"Hi @{lead.author} — I found this public issue ({lead.title}) while looking for "
         "specific problems where I can provide a concrete outcome. "
         f"Zorathvael can deliver {offer.name.lower()} for this case. "
