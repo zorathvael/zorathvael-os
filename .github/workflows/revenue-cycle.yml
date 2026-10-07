@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: zorathvael-revenue-acquisition
+  cancel-in-progress: false
+
 jobs:
   discover-and-rank:
     if: >-
