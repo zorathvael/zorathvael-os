@@ -55,6 +55,15 @@ memory.store_memory("project", "Zorathvael OS")
 print(memory.retrieve_memory("project"))
 ```
 
+## Economic Execution Layer
+
+Zorathvael now includes a zero-budget economic execution layer. It ranks opportunities by expected profit, profit per hour, and risk, then records measured outcomes in an append-only ledger. It does **not** fabricate revenue or treat an unexecuted opportunity as profit.
+
+The economic loop is:
+`opportunity → expected value → selection → execution boundary → measured outcome → ledger → optimization`.
+
+GitHub Actions is the default automation backbone for the public repository; standard runners are free for public repositories. citeturn0search0
+
 ## Features
 - **AI Router:** Dynamic dispatching of agent tasks to specialized AI providers.
 - **Memory Engine:** State and context retention for autonomous execution.
