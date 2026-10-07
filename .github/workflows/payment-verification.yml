@@ -43,7 +43,7 @@ jobs:
           ZORATHVAEL_PAYMENT_AMOUNT: ${{ inputs.amount }}
           ZORATHVAEL_PAYMENT_METHOD: "usdt_bep20"
           ZORATHVAEL_PAYMENT_CURRENCY: "USDT"
-        run: python scripts/verify_payment.py --tx-hash "${{ inputs.tx_hash }}" | tee /tmp/manual-payment.json
+        run: PYTHONPATH=. python scripts/verify_payment.py --tx-hash "${{ inputs.tx_hash }}" | tee /tmp/manual-payment.json
       - name: Notify customer for manual settlement
         if: inputs.tx_hash != '' && inputs.order_id != '' && inputs.amount != ''
         env:
