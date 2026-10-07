@@ -1,7 +1,9 @@
 {
+  "commercially_relevant_leads": 19,
   "delivered_orders": 0,
   "last_updated": null,
+  "outreach_ready_leads": 10,
   "paid_orders": 0,
-  "qualified_leads": 37,
+  "qualified_leads": 43,
   "revenue_usdt": 0.0
 }
