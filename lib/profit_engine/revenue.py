@@ -239,8 +239,7 @@ def write_leads(leads: list[Lead], path: str = "data/revenue_leads.jsonl") -> No
     target.parent.mkdir(parents=True, exist_ok=True)
     with target.open("w", encoding="utf-8") as handle:
         for lead in leads:
-            handle.write(json.dumps(asdict(lead), sort_keys=True) + "
-")
+            handle.write(json.dumps(asdict(lead), sort_keys=True) + "\n")
 
 
 def render_drafts(leads: list[Lead], path: str = "data/outreach_drafts.md") -> None:
@@ -278,5 +277,4 @@ def render_drafts(leads: list[Lead], path: str = "data/outreach_drafts.md") -> N
             f"- Evidence: {evidence}", "", "Suggested message:",
             f"> {message}", "",
         ])
-    target.write_text("
-".join(lines), encoding="utf-8")
+    target.write_text("\n".join(lines), encoding="utf-8")
