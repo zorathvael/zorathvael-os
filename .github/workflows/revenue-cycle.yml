@@ -6,12 +6,17 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "17 */6 * * *"
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
 
 jobs:
   discover-and-rank:
+    if: >-
+      github.event_name != 'issues' ||
+      (github.event.issue.title == '[REVENUE-RUN]' && github.actor == 'zorathvael')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
