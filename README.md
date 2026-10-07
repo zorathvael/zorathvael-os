@@ -1,158 +1,323 @@
-# Zorathvael OS
+# Zorathvael Core
 
-## Project Overview
-Zorathvael OS is an advanced, production-ready AI Operating System designed to orchestrate multiple artificial intelligence models and autonomous workflows across diverse computing environments. Operating under the core principle of **"One Core. Many Interfaces,"** the system abstracts agentic intelligence into a unified core that scales seamlessly from mobile edge devices to cloud servers.
+> An AI execution system designed to turn real problems into verified, deliverable outcomes.
 
-## Architecture
-The system is built on a modular, decoupled architecture consisting of core engines that manage intelligence dispatching, persistent memory, workflow orchestration, and external integrations.
+Zorathvael Core is the operational engine behind Zorathvael OS. It is designed to do more than generate answers: it can discover real problems, evaluate their value, execute defined workflows, verify results, deliver outputs, and learn from measurable outcomes.
 
-```
-+---------------------------------------------------------------+
-|                        Zorathvael Core                        |
-|  +--------------+  +---------------+  +--------------------+  |
-|  |   AI Router  |  | Memory Engine |  |  Workflow Engine   |  |
-|  +--------------+  +---------------+  +--------------------+  |
-|  +--------------+  +---------------+  +--------------------+  |
-|  | Automation   |  | Integration   |  |   Report Engine    |  |
-|  +--------------+  +---------------+  +--------------------+  |
-+---------------------------------------------------------------+
-```
+**Operating loop:** Problem → Evidence → Solution → Verification → Delivery → Learning
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/zorathvael/zorathvael-os.git
-   cd zorathvael-os
-   ```
-2. Set up the virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-3. Install production dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+---
 
-## Configuration
-Copy the environment template and provide your secure API keys:
-```bash
+## What Zorathvael Core Does
+
+### Discover real problems
+The Core can inspect public sources such as GitHub repositories and issues to identify concrete technical problems, including failed CI/CD workflows, build or deployment failures, repetitive manual processes, and explicit requests for technical help.
+
+It filters low-intent and promotional noise before an opportunity enters the commercial workflow.
+
+### Qualify opportunities
+Candidate problems are evaluated using evidence such as problem clarity, active failures, commercial relevance, expected value, effort, risk, and measured conversion results.
+
+### Execute useful work
+When a customer orders a supported service, the Core runs the appropriate workflow against the available evidence.
+
+Current examples include:
+- Diagnosing failed GitHub Actions
+- Identifying failure patterns
+- Auditing public repositories for automation opportunities
+- Producing implementation blueprints
+- Generating evidence-based reports
+
+### Verify outcomes
+The Core separates instructions, opportunities, payments, and completed outcomes.
+
+A payment instruction is not revenue. Revenue is recorded only after the configured payment verification process confirms the transaction.
+
+Likewise, a proposed fix is not treated as a verified result without evidence.
+
+### Deliver results
+The system produces a concrete deliverable rather than only a conversational answer.
+
+Depending on the service, this can be a diagnostic report, automation blueprint, recovery analysis, implementation guidance, or evidence package.
+
+### Learn from outcomes
+The Core records measurable events such as leads, outreach, responses, orders, verified payments, deliveries, and realized revenue. These measurements are used to improve future opportunity selection.
+
+---
+
+## How It Works
+
+~~~
+Discover real need
+        ↓
+Qualify with evidence
+        ↓
+Select the right service
+        ↓
+Customer orders
+        ↓
+Verify payment
+        ↓
+Core executes
+        ↓
+Verify the outcome
+        ↓
+Deliver the result
+        ↓
+Measure and improve
+~~~
+
+This execution loop is the central operating model of Zorathvael Core.
+
+---
+
+## Current Services
+
+| Service | Price | Customer receives |
+|---|---:|---|
+| **CI Failure Recovery** | Rp149,000 / 10 USDT | Evidence-based analysis of failed GitHub Actions and recovery recommendations |
+| **AI Automation Audit** | Rp149,000 / 10 USDT | Analysis of a public repository for practical automation opportunities |
+| **Automation Blueprint** | Rp299,000 / 20 USDT | Structured implementation blueprint for an identified automation problem |
+
+These are the current offers. They are intentionally narrow so demand and delivery quality can be measured.
+
+---
+
+## For Customers
+
+### What do I provide?
+
+The current services primarily work from publicly accessible evidence.
+
+For example, CI Failure Recovery can analyze a public GitHub repository where workflows are failing.
+
+### What happens after ordering?
+
+1. Select a service.
+2. Provide the target public repository.
+3. Receive payment instructions.
+4. Payment is verified through the configured verification process.
+5. The Core executes the selected analysis.
+6. The result is generated from repository evidence.
+7. The result is delivered through the available delivery channel.
+
+### Do I need to give access to a private repository?
+
+Not for the current public-repository services.
+
+The Core does not assume private repository access. A different access model would require explicit authorization.
+
+---
+
+## Why This Is More Than an AI Chat
+
+A conventional AI interaction usually ends with an answer.
+
+Zorathvael Core is designed around an outcome lifecycle:
+
+| Conventional AI interaction | Zorathvael Core |
+|---|---|
+| User asks a question | System can discover a real problem |
+| Generates an answer | Executes a defined workflow |
+| Result may remain unverified | Uses explicit verification stages |
+| Conversation ends | Result is delivered and recorded |
+| Little economic feedback | Measures demand and revenue |
+| No durable operating loop | Persistent state and automated workflows |
+
+The goal is not to claim universal superiority over every AI assistant.
+
+The goal is to be better at turning specific real-world problems into measurable outcomes.
+
+---
+
+## Core Architecture
+
+~~~
+                         ZORATHVAEL CORE
+                                │
+       ┌────────────────────────┼────────────────────────┐
+       │                        │                        │
+   Intelligence              Execution               Business
+       │                        │                        │
+   AI Router              Workflow Engine          Profit Engine
+   Memory Engine          Automation Engine        Revenue Engine
+                          Integration Engine       Payment & Settlement
+                          Report Engine            Delivery & Learning
+~~~
+
+### AI Router
+Routes AI tasks to the appropriate model or capability.
+
+### Memory Engine
+Maintains persistent project and execution context.
+
+### Workflow Engine
+Runs deterministic multi-step processes.
+
+### Automation Engine
+Handles scheduled and event-driven execution.
+
+### Integration Engine
+Connects the Core to external systems.
+
+### Report Engine
+Produces structured evidence and results.
+
+### Profit & Revenue Engine
+Discovers opportunities, qualifies demand, manages offers, tracks orders, verifies configured payments, measures revenue, and learns from outcomes.
+
+---
+
+## Trust, Verification & Security
+
+Zorathvael Core follows explicit operational boundaries:
+
+- Payment instructions are not revenue.
+- Revenue is recorded only after payment verification.
+- The Core does not custody or transfer customer funds.
+- Secrets are supplied through secure environment variables or GitHub Actions secrets.
+- Public contact discovery uses only publicly supplied contact information.
+- The system does not attempt to reveal private email addresses.
+- External GitHub outreach requires appropriate write authorization.
+- Customer repository access is not assumed when it has not been granted.
+- Payment and delivery states are tracked separately.
+
+---
+
+## Current Status
+
+The repository currently contains an executable foundation for:
+
+- AI-assisted routing and orchestration
+- Persistent memory
+- Automated workflows
+- Public-problem discovery
+- Commercial qualification
+- Customer order intake
+- USDT payment verification
+- Evidence-based delivery generation
+- Revenue and conversion measurement
+- Automated learning from outreach and delivery events
+- GitHub Actions CI/CD
+
+### Important reality check
+
+**Actual customer revenue is not yet proven.**
+
+The repository contains the machinery required to discover opportunities, acquire customers, process orders, verify configured payments, execute services, and measure outcomes. An implemented revenue pipeline is not the same thing as market validation.
+
+The next proof point is:
+
+**Real customer → Real order → Verified payment → Delivered result → Measurable outcome**
+
+---
+
+## Getting Started
+
+### Customers
+
+Open the current order form:
+
+[Open a Zorathvael order](https://github.com/zorathvael/zorathvael-os/issues/new?template=order.yml)
+
+### Developers
+
+Clone the repository:
+
+~~~bash
+git clone https://github.com/zorathvael/zorathvael-os.git
+cd zorathvael-os
+~~~
+
+Create a virtual environment:
+
+~~~bash
+python3 -m venv venv
+source venv/bin/activate
+~~~
+
+Install dependencies:
+
+~~~bash
+pip install -r requirements.txt
+~~~
+
+Run the test suite:
+
+~~~bash
+PYTHONPATH=. pytest --cov=lib test/
+~~~
+
+For local environment configuration:
+
+~~~bash
 cp .env.example .env
-```
+~~~
 
-## Quick Start
-Execute the test suite or integrate core engines into your Python application:
-```python
-from lib.core_modules.ai_router.ai_router import AIRouter
-from lib.core_modules.memory_engine.memory_engine import MemoryEngine
-from lib.core_modules.workflow_engine.workflow_engine import WorkflowEngine
+Never commit secrets to the repository.
 
-router = AIRouter()
-memory = MemoryEngine()
-workflow = WorkflowEngine()
+---
 
-memory.store_memory("project", "Zorathvael OS")
-print(memory.retrieve_memory("project"))
-```
+## Repository Structure
 
-## Economic Execution Layer
+~~~
+zorathvael-os/
+├── lib/
+│   ├── core_modules/       # Core intelligence and execution modules
+│   └── profit_engine/      # Revenue, orders, payment, delivery, learning
+├── scripts/                # Operational entry points
+├── test/                   # Automated tests
+├── docs/                   # Detailed technical documentation
+├── data/                   # Runtime state and measured outcomes
+└── .github/workflows/      # Automated CI/CD and scheduled operations
+~~~
 
-Zorathvael now includes a zero-budget economic execution layer. It ranks opportunities by expected profit, profit per hour, and risk, then records measured outcomes in an append-only ledger. It does **not** fabricate revenue or treat an unexecuted opportunity as profit.
+The README stays at the product and system level. Detailed implementation behavior belongs in the technical documentation.
 
-The economic loop is:
-`opportunity → expected value → selection → execution boundary → measured outcome → ledger → optimization`.
+---
 
-GitHub Actions is the default automation backbone for the public repository; standard runners are free for public repositories. External outreach requires a separate repository-scoped credential because GitHub issue comments require write permission on the target repository. citeturn0search0
+## Documentation
 
-## Features
-- **AI Router:** Dynamic dispatching of agent tasks to specialized AI providers.
-- **Memory Engine:** State and context retention for autonomous execution.
-- **Workflow Engine:** Deterministic multi-step agentic pipeline orchestration.
-- **Automation & Integration:** Event-driven hooks and background schedulers.
+- Developer Guide: [docs/DeveloperGuide.md](docs/DeveloperGuide.md)
+- Deployment Guide: [docs/Deployment.md](docs/Deployment.md)
+- Revenue Engine: [docs/REVENUE_ENGINE.md](docs/REVENUE_ENGINE.md)
 
-## Folder Structure
-- `lib/core_modules/`: Core system engines and modules.
-- `docs/`: Comprehensive technical documentation.
-- `test/`: Automated test suite.
-- `.github/workflows/`: CI/CD automation pipelines.
+See the [docs directory](docs/) for deeper technical and operational details.
 
-## Development Guide
-Refer to [Developer Guide](docs/DeveloperGuide.md) for contribution guidelines, coding standards, and testing procedures.
-
-## Deployment Guide
-Refer to [Deployment Guide](docs/Deployment.md) for production deployment instructions and containerization setups.
-
-## Environment Variables
-All configuration parameters must be supplied via secure environment variables as outlined in `.env.example`.
+---
 
 ## Roadmap
-- Android Interface integration via MacroDroid and Intent handlers.
-- Distributed Vector Memory scaling.
-- Advanced Multi-Agent Consensus protocols.
 
-## FAQ
-**Q: Is Zorathvael OS production-ready?**  
-A: Yes, all core modules are fully implemented with zero placeholders, complete type hints, and rigorous test coverage.
+The Core is being developed toward a broader AI operating system that can scale across interfaces and execution environments.
 
-## Contribution Guide
-Contributions are welcome. Please ensure all pull requests pass CI quality checks and include corresponding unit tests.
+Planned areas include:
+- More autonomous customer communication
+- More delivery channels
+- Stronger outcome verification
+- More domain-specific execution engines
+- Android and edge interfaces
+- Distributed memory
+- Multi-agent consensus
+- More robust economic optimization
+
+Roadmap items are development goals, not claims of existing functionality.
+
+---
+
+## Contributing
+
+Contributions are welcome.
+
+Changes should:
+1. Have a clear purpose.
+2. Include tests when behavior changes.
+3. Pass repository CI checks.
+4. Avoid unsupported claims in customer-facing documentation.
+
+---
 
 ## License
-MIT License. Created by Zorathvael and Manus AI.
 
+MIT License.
 
-## Payment & Settlement
-
-Zorathvael has a centralized payment router with two owner-configured settlement options:
-
-1. **QRIS** — the supplied merchant QRIS reference is stored at `assets/payment_qris_reference.txt`.
-2. **USDT (BEP20)** — the supplied settlement address is the default destination in `PaymentRouter`.
-
-The payment router is separate from the profit ledger. A payment instruction is **not** revenue. Revenue is recorded only after an actual payment is confirmed.
-
-The system does not custody funds or move funds between wallets. The selected payment network settles directly to the configured destination.
-
-
-## Revenue Engine
-
-Zorathvael now has an executable zero-budget revenue acquisition loop.
-
-### Sellable products
-
-| Product | Price | Delivery |
-|---|---:|---|
-| CI Failure Recovery | Rp149,000 / 10 USDT | Evidence-based failed GitHub Actions diagnostic |
-| AI Automation Audit | Rp149,000 / 10 USDT | Automated public-repository audit |
-| Automation Blueprint | Rp299,000 / 20 USDT | Automated implementation blueprint |
-
-### Start a paid order
-
-**[Open the Zorathvael order form](https://github.com/zorathvael/zorathvael-os/issues/new?template=order.yml)**
-
-The customer selects the product, target public repository, and payment rail. USDT BEP20 can proceed through autonomous on-chain verification and automatic delivery.
-
-### Acquisition pipeline
-
-The Core separates discovery from commercial readiness:
-
-`discovered → qualified → commercially relevant → outreach-ready → paid → delivered`
-
-Promotional/SEO-like noise is filtered before the outreach queue. Active CI/deployment failures and explicit help/automation requests receive higher commercial priority. `revenue_metrics.json` records `qualified_leads`, `commercially_relevant_leads`, `outreach_ready_leads`, `paid_orders`, `delivered_orders`, and realized `revenue_usdt`.
-
-### Autonomous loop
-
-The Core now runs:
-
-1. **Opportunity discovery** — scans public GitHub issues for automation problems and explicit CI/deployment failures.
-2. **Commercial qualification** — removes promotional noise and scores evidence of an actual problem or buying intent.
-3. **Economic ranking** — ranks the best candidates using commercial relevance, expected value, effort, risk, and the measured conversion prior.
-3. **Customer checkout** — customer opens the order issue form and receives a unique payment order.
-4. **USDT settlement verification** — BSC transaction, token contract, destination, amount, and confirmations are checked before revenue is recorded.
-5. **Automatic delivery** — after verified USDT payment, the selected outcome diagnostic is generated from live public repository evidence and posted to the order issue. CI Failure Recovery inspects recent failed GitHub Actions runs, failed jobs, steps, and logs before recommending remediation.
-6. **Measurement** — qualified leads, paid orders, delivered orders, and realized USDT revenue are persisted for recalibration.
-
-The acquisition engine uses a contact router. It first discovers only publicly supplied contact channels: a public GitHub profile email, an email published in the public repository README, or a public website/contact URL. Email is the primary outreach channel when a public email and SMTP transport are configured; GitHub issue comments remain the fallback when no usable email route exists. The Core never attempts to reveal private email addresses.
-
-For email transport, configure these GitHub Actions secrets: `ZORATHVAEL_SMTP_HOST`, `ZORATHVAEL_SMTP_PORT`, `ZORATHVAEL_SMTP_USERNAME`, `ZORATHVAEL_SMTP_PASSWORD`, and `ZORATHVAEL_EMAIL_FROM`. For response learning, configure `ZORATHVAEL_IMAP_HOST`, `ZORATHVAEL_IMAP_PORT`, `ZORATHVAEL_IMAP_USERNAME`, and `ZORATHVAEL_IMAP_PASSWORD` for the same inbox. Keep the existing `ZORATHVAEL_OUTREACH_TOKEN` only for the GitHub fallback. Secrets are injected into workflows and are never committed to the repository.
-
-See [Revenue Engine](docs/REVENUE_ENGINE.md) for the full flow.
+Created by Zorathvael.
