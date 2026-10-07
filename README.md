@@ -151,6 +151,8 @@ The Core now runs:
 5. **Automatic delivery** — after verified USDT payment, the selected outcome diagnostic is generated from live public repository evidence and posted to the order issue. CI Failure Recovery inspects recent failed GitHub Actions runs, failed jobs, steps, and logs before recommending remediation.
 6. **Measurement** — qualified leads, paid orders, delivered orders, and realized USDT revenue are persisted for recalibration.
 
-The acquisition engine is fail-closed for outreach permissions. It ranks recent, actionable problems, rejects roadmap/status/coordination noise, and can send a tightly capped contextual comment only when `ZORATHVAEL_OUTREACH_TOKEN` is explicitly configured with write access to the target repository. The normal Actions `GITHUB_TOKEN` is not treated as an external outreach credential. Without that secret, the Core preserves the lead as `outreach_blocked` instead of repeatedly producing HTTP 403 failures. The transaction still begins from a customer-initiated order form and a verified payment.
+The acquisition engine uses a contact router. It first discovers only publicly supplied contact channels: a public GitHub profile email, an email published in the public repository README, or a public website/contact URL. Email is the primary outreach channel when a public email and SMTP transport are configured; GitHub issue comments remain the fallback when no usable email route exists. The Core never attempts to reveal private email addresses.
+
+For email transport, configure these GitHub Actions secrets: `ZORATHVAEL_SMTP_HOST`, `ZORATHVAEL_SMTP_PORT`, `ZORATHVAEL_SMTP_USERNAME`, `ZORATHVAEL_SMTP_PASSWORD`, and `ZORATHVAEL_EMAIL_FROM`. Keep the existing `ZORATHVAEL_OUTREACH_TOKEN` only for the GitHub fallback. Secrets are injected into the workflow and are never committed to the repository.
 
 See [Revenue Engine](docs/REVENUE_ENGINE.md) for the full flow.
