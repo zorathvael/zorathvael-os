@@ -5,6 +5,7 @@ import os
 import re
 import urllib.parse
 import urllib.request
+from urllib.error import HTTPError
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -153,8 +154,12 @@ class GitHubLeadScout:
         if self.token:
             headers["Authorization"] = f"Bearer {self.token}"
         request = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(request, timeout=self.timeout) as response:
-            return json.loads(response.read().decode("utf-8"))
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")[:500]
+            raise RuntimeError(f"GitHub API request failed ({exc.code}): {detail}") from exc
 
     def discover(self, query: str, limit: int = 20) -> list[Lead]:
         params = urllib.parse.urlencode({
