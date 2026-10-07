@@ -75,7 +75,7 @@ def build_email_outreach_message(lead: Lead, recipient: str) -> str:
         f"Zorathvael can provide a {offer.name} for this specific problem.\n"
         f"{lead.url}\n\n"
         f"Zorathvael can provide a {offer.name} for this specific problem. "
-        "The deliverable is based only on public repository evidence; no repository credentials are required.\n\n"
+        "The deliverable is based only on public repository evidence; no credentials are required.\n\n"
         f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}.\n"
         "If you want the diagnostic, reply to this email and I will send the order instructions. "
         "If this is not relevant, reply with 'no thanks' and we will not contact this address again.\n\n"
