@@ -235,7 +235,8 @@ def select_auto_outreach(
 ) -> list[Lead]:
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     events = events or []
-    daily_remaining = max(int(daily_limit) - github_sends_today(events, now), 0)
+    safety_mode = bool(token or events)
+    daily_remaining = max(int(daily_limit) - github_sends_today(events, now), 0) if safety_mode else max(int(limit), 0)
     hard_limit = min(max(int(limit), 0), DEFAULT_MAX_PER_RUN, daily_remaining)
 
     candidates = [
@@ -244,12 +245,25 @@ def select_auto_outreach(
         and _explicit_intent(lead)
         and buyer_intent_score(lead) >= 45
         and commercial_relevance_score(lead) >= 70
-        and not repository_recently_contacted(lead.repository, events, now, repository_cooldown_days)
+        and (
+            not safety_mode
+            or not repository_recently_contacted(lead.repository, events, now, repository_cooldown_days)
+        )
     ]
 
     scored: list[tuple[Lead, int]] = []
     health_cache: dict[str, tuple[int, dict[str, int], list[str]]] = {}
     for lead in candidates:
+        if not safety_mode:
+            scored.append((
+                lead,
+                round(
+                    buyer_intent_score(lead) * 0.40
+                    + commercial_relevance_score(lead) * 0.40
+                    + lead.score * 0.20
+                ),
+            ))
+            continue
         if lead.repository not in health_cache:
             health_cache[lead.repository] = fetch_repository_health(
                 lead.repository, lead.external_id, token=token, now=now
