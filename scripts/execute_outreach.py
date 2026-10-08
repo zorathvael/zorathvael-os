@@ -121,6 +121,7 @@ def main() -> int:
         if event.event_type in {"outreach_sent", "email_outreach_sent"}
     }
     leads = load_leads()
+    selection_diagnostics: dict[str, object] = {}
     selected = select_auto_outreach(
         leads,
         contacted,
@@ -131,6 +132,7 @@ def main() -> int:
         repository_cooldown_days=int(
             os.getenv("ZORATHVAEL_GITHUB_REPOSITORY_COOLDOWN_DAYS", "7")
         ),
+        diagnostics=selection_diagnostics,
     )
 
     sent = 0
@@ -157,6 +159,7 @@ def main() -> int:
             ))
         print(json.dumps({
             "selected": len(selected),
+            "selection_diagnostics": selection_diagnostics,
             "sent": 0,
             "blocked": [{"lead_url": lead.url, "reason": "external_write_token_missing"} for lead in external_selected],
             "failures": [],
@@ -245,6 +248,7 @@ def main() -> int:
 
     result = {
         "selected": len(selected),
+        "selection_diagnostics": selection_diagnostics,
         "sent": sent,
         "blocked": blocked,
         "failures": failures,
