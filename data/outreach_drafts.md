@@ -35,7 +35,18 @@ Suggested message:
 Suggested message:
 > I found your public issue: CI: measure and reduce required aggregate queue latency. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 4. mrchypark/goauthy#113 — score 55/100
+## 4. shubhodeep1/coding-workflows#6749 — score 56/100
+- Commercial score: 100/100
+- Buyer-intent score: 55/100
+- Issue: https://github.com/shubhodeep1/coding-workflows/issues/6749
+- Public profile: https://github.com/shubhodeep1
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: workflow failed, workflow, ai, failed, 14 comments
+
+Suggested message:
+> I found your public issue: Workflow heal: AI Review failed 1x for shubhodeep1/drhyg_ecommerce_automation#64 (editor_empty_noop). The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
+
+## 5. mrchypark/goauthy#113 — score 55/100
 - Commercial score: 100/100
 - Buyer-intent score: 55/100
 - Issue: https://github.com/mrchypark/goauthy/issues/113
@@ -46,7 +57,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: [GA010-CAPACITY-001][P3] Define and verify SaaS outbound resource isolation from IAM traffic. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 5. remotion-dev/remotion#8375 — score 81/100
+## 6. remotion-dev/remotion#8375 — score 81/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/remotion-dev/remotion/issues/8375
@@ -57,7 +68,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: CI: Track flaky tests. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 6. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
+## 7. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/vinayakss007/nucrm-bigplan-by-vm-enterprise-v2/issues/2426
@@ -68,7 +79,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: CI Build fails non-deterministically on next/font/google: builds need live egress to Google Fonts and nothing caches or vendors it. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 7. softwarebyze/Backgammon-Mastermind#159 — score 61/100
+## 8. softwarebyze/Backgammon-Mastermind#159 — score 61/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/softwarebyze/Backgammon-Mastermind/issues/159
@@ -79,7 +90,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: Release: v1.1.0 — correctness, recovery, and startup. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 8. shubhodeep1/coding-workflows#6608 — score 56/100
+## 9. shubhodeep1/coding-workflows#6608 — score 56/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/6608
@@ -90,7 +101,7 @@ Suggested message:
 Suggested message:
 > I found your public issue: Workflow heal: Internal: AI Review & Autofix [pr:6594] failed 18x for shubhodeep1/coding-workflows#6594 (identical_failure_cap). The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 9. FastLED/FastLED#4737 — score 52/100
+## 10. FastLED/FastLED#4737 — score 52/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/FastLED/FastLED/issues/4737
@@ -100,14 +111,3 @@ Suggested message:
 
 Suggested message:
 > I found your public issue: meta(memory): reduce default flash/RAM usage across all measured platforms. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
-
-## 10. dotnet/runtime#130133 — score 50/100
-- Commercial score: 100/100
-- Buyer-intent score: 45/100
-- Issue: https://github.com/dotnet/runtime/issues/130133
-- Public profile: https://github.com/kotlarmilos
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: build failed, build, failed, 4 comments
-
-Suggested message:
-> I found your public issue: [ci-scan] Wasm.Build.Tests ManagedToNativeGenerator task host node crash. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
