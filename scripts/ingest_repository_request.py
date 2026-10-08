@@ -21,8 +21,8 @@ from lib.profit_engine.revenue import (
     select_offer,
 )
 
-GITHUB_RE = re.compile(r"^https://github\\.com/([^/]+)/([^/#?]+?)/?$")
-ISSUE_RE = re.compile(r"^https://github\\.com/([^/]+)/([^/]+)/issues/(\\d+)/?$")
+GITHUB_RE = re.compile(r"^https://github\.com/([^/]+)/([^/#?]+?)/?$")
+ISSUE_RE = re.compile(r"^https://github\.com/([^/]+)/([^/]+)/issues/(\d+)/?$")
 
 
 def _github_json(url: str, token: str = "") -> dict:
