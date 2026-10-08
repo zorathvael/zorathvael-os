@@ -16,7 +16,7 @@ ORDER_PORTAL_URL = "https://project29784.websitepublisher.ai/order"
 OUTREACH_MARKER = "<!-- zorathvael-outreach:v1 -->"
 DEFAULT_DAILY_GITHUB_LIMIT = 10
 DEFAULT_REPOSITORY_COOLDOWN_DAYS = 7
-DEFAULT_MAX_PER_RUN = 10
+DEFAULT_MAX_PER_RUN = 3
 
 
 @dataclass(frozen=True)
@@ -203,20 +203,18 @@ def repository_recently_contacted(
 def adaptive_outreach_count(scores: list[int], maximum: int = DEFAULT_MAX_PER_RUN) -> int:
     scores = sorted((max(0, min(int(score), 100)) for score in scores), reverse=True)
     maximum = max(0, min(int(maximum), DEFAULT_MAX_PER_RUN))
-    if not scores or maximum == 0 or scores[0] < 50:
+    if not scores or maximum == 0:
         return 0
-    if len(scores) < 5:
-        return min(len(scores), 5) if scores[0] >= 60 else 0
     sample = scores[: min(len(scores), maximum)]
+    if not sample:
+        return 0
     average = sum(sample) / len(sample)
-    if average >= 90:
-        target = 10
-    elif average >= 80:
-        target = 8
+    if average >= 80:
+        target = 3
     elif average >= 70:
-        target = 6
+        target = 2
     elif average >= 60:
-        target = 5
+        target = 1
     else:
         target = 0
     return min(target, maximum, len(scores))
