@@ -33,7 +33,10 @@ jobs:
           python - <<'PY' > /tmp/repository-intake.json
           import os, re, json
           body = os.environ["ISSUE_BODY"]
-          fields = {k.strip().lower(): v.strip() for k, v in re.findall(r"^###\\s+([^\\n]+)\\n\\s*([^\\n]+)", body, re.MULTILINE)}
+          fields = {}
+          matches = re.finditer(r"^###\\s+([^\\n]+)\\n(.*?)(?=^###\\s+|\\Z)", body, re.MULTILINE | re.DOTALL)
+          for match in matches:
+              fields[match.group(1).strip().lower()] = match.group(2).strip()
           print(json.dumps({
               "repository": fields.get("target repository", ""),
               "issue_url": fields.get("specific issue (optional)", ""),
