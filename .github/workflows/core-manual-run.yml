@@ -32,21 +32,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-      GITHUB_REPOSITORY: \${{ github.repository }}
-      ZORATHVAEL_OUTREACH_TOKEN: \${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
-      AGENTMAIL_API_KEY: \${{ secrets.AGENTMAIL_API_KEY }}
-      AGENTMAIL_INBOX_ID: \${{ secrets.AGENTMAIL_INBOX_ID }}
-      ZORATHVAEL_LEAD_LIMIT: \${{ inputs.lead_limit }}
-      ZORATHVAEL_CONTACT_DISCOVERY_LIMIT: \${{ inputs.contact_limit }}
-      ZORATHVAEL_OUTREACH_LIMIT: \${{ inputs.outreach_limit }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
+      AGENTMAIL_API_KEY: ${{ secrets.AGENTMAIL_API_KEY }}
+      AGENTMAIL_INBOX_ID: ${{ secrets.AGENTMAIL_INBOX_ID }}
+      ZORATHVAEL_LEAD_LIMIT: ${{ inputs.lead_limit }}
+      ZORATHVAEL_CONTACT_DISCOVERY_LIMIT: ${{ inputs.contact_limit }}
+      ZORATHVAEL_OUTREACH_LIMIT: ${{ inputs.outreach_limit }}
       ZORATHVAEL_GITHUB_DAILY_OUTREACH_LIMIT: "10"
       ZORATHVAEL_GITHUB_REPOSITORY_COOLDOWN_DAYS: "7"
-      ZORATHVAEL_SMTP_HOST: \${{ secrets.ZORATHVAEL_SMTP_HOST }}
-      ZORATHVAEL_SMTP_PORT: \${{ secrets.ZORATHVAEL_SMTP_PORT }}
-      ZORATHVAEL_SMTP_USERNAME: \${{ secrets.ZORATHVAEL_SMTP_USERNAME }}
-      ZORATHVAEL_SMTP_PASSWORD: \${{ secrets.ZORATHVAEL_SMTP_PASSWORD }}
-      ZORATHVAEL_EMAIL_FROM: \${{ secrets.ZORATHVAEL_EMAIL_FROM }}
+      ZORATHVAEL_SMTP_HOST: ${{ secrets.ZORATHVAEL_SMTP_HOST }}
+      ZORATHVAEL_SMTP_PORT: ${{ secrets.ZORATHVAEL_SMTP_PORT }}
+      ZORATHVAEL_SMTP_USERNAME: ${{ secrets.ZORATHVAEL_SMTP_USERNAME }}
+      ZORATHVAEL_SMTP_PASSWORD: ${{ secrets.ZORATHVAEL_SMTP_PASSWORD }}
+      ZORATHVAEL_EMAIL_FROM: ${{ secrets.ZORATHVAEL_EMAIL_FROM }}
 
     steps:
       - name: Checkout repository
@@ -97,7 +97,7 @@ jobs:
             echo "## Zorathvael Core Manual Run"
             echo
             echo "Mode: 9/9 master orchestrator"
-            echo "Status: \${{ job.status }}"
+            echo "Status: ${{ job.status }}"
             echo
             echo "Orchestrator output:"
             cat /tmp/core-result.txt 2>/dev/null || echo "No orchestrator output."
