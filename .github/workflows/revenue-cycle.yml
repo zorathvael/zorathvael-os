@@ -59,12 +59,12 @@ jobs:
           fi
 
           echo "Detected working-tree changes:"
-          printf '%s\\n' "$changes"
+          printf '%s\n' "$changes"
 
-          non_data_changes="$(printf '%s\\n' "$changes" | awk 'NF && $0 !~ /^[?MADRCU! ]{2} data\\\\// {print}')"
+          non_data_changes="$(printf '%s\n' "$changes" | awk 'NF && $0 !~ /^[?MADRCU! ]{2} data\// {print}')"
           if [ -n "$non_data_changes" ]; then
             echo "::error::Unexpected non-data changes detected; refusing to persist or discard them."
-            printf '%s\\n' "$non_data_changes"
+            printf '%s\n' "$non_data_changes"
             exit 1
           fi
 
