@@ -101,6 +101,30 @@ These are the current offers. They are intentionally narrow so demand and delive
 
 ## For Customers
 
+### Current customer order portal
+
+Customers should use the live order portal rather than the legacy GitHub issue form:
+
+**Order portal:** https://project29784.websitepublisher.ai/order
+
+The portal supports **English and Bahasa Indonesia**. It can use the customer's browser language as the initial language and also provides a manual language selector.
+
+The current catalog uses fixed USDT prices:
+
+- **CI Failure Recovery:** 10 USDT
+- **AI Automation Audit:** 10 USDT
+- **Automation Blueprint:** 20 USDT
+
+IDR amounts shown in the portal are reference prices only; they are not converted dynamically into USDT.
+
+### Payment
+
+The customer-facing payment rail is **USDT on BNB Smart Chain (BEP20)**.
+
+The official payment address is displayed directly on the customer order portal. Customers must send the exact USDT amount for the selected service through **BEP20 / BNB Smart Chain only**. ERC20, TRC20, or other networks must not be used.
+
+Submitting an order form is **not proof of payment**. Payment becomes revenue only after on-chain verification.
+
 ### Share a repository for Core analysis
 
 If you want Zorathvael Core to inspect a specific public repository instead of waiting for automatic discovery, open the repository intake form:
@@ -267,7 +291,7 @@ The next proof point is:
 
 Open the current order form:
 
-[Open a Zorathvael order](https://github.com/zorathvael/zorathvael-os/issues/new?template=order.yml)
+[Open the Zorathvael customer order portal](https://project29784.websitepublisher.ai/order)
 
 ### Developers
 
