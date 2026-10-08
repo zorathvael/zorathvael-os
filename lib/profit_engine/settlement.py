@@ -63,6 +63,7 @@ def settle_verified_order(order: RevenueOrder, result: VerificationResult, ledge
         return {"recorded": False, "delivered": False, "delivery_path": None, "status": "already_recorded", "reason": "transaction hash already recorded"}
 
     mark_paid(order.order_id)
+    mark_status(order.order_id, "processing")
     try:
         _, delivery_path = deliver_order(order)
         update_metrics(float(result.amount), False)
@@ -90,6 +91,8 @@ def settle_verified_order(order: RevenueOrder, result: VerificationResult, ledge
 
 
 def verify_and_settle(order: RevenueOrder, tx_hash: str, verifier: PaymentVerifier | None = None) -> dict:
+    from .order_flow import attach_tx_hash
+    attach_tx_hash(order.order_id, tx_hash)
     intent = PaymentIntent(order.order_id, order.amount, order.currency, order.method, order.destination, order.created_at, order.expires_at)
     result = (verifier or PaymentVerifier()).verify_usdt_tx(intent, tx_hash)
     settlement = settle_verified_order(order, result)
