@@ -41,13 +41,19 @@ The system produces a concrete deliverable rather than only a conversational ans
 For paid orders, the delivery lifecycle is:
 
 ```
-Payment verified
+TX hash submitted
+      ↓
+Deterministic BSC USDT verification
+      ↓
+paid
+      ↓
+processing
       ↓
 Product generated
       ↓
 delivery_ready
       ↓
-AgentMail delivery worker
+Immediate AgentMail delivery attempt
       ↓
 Customer email + report attachment
       ↓
@@ -123,7 +129,11 @@ The customer-facing payment rail is **USDT on BNB Smart Chain (BEP20)**.
 
 The official payment address is displayed directly on the customer order portal. Customers must send the exact USDT amount for the selected service through **BEP20 / BNB Smart Chain only**. ERC20, TRC20, or other networks must not be used.
 
-Submitting an order form is **not proof of payment**. Payment becomes revenue only after on-chain verification.
+The portal now requires the customer to submit the **BSC transaction hash** after payment. The Core verifies the hash deterministically against BSC: chain ID, transaction success, USDT contract, recipient wallet, finalized block state, and received amount.
+
+A transaction hash cannot be reused as a second payment because the profit ledger records verified transaction hashes idempotently.
+
+Submitting the form is therefore a payment-verification request, not blind proof of payment. Revenue is recorded only after on-chain verification.
 
 ### Share a repository for Core analysis
 
@@ -143,12 +153,14 @@ For example, CI Failure Recovery can analyze a public GitHub repository where wo
 
 1. Select a service.
 2. Provide the target public repository.
-3. Provide the email address where the completed product should be delivered.
-4. Receive payment instructions.
-5. Payment is verified through the configured verification process.
-6. The Core executes the selected analysis.
-7. The result is generated from repository evidence.
-8. The autonomous delivery workflow sends the completed report through AgentMail.
+3. Provide the delivery email.
+4. Send the exact USDT amount shown by the portal.
+5. Paste the BSC transaction hash into the portal and submit it.
+6. Core verifies the transaction on-chain.
+7. A valid payment moves the order directly to `paid` → `processing`.
+8. The Core generates the requested product from repository evidence.
+9. AgentMail delivery is attempted immediately; the scheduled delivery worker remains the recovery path if the first send cannot complete.
+10. After successful email delivery, the order becomes `delivered`.
 
 ### Do I need to give access to a private repository?
 
@@ -169,10 +181,16 @@ Zorathvael Core now separates **product generation** from **customer delivery**.
 - Only after the email send succeeds does the order become `delivered`.
 - AgentMail's send idempotency key prevents workflow retries from sending the same order twice.
 
-The GitHub Actions worker requires these repository secrets:
+The GitHub Actions delivery worker requires these repository secrets:
 
 - `AGENTMAIL_API_KEY`
 - `AGENTMAIL_INBOX_ID`
+
+The portal-intake worker additionally requires:
+
+- `WPS_TOKEN` — a WebsitePublisher project access key with access to the portal lead-capture API.
+
+The portal worker is scheduled every two minutes and safely skips when `WPS_TOKEN` has not been configured; it does not turn missing configuration into a failed workflow.
 
 The AgentMail free tier currently supports 3 inboxes and 3,000 emails/month without a credit card. The Core does not require a paid AI API or SMTP server for this delivery path.
 
@@ -264,8 +282,8 @@ The repository currently contains an executable foundation for:
 - Automated workflows
 - Public-problem discovery
 - Commercial qualification
-- Customer order intake
-- USDT payment verification
+- Customer order intake with BSC transaction-hash submission
+- Deterministic USDT BEP20 payment verification and TX-hash idempotency
 - Evidence-based delivery generation
 - Autonomous AgentMail email delivery
 - Idempotent delivery tracking
