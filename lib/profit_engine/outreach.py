@@ -12,7 +12,7 @@ from typing import Any
 from .revenue import Lead, buyer_intent_score, commercial_relevance_score, offers
 
 
-ORDER_PORTAL_URL = "https://project29784.websitepublisher.ai/order"
+ORDER_PORTAL_URL = "https://zorathvael.github.io/zorathvael-os/order/"
 OUTREACH_MARKER = "<!-- zorathvael-outreach:v1 -->"
 DEFAULT_DAILY_GITHUB_LIMIT = 10
 DEFAULT_REPOSITORY_COOLDOWN_DAYS = 7
@@ -278,8 +278,25 @@ def select_auto_outreach(
         scored.append((lead, quality))
 
     scored.sort(key=lambda item: item[1], reverse=True)
-    target = adaptive_outreach_count([score for _, score in scored], hard_limit)
-    return [lead for lead, _ in scored[:target]]
+    if not scored or hard_limit <= 0:
+        return []
+
+    # Per-lead quality gates. A run never fills its quota with weaker leads
+    # merely because the average of stronger candidates is high.
+    eligible_count = 0
+    for _, score in scored[:hard_limit]:
+        if score >= 80:
+            eligible_count += 1
+        elif score >= 70 and eligible_count < 2:
+            eligible_count += 1
+            break
+        elif score >= 60 and eligible_count < 1:
+            eligible_count += 1
+            break
+        else:
+            break
+
+    return [lead for lead, _ in scored[:eligible_count]]
 
 
 def build_email_outreach_message(lead: Lead, recipient: str) -> str:
