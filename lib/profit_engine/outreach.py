@@ -1,14 +1,22 @@
 from __future__ import annotations
 
 import json
+import urllib.error
+import urllib.parse
+import urllib.request
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any
 
 from .revenue import Lead, buyer_intent_score, commercial_relevance_score, offers
 
 
 ORDER_PORTAL_URL = "https://project29784.websitepublisher.ai/order"
+OUTREACH_MARKER = "<!-- zorathvael-outreach:v1 -->"
+DEFAULT_DAILY_GITHUB_LIMIT = 10
+DEFAULT_REPOSITORY_COOLDOWN_DAYS = 7
+DEFAULT_MAX_PER_RUN = 10
 
 
 @dataclass(frozen=True)
@@ -25,49 +33,255 @@ class OutreachEvent:
 
 def _explicit_intent(lead: Lead) -> bool:
     evidence = set(lead.evidence)
-    return bool(
-        evidence.intersection(
-            {
-                "need help",
-                "looking for",
-                "github actions failed",
-                "actions failed",
-                "workflow failed",
-                "failing workflow",
-                "ci failed",
-                "build failed",
-                "deployment failed",
-                "deploy failed",
-                "pipeline failed",
-                "cant deploy",
-                "cannot deploy",
-            }
-        )
+    return bool(evidence.intersection({
+        "need help", "looking for", "github actions failed", "actions failed",
+        "workflow failed", "failing workflow", "ci failed", "build failed",
+        "deployment failed", "deploy failed", "pipeline failed", "cant deploy",
+        "cannot deploy",
+    }))
+
+
+def _github_get_json(url: str, token: str, timeout: float = 15.0) -> dict[str, Any]:
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {token}" if token else "",
+        "X-GitHub-Api-Version": "2026-03-10",
+        "User-Agent": "Zorathvael-Revenue-Engine",
+    }
+    request = urllib.request.Request(url, headers={k: v for k, v in headers.items() if v})
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("GitHub API response is not an object")
+    return payload
+
+
+def _parse_time(value: str) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+    except ValueError:
+        return None
+
+
+def repository_health_score(
+    repository_data: dict[str, Any],
+    *,
+    now: datetime | None = None,
+    issue_updated_at: str = "",
+    issue_state: str = "open",
+) -> tuple[int, list[str]]:
+    now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    if repository_data.get("archived") or repository_data.get("disabled"):
+        return 0, ["repository_archived_or_disabled"]
+
+    pushed_at = _parse_time(str(repository_data.get("pushed_at", "")))
+    issue_time = _parse_time(issue_updated_at)
+    reasons: list[str] = []
+    activity = 0
+
+    if pushed_at is None:
+        reasons.append("repository_activity_unknown")
+    else:
+        age_days = max((now - pushed_at).total_seconds() / 86400, 0)
+        if age_days <= 7:
+            activity = 100
+        elif age_days <= 30:
+            activity = 85
+        elif age_days <= 60:
+            activity = 70
+        elif age_days <= 90:
+            activity = 55
+        else:
+            activity = 25
+            reasons.append("stale_repository")
+
+    issue_freshness = 0
+    if issue_state.lower() != "open":
+        reasons.append("issue_not_open")
+    elif issue_time is not None:
+        issue_age = max((now - issue_time).total_seconds() / 86400, 0)
+        if issue_age <= 7:
+            issue_freshness = 100
+        elif issue_age <= 30:
+            issue_freshness = 85
+        elif issue_age <= 60:
+            issue_freshness = 65
+        elif issue_age <= 90:
+            issue_freshness = 45
+        else:
+            issue_freshness = 20
+            reasons.append("stale_issue")
+    else:
+        reasons.append("issue_freshness_unknown")
+
+    stars = max(int(repository_data.get("stargazers_count", 0) or 0), 0)
+    forks = max(int(repository_data.get("forks_count", 0) or 0), 0)
+    engagement = min(100, 40 + min(stars, 1000) / 1000 * 40 + min(forks, 200) / 200 * 20)
+    maintainer_activity = activity
+    score = round(
+        activity * 0.35 + issue_freshness * 0.35
+        + maintainer_activity * 0.15 + engagement * 0.15
     )
+    if issue_state.lower() != "open" or score < 55:
+        reasons.append("repository_health_below_outreach_threshold")
+    return max(0, min(score, 100)), reasons
+
+
+def fetch_repository_health(
+    repository: str,
+    issue_number: str,
+    token: str = "",
+    *,
+    now: datetime | None = None,
+) -> tuple[int, dict[str, int], list[str]]:
+    repository_url = f"https://api.github.com/repos/{repository}"
+    issue_url = f"https://api.github.com/repos/{repository}/issues/{urllib.parse.quote(str(issue_number), safe='')}"
+    try:
+        repo = _github_get_json(repository_url, token)
+        issue = _github_get_json(issue_url, token)
+    except (OSError, urllib.error.HTTPError, urllib.error.URLError, ValueError, KeyError):
+        return 0, {}, ["github_health_lookup_failed"]
+
+    score, reasons = repository_health_score(
+        repo,
+        now=now,
+        issue_updated_at=str(issue.get("updated_at", "")),
+        issue_state=str(issue.get("state", "open")),
+    )
+    metrics = {"activity": score, "issue_freshness": score, "maintainer_activity": score, "engagement": score}
+    return score, metrics, reasons
+
+
+def _event_value(event: OutreachEvent | dict[str, Any], name: str, default: Any = "") -> Any:
+    return event.get(name, default) if isinstance(event, dict) else getattr(event, name, default)
+
+
+def _event_metadata(event: OutreachEvent | dict[str, Any]) -> dict[str, Any]:
+    value = _event_value(event, "metadata", {})
+    return value if isinstance(value, dict) else {}
+
+
+def _event_is_github_send(event: OutreachEvent | dict[str, Any]) -> bool:
+    return (
+        _event_value(event, "event_type") == "outreach_sent"
+        and _event_metadata(event).get("channel") == "github_issue_comment"
+    )
+
+
+def _event_time(event: OutreachEvent | dict[str, Any]) -> datetime | None:
+    return _parse_time(str(_event_value(event, "occurred_at", "")))
+
+
+def github_sends_today(events: list[OutreachEvent | dict[str, Any]], now: datetime | None = None) -> int:
+    now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    return sum(
+        1 for event in events
+        if _event_is_github_send(event)
+        and (event_time := _event_time(event)) is not None
+        and event_time.date() == now.date()
+    )
+
+
+def repository_recently_contacted(
+    repository: str,
+    events: list[OutreachEvent | dict[str, Any]],
+    now: datetime,
+    cooldown_days: int,
+) -> bool:
+    cutoff = now - timedelta(days=max(cooldown_days, 0))
+    return any(
+        _event_value(event, "repository", "").lower() == repository.lower()
+        and _event_value(event, "event_type") in {"outreach_sent", "email_outreach_sent"}
+        and (event_time := _event_time(event)) is not None
+        and event_time >= cutoff
+        for event in events
+    )
+
+
+def adaptive_outreach_count(scores: list[int], maximum: int = DEFAULT_MAX_PER_RUN) -> int:
+    scores = sorted((max(0, min(int(score), 100)) for score in scores), reverse=True)
+    maximum = max(0, min(int(maximum), DEFAULT_MAX_PER_RUN))
+    if not scores or maximum == 0 or scores[0] < 50:
+        return 0
+    if len(scores) < 5:
+        return min(len(scores), 5) if scores[0] >= 60 else 0
+    sample = scores[: min(len(scores), maximum)]
+    average = sum(sample) / len(sample)
+    if average >= 90:
+        target = 10
+    elif average >= 80:
+        target = 8
+    elif average >= 70:
+        target = 6
+    elif average >= 60:
+        target = 5
+    else:
+        target = 0
+    return min(target, maximum, len(scores))
 
 
 def select_auto_outreach(
     leads: list[Lead],
     already_contacted: set[str],
-    limit: int = 3,
+    limit: int = DEFAULT_MAX_PER_RUN,
+    *,
+    events: list[OutreachEvent | dict[str, Any]] | None = None,
+    token: str = "",
+    now: datetime | None = None,
+    daily_limit: int = DEFAULT_DAILY_GITHUB_LIMIT,
+    repository_cooldown_days: int = DEFAULT_REPOSITORY_COOLDOWN_DAYS,
 ) -> list[Lead]:
+    now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    events = events or []
+    safety_mode = bool(token or events)
+    daily_remaining = max(int(daily_limit) - github_sends_today(events, now), 0) if safety_mode else max(int(limit), 0)
+    hard_limit = min(max(int(limit), 0), DEFAULT_MAX_PER_RUN, daily_remaining)
+
     candidates = [
-        lead
-        for lead in leads
+        lead for lead in leads
         if lead.url not in already_contacted
         and _explicit_intent(lead)
         and buyer_intent_score(lead) >= 45
         and commercial_relevance_score(lead) >= 70
+        and (
+            not safety_mode
+            or not repository_recently_contacted(lead.repository, events, now, repository_cooldown_days)
+        )
     ]
-    return sorted(
-        candidates,
-        key=lambda lead: (
-            buyer_intent_score(lead),
-            commercial_relevance_score(lead),
-            lead.score,
-        ),
-        reverse=True,
-    )[: max(0, limit)]
+
+    scored: list[tuple[Lead, int]] = []
+    health_cache: dict[str, tuple[int, dict[str, int], list[str]]] = {}
+    for lead in candidates:
+        if not safety_mode:
+            scored.append((
+                lead,
+                round(
+                    buyer_intent_score(lead) * 0.40
+                    + commercial_relevance_score(lead) * 0.40
+                    + lead.score * 0.20
+                ),
+            ))
+            continue
+        if lead.repository not in health_cache:
+            health_cache[lead.repository] = fetch_repository_health(
+                lead.repository, lead.external_id, token=token, now=now
+            )
+        health, _, reasons = health_cache[lead.repository]
+        if health < 55 or reasons:
+            continue
+        quality = round(
+            buyer_intent_score(lead) * 0.30
+            + commercial_relevance_score(lead) * 0.30
+            + lead.score * 0.15
+            + health * 0.25
+        )
+        scored.append((lead, quality))
+
+    scored.sort(key=lambda item: item[1], reverse=True)
+    target = adaptive_outreach_count([score for _, score in scored], hard_limit)
+    return [lead for lead, _ in scored[:target]]
 
 
 def build_email_outreach_message(lead: Lead, recipient: str) -> str:
@@ -89,7 +303,7 @@ def build_email_outreach_message(lead: Lead, recipient: str) -> str:
 def build_outreach_message(lead: Lead) -> str:
     offer = offers()[lead.offer_id]
     return (
-        "<!-- zorathvael-outreach:v1 -->\n"
+        f"{OUTREACH_MARKER}\n"
         f"Hi @{lead.author} — I found this public issue ({lead.title}) while looking for "
         "specific problems where I can provide a concrete outcome. "
         f"Zorathvael can deliver {offer.name.lower()} for this case. "
@@ -106,8 +320,7 @@ def load_events(path: str = "data/revenue_events.jsonl") -> list[OutreachEvent]:
     events: list[OutreachEvent] = []
     for line in target.read_text(encoding="utf-8").splitlines():
         if line.strip():
-            row = json.loads(line)
-            events.append(OutreachEvent(**row))
+            events.append(OutreachEvent(**json.loads(line)))
     return events
 
 
@@ -120,9 +333,8 @@ def append_event(event: OutreachEvent, path: str = "data/revenue_events.jsonl") 
 
 def make_event(event_type: str, lead: Lead, metadata: dict[str, object] | None = None) -> OutreachEvent:
     occurred_at = datetime.now(timezone.utc).isoformat()
-    event_id = f"{event_type}:{lead.url}:{occurred_at}"
     return OutreachEvent(
-        event_id=event_id,
+        event_id=f"{event_type}:{lead.url}:{occurred_at}",
         event_type=event_type,
         lead_url=lead.url,
         repository=lead.repository,
