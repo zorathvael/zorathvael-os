@@ -59,11 +59,14 @@ def get_new_leads() -> list[dict[str, Any]]:
             {"page": page, "per_page": 100, "status": "new", "form_name": FORM_NAME},
         )
         data = payload.get("data", payload)
-        batch = data.get("leads", data.get("results", [])) if isinstance(data, dict) else []
+        result = data.get("result", data) if isinstance(data, dict) else data
+        batch = result.get("data", result.get("leads", result.get("results", []))) if isinstance(result, dict) else []
         if not batch:
             break
         leads.extend(batch)
-        pagination = data.get("pagination", {}) if isinstance(data, dict) else {}
+        pagination = result.get("pagination", {}) if isinstance(result, dict) else {}
+        if pagination.get("total_pages") and page >= int(pagination["total_pages"]):
+            break
         if not pagination.get("has_next") and len(batch) < 100:
             break
         page += 1
