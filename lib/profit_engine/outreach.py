@@ -281,22 +281,22 @@ def select_auto_outreach(
     if not scored or hard_limit <= 0:
         return []
 
-    # Per-lead quality gates. A run never fills its quota with weaker leads
-    # merely because the average of stronger candidates is high.
-    eligible_count = 0
-    for _, score in scored[:hard_limit]:
-        if score >= 80:
-            eligible_count += 1
-        elif score >= 70 and eligible_count < 2:
-            eligible_count += 1
-            break
-        elif score >= 60 and eligible_count < 1:
-            eligible_count += 1
-            break
-        else:
-            break
+    # Strict per-lead gates use the repository's published lead score.
+    # Composite quality still determines ranking, but a strong average can
+    # never promote a weak lead into the outreach quota.
+    ranked = scored[:hard_limit]
+    high_quality = [item for item in ranked if item[0].score >= 80]
+    qualified_70 = [item for item in ranked if item[0].score >= 70]
+    if len(high_quality) >= 3:
+        target = 3
+    elif len(qualified_70) >= 2:
+        target = 2
+    elif len(qualified_70) >= 1:
+        target = 1
+    else:
+        target = 0
 
-    return [lead for lead, _ in scored[:eligible_count]]
+    return [lead for lead, _ in ranked[:target]]
 
 
 def build_email_outreach_message(lead: Lead, recipient: str) -> str:
