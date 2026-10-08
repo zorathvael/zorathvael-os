@@ -37,48 +37,53 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "issues" ]; then
             PYTHONPATH=. python scripts/order_intake.py --issue-number "$ISSUE_NUMBER" --body "$ISSUE_BODY" > /tmp/order.json
-            python - <<'PY'
-            import json
-            p=json.load(open("/tmp/order.json"))
-            body = "\n".join([
-                "## Payment instructions",
-                "",
-                f"**Order:** {p['order_id']}",
-                "",
-                f"**Product:** {p['product_id']}",
-                "",
-                f"**Amount:** {p['amount']} {p['currency']}",
-                "",
-                f"**Method:** {p['method']}",
-                "",
-                f"**Destination:** {p['destination']}",
-                "",
-                f"**Expires:** {p['expires_at']}",
-                "",
-                "After payment, comment on this issue with the BSC transaction hash in this form:",
-                "",
-                "TX: 0xYOUR_64_CHARACTER_BSC_TRANSACTION_HASH",
-                "",
-                "The system verifies the transfer before recording revenue and starting autonomous delivery.",
-                "",
-                "Do not post private keys, seed phrases, passwords, or API tokens.",
-            ])
-            open("/tmp/comment.md","w",encoding="utf-8").write(body)
-            PY
-            gh issue comment "$ISSUE_NUMBER" --body-file /tmp/comment.md
+            TX_HASH="$(printf '%s' "$ISSUE_BODY" | grep -Eio '0x[a-fA-F0-9]{64}' | head -n1 || true)"
+            if [ -n "$TX_HASH" ]; then
+              PYTHONPATH=. python scripts/process_payment_comment.py --issue-number "$ISSUE_NUMBER" --comment "TX: $TX_HASH" > /tmp/payment.json
+              ISSUE_NUMBER="$ISSUE_NUMBER" python - <<'PY'
+              import json, os, subprocess
+              p=json.load(open("/tmp/payment.json"))
+              issue=os.environ["ISSUE_NUMBER"]
+              if p.get("verified"):
+                  body = f"Payment verified for order **{p.get('order_id','unknown')}**. The product has been generated and queued for autonomous AgentMail delivery. No manual delivery action is required."
+              elif p.get("status") == "pending":
+                  body = "Payment detected but is still awaiting required BSC confirmations. The automation will retry."
+              elif p.get("status") == "rejected":
+                  body = f"Payment verification rejected: {p.get('reason','unknown reason')}"
+              else:
+                  body = p.get("reason", "Order received; payment verification will continue.")
+              subprocess.run(["gh","issue","comment",issue,"--body",body],check=True)
+              PY
+            else
+              ISSUE_NUMBER="$ISSUE_NUMBER" python - <<'PY'
+              import json, os, subprocess
+              p=json.load(open("/tmp/order.json"))
+              issue=os.environ["ISSUE_NUMBER"]
+              body = "\n".join([
+                  "## Payment instructions","",
+                  f"**Order:** {p['order_id']}","",
+                  f"**Product:** {p['product_id']}","",
+                  f"**Amount:** {p['amount']} {p['currency']}","",
+                  f"**Method:** {p['method']}","",
+                  f"**Destination:** {p['destination']}","",
+                  f"**Expires:** {p['expires_at']}","",
+                  "After payment, comment on this issue with the BSC transaction hash:","",
+                  "TX: 0xYOUR_64_CHARACTER_BSC_TRANSACTION_HASH","",
+                  "The system verifies the transfer before recording revenue and starting autonomous delivery.","",
+                  "Do not post private keys, seed phrases, passwords, or API tokens.",
+              ])
+              subprocess.run(["gh","issue","comment",issue,"--body",body],check=True)
+              PY
+            fi
           else
             PYTHONPATH=. python scripts/process_payment_comment.py --issue-number "$ISSUE_NUMBER" --comment "$ISSUE_COMMENT" > /tmp/payment.json
-            python - <<'PY'
+            ISSUE_NUMBER="$ISSUE_NUMBER" python - <<'PY'
             import json, os, subprocess
             p=json.load(open("/tmp/payment.json"))
             issue=os.environ["ISSUE_NUMBER"]
             status=p.get("status")
             if p.get("verified"):
-                body = (
-                    f"Payment verified for order **{p.get('order_id','unknown')}**. "
-                    "The product has been generated and queued for autonomous AgentMail delivery. "
-                    "No manual delivery action is required."
-                )
+                body = f"Payment verified for order **{p.get('order_id','unknown')}**. The product has been generated and queued for autonomous AgentMail delivery. No manual delivery action is required."
             elif status == "pending":
                 body = "Payment detected but still awaiting required BSC confirmations. The payment scanner will retry automatically."
             elif status == "rejected":
