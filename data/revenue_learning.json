@@ -2,14 +2,14 @@
   "delivered_orders": 0,
   "offer_stats": {
     "ci_failure_recovery": {
-      "outreach_sent": 5,
+      "outreach_sent": 8,
       "paid_orders": 0,
       "payment_rate_per_outreach": 0.0,
       "response_rate": 0.0,
       "responses_observed": 0
     }
   },
-  "outreach_sent": 5,
+  "outreach_sent": 8,
   "paid_orders": 0,
   "responses_observed": 0,
   "revenue_usdt": 0
