@@ -37,11 +37,12 @@ def test_repository_health_blocks_archived_and_stale_repositories():
 
 
 def test_adaptive_outreach_count_scales_only_with_quality():
-    assert adaptive_outreach_count([95, 92, 90, 88, 86, 84, 82, 80, 78, 76], 10) == 8
-    assert adaptive_outreach_count([82, 81, 80, 79, 78, 77, 76], 10) == 6
-    assert adaptive_outreach_count([72, 71, 70, 69, 68, 67], 10) == 5
-    assert adaptive_outreach_count([61, 60, 60, 60, 60], 10) == 5
-    assert adaptive_outreach_count([49, 45, 40, 35, 30], 10) == 0
+    assert adaptive_outreach_count([95, 92, 90], 3) == 3
+    assert adaptive_outreach_count([82, 81, 80], 3) == 3
+    assert adaptive_outreach_count([72, 71, 70], 3) == 2
+    assert adaptive_outreach_count([61, 60, 60], 3) == 1
+    assert adaptive_outreach_count([69, 65, 60], 3) == 0
+    assert adaptive_outreach_count([95, 90, 85], 2) == 2
 
 
 def test_selection_enforces_repository_cooldown_and_daily_budget(monkeypatch):
