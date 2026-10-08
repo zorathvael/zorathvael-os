@@ -27,19 +27,38 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.12"
-      - name: Install runtime dependencies
+      - name: Run revenue acquisition engine
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZORATHVAEL_LEAD_LIMIT: "20"
+        run: PYTHONPATH=. python scripts/revenue_cycle.py
+      - name: Discover public contact channels
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZORATHVAEL_CONTACT_DISCOVERY_LIMIT: "10"
+        run: PYTHONPATH=. python scripts/discover_contacts.py
+      - name: Validate outreach transport
+        env:
+          ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
+          ZORATHVAEL_SMTP_HOST: ${{ secrets.ZORATHVAEL_SMTP_HOST }}
+          ZORATHVAEL_SMTP_USERNAME: ${{ secrets.ZORATHVAEL_SMTP_USERNAME }}
+          ZORATHVAEL_SMTP_PASSWORD: ${{ secrets.ZORATHVAEL_SMTP_PASSWORD }}
+          ZORATHVAEL_EMAIL_FROM: ${{ secrets.ZORATHVAEL_EMAIL_FROM }}
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Run Zorathvael Core master orchestrator
+          if [ -z "$ZORATHVAEL_OUTREACH_TOKEN" ] && { [ -z "$ZORATHVAEL_SMTP_HOST" ] || [ -z "$ZORATHVAEL_SMTP_USERNAME" ] || [ -z "$ZORATHVAEL_SMTP_PASSWORD" ] || [ -z "$ZORATHVAEL_EMAIL_FROM" ]; }; then
+            echo "::error::No external outreach transport is configured. Set ZORATHVAEL_OUTREACH_TOKEN (recommended) or complete SMTP secrets."
+            exit 1
+          fi
+          if [ -n "$ZORATHVAEL_OUTREACH_TOKEN" ]; then
+            echo "External GitHub outreach token is configured."
+          else
+            echo "SMTP outreach transport is configured; GitHub external comments require ZORATHVAEL_OUTREACH_TOKEN."
+          fi
+      - name: Execute qualified outreach
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          AGENTMAIL_API_KEY: ${{ secrets.AGENTMAIL_API_KEY }}
-          AGENTMAIL_INBOX_ID: ${{ secrets.AGENTMAIL_INBOX_ID }}
-          ZORATHVAEL_LEAD_LIMIT: "20"
-          ZORATHVAEL_CONTACT_DISCOVERY_LIMIT: "10"
           ZORATHVAEL_OUTREACH_LIMIT: "3"
           ZORATHVAEL_GITHUB_DAILY_OUTREACH_LIMIT: "10"
           ZORATHVAEL_GITHUB_REPOSITORY_COOLDOWN_DAYS: "7"
@@ -48,48 +67,24 @@ jobs:
           ZORATHVAEL_SMTP_USERNAME: ${{ secrets.ZORATHVAEL_SMTP_USERNAME }}
           ZORATHVAEL_SMTP_PASSWORD: ${{ secrets.ZORATHVAEL_SMTP_PASSWORD }}
           ZORATHVAEL_EMAIL_FROM: ${{ secrets.ZORATHVAEL_EMAIL_FROM }}
-        run: PYTHONPATH=. python scripts/core_orchestrator.py
+        run: PYTHONPATH=. python scripts/execute_outreach.py
       - name: Persist acquisition state
         run: |
-          set -euo pipefail
-          changes="$(git status --porcelain)"
-          if [ -z "$changes" ]; then
+          if [ -z "$(git status --porcelain -- data)" ]; then
             echo "No acquisition state changes."
             exit 0
           fi
-
-          echo "Detected working-tree changes:"
-          printf '%s\n' "$changes"
-
-          non_data_changes="$(printf '%s\n' "$changes" | awk 'NF && $0 !~ /^[?MADRCU! ]{2} data\// {print}')"
-          if [ -n "$non_data_changes" ]; then
-            echo "::error::Unexpected non-data changes detected; refusing to persist or discard them."
-            printf '%s\n' "$non_data_changes"
-            exit 1
-          fi
-
           git config user.name "zorathvael"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/
-          git commit -m "chore: refresh revenue acquisition state"
-
+          git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json data/revenue_events.jsonl
+          git commit -m "chore: refresh revenue acquisition queue"
           for attempt in 1 2 3; do
-            echo "Persistence attempt $attempt/3"
             git fetch origin main
-
-            if ! git rebase origin/main; then
-              echo "::error::Unable to rebase acquisition state onto origin/main; aborting without discarding the state commit."
-              git rebase --abort || true
-              exit 1
+            if git rebase origin/main; then
+              git push origin HEAD:main && exit 0
             fi
-
-            if git push origin HEAD:main; then
-              echo "Revenue acquisition state persisted successfully."
-              exit 0
-            fi
-
-            echo "Remote main advanced during push; retrying against the latest origin/main..."
+            git rebase --abort || true
+            git reset --hard origin/main
+            echo "Retrying acquisition state persistence..."
           done
-
-          echo "::error::Failed to persist revenue acquisition state after 3 attempts."
           exit 1
