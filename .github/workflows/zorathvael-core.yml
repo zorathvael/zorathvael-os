@@ -21,6 +21,12 @@ jobs:
   run-core:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ZORATHVAEL_LEAD_LIMIT: ${{ inputs.lead_limit }}
+      ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
+      AGENTMAIL_API_KEY: ${{ secrets.AGENTMAIL_API_KEY }}
+      AGENTMAIL_INBOX_ID: ${{ secrets.AGENTMAIL_INBOX_ID }}
     steps:
       - name: Checkout Core
         uses: actions/checkout@v4
@@ -35,13 +41,9 @@ jobs:
       - name: Verify Core before execution
         run: PYTHONPATH=. pytest -q test/
       - name: Run Zorathvael Core master orchestrator
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ZORATHVAEL_LEAD_LIMIT: ${{ inputs.lead_limit }}
-          ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
-          AGENTMAIL_API_KEY: ${{ secrets.AGENTMAIL_API_KEY }}
         run: |
-          PYTHONPATH=. python scripts/core_orchestrator.py | tee /tmp/core-result.json
+          set -o pipefail
+          PYTHONPATH=. python scripts/core_orchestrator.py | tee /tmp/core-result.txt
       - name: Publish Core result
         if: always()
         run: |
@@ -51,19 +53,28 @@ jobs:
             echo "**Mode:** Master orchestrator"
             echo "**Status:** ${{ job.status }}"
             echo
-            echo '```json'
-            cat /tmp/core-result.json 2>/dev/null || echo '{"status":"no orchestrator output"}'
+            echo '```text'
+            cat /tmp/core-result.txt 2>/dev/null || echo "No orchestrator output."
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Persist Core state
         if: always()
         run: |
-          if [ -n "$(git status --porcelain -- data)" ]; then
-            git config user.name "zorathvael"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data
-            git commit -m "chore: persist zorathvael core state" || true
-            git push || true
-          else
+          if [ -z "$(git status --porcelain -- data)" ]; then
             echo "No Core state changes."
+            exit 0
           fi
+          git config user.name "zorathvael"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git commit -m "chore: persist zorathvael core state"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main; then
+              git push origin HEAD:main && exit 0
+            fi
+            git rebase --abort || true
+            git reset --hard origin/main
+            echo "Retrying Core state persistence..."
+          done
+          exit 1
