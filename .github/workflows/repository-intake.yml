@@ -15,7 +15,7 @@ concurrency:
 jobs:
   intake:
     if: >-
-      github.event.issue.title == '[REPO] ' &&
+      startsWith(github.event.issue.title, '[REPO]') &&
       github.actor == 'zorathvael'
     runs-on: ubuntu-latest
     timeout-minutes: 5
