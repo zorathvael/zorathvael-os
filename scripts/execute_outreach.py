@@ -113,8 +113,6 @@ def send_email(lead: Lead) -> str:
 def main() -> int:
     token = os.getenv("ZORATHVAEL_OUTREACH_TOKEN", "").strip()
     fallback_token = os.getenv("GITHUB_TOKEN", "").strip()
-    if not token and not fallback_token and not email_configured():
-        raise SystemExit("No outreach transport configured")
 
     events = load_events()
     contacted = {
@@ -131,6 +129,35 @@ def main() -> int:
     failures = []
     blocked = []
     own_repository = os.getenv("GITHUB_REPOSITORY", "zorathvael/zorathvael-os").lower()
+
+    external_selected = [
+        lead for lead in selected
+        if lead.repository.lower() != own_repository
+        and not (lead.contact_email and email_configured())
+    ]
+    if external_selected and not token:
+        message = (
+            "External outreach is required but ZORATHVAEL_OUTREACH_TOKEN is missing. "
+            "GITHUB_TOKEN cannot write to repositories other than the workflow repository. "
+            f"selected_external={len(external_selected)}"
+        )
+        for lead in external_selected:
+            append_event(make_event(
+                "outreach_blocked",
+                lead,
+                {"reason": "external_write_token_missing", "fatal": True},
+            ))
+        print(json.dumps({
+            "selected": len(selected),
+            "sent": 0,
+            "blocked": [{"lead_url": lead.url, "reason": "external_write_token_missing"} for lead in external_selected],
+            "failures": [],
+            "email_transport_configured": email_configured(),
+            "external_transport_configured": False,
+            "error": message,
+            "event_log": "data/revenue_events.jsonl",
+        }, indent=2, sort_keys=True))
+        return 2
 
     for lead in selected:
         # Email is the primary route when a public email was discovered and
@@ -208,14 +235,18 @@ def main() -> int:
                 {"error": f"{type(exc).__name__}: {exc}"},
             ))
 
-    print(json.dumps({
+    result = {
         "selected": len(selected),
         "sent": sent,
         "blocked": blocked,
         "failures": failures,
         "email_transport_configured": email_configured(),
+        "external_transport_configured": bool(token),
         "event_log": "data/revenue_events.jsonl",
-    }, indent=2, sort_keys=True))
+    }
+    print(json.dumps(result, indent=2, sort_keys=True))
+    if selected and sent == 0:
+        return 2
     return 0
 
 
