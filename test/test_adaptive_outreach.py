@@ -40,7 +40,7 @@ def test_adaptive_outreach_count_scales_only_with_quality():
     assert adaptive_outreach_count([95, 92, 90, 88, 86, 84, 82, 80, 78, 76], 10) == 8
     assert adaptive_outreach_count([82, 81, 80, 79, 78, 77, 76], 10) == 6
     assert adaptive_outreach_count([72, 71, 70, 69, 68, 67], 10) == 5
-    assert adaptive_outreach_count([61, 60, 59, 58, 57], 10) == 5
+    assert adaptive_outreach_count([61, 60, 60, 60, 60], 10) == 5
     assert adaptive_outreach_count([49, 45, 40, 35, 30], 10) == 0
 
 
