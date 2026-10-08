@@ -51,21 +51,45 @@ jobs:
         run: PYTHONPATH=. python scripts/core_orchestrator.py
       - name: Persist acquisition state
         run: |
-          if [ -z "$(git status --porcelain -- data)" ]; then
+          set -euo pipefail
+          changes="$(git status --porcelain)"
+          if [ -z "$changes" ]; then
             echo "No acquisition state changes."
             exit 0
           fi
+
+          echo "Detected working-tree changes:"
+          printf '%s\\n' "$changes"
+
+          non_data_changes="$(printf '%s\\n' "$changes" | awk 'NF && $0 !~ /^[?MADRCU! ]{2} data\\\\// {print}')"
+          if [ -n "$non_data_changes" ]; then
+            echo "::error::Unexpected non-data changes detected; refusing to persist or discard them."
+            printf '%s\\n' "$non_data_changes"
+            exit 1
+          fi
+
           git config user.name "zorathvael"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/revenue_leads.jsonl data/outreach_drafts.md data/revenue_metrics.json data/revenue_events.jsonl
-          git commit -m "chore: refresh revenue acquisition queue"
+          git add data/
+          git commit -m "chore: refresh revenue acquisition state"
+
           for attempt in 1 2 3; do
+            echo "Persistence attempt $attempt/3"
             git fetch origin main
-            if git rebase origin/main; then
-              git push origin HEAD:main && exit 0
+
+            if ! git rebase origin/main; then
+              echo "::error::Unable to rebase acquisition state onto origin/main; aborting without discarding the state commit."
+              git rebase --abort || true
+              exit 1
             fi
-            git rebase --abort || true
-            git reset --hard origin/main
-            echo "Retrying acquisition state persistence..."
+
+            if git push origin HEAD:main; then
+              echo "Revenue acquisition state persisted successfully."
+              exit 0
+            fi
+
+            echo "Remote main advanced during push; retrying against the latest origin/main..."
           done
+
+          echo "::error::Failed to persist revenue acquisition state after 3 attempts."
           exit 1
