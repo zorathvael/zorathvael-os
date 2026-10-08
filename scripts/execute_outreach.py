@@ -122,7 +122,15 @@ def main() -> int:
     }
     leads = load_leads()
     selected = select_auto_outreach(
-        leads, contacted, limit=int(os.getenv("ZORATHVAEL_OUTREACH_LIMIT", "3"))
+        leads,
+        contacted,
+        limit=int(os.getenv("ZORATHVAEL_OUTREACH_LIMIT", "3")),
+        events=events,
+        token=token or fallback_token,
+        daily_limit=int(os.getenv("ZORATHVAEL_GITHUB_DAILY_OUTREACH_LIMIT", "10")),
+        repository_cooldown_days=int(
+            os.getenv("ZORATHVAEL_GITHUB_REPOSITORY_COOLDOWN_DAYS", "7")
+        ),
     )
 
     sent = 0

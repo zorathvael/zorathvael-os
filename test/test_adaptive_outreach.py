@@ -45,10 +45,37 @@ def test_adaptive_outreach_count_scales_only_with_quality():
     assert adaptive_outreach_count([95, 90, 85], 2) == 2
 
 
+def test_selection_applies_quality_threshold_per_lead(monkeypatch):
+    def fake_health(repository, issue_number, token="", now=None):
+        return 95, {"activity": 95, "issue_freshness": 95, "maintainer_activity": 95, "engagement": 95}, []
+
+    monkeypatch.setattr("lib.profit_engine.outreach.fetch_repository_health", fake_health)
+    leads = [lead("owner/a", "1", 95), lead("owner/b", "2", 82), lead("owner/c", "3", 79), lead("owner/d", "4", 60)]
+    selected = select_auto_outreach(
+        leads, set(), limit=3, events=[], token="token",
+        now=datetime.now(timezone.utc), daily_limit=10, repository_cooldown_days=7,
+    )
+    assert [item.repository for item in selected] == ["owner/a", "owner/b"]
+
+    leads = [lead("owner/a", "1", 79), lead("owner/b", "2", 75), lead("owner/c", "3", 69)]
+    selected = select_auto_outreach(
+        leads, set(), limit=3, events=[], token="token",
+        now=datetime.now(timezone.utc), daily_limit=10, repository_cooldown_days=7,
+    )
+    assert [item.repository for item in selected] == ["owner/a", "owner/b"]
+
+    leads = [lead("owner/a", "1", 69), lead("owner/b", "2", 59)]
+    selected = select_auto_outreach(
+        leads, set(), limit=3, events=[], token="token",
+        now=datetime.now(timezone.utc), daily_limit=10, repository_cooldown_days=7,
+    )
+    assert selected == []
+
+
 def test_selection_enforces_repository_cooldown_and_daily_budget(monkeypatch):
     fresh = datetime.now(timezone.utc).isoformat()
 
-    def fake_health(repository, issue_number, token=""):
+    def fake_health(repository, issue_number, token="", now=None):
         return 95, {"activity": 95, "issue_freshness": 95, "maintainer_activity": 95, "engagement": 95}, []
 
     monkeypatch.setattr("lib.profit_engine.outreach.fetch_repository_health", fake_health)
