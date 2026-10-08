@@ -109,11 +109,11 @@ These are the current offers. They are intentionally narrow so demand and delive
 
 ### Current customer order portal
 
-Customers should use the live order portal rather than the legacy GitHub issue form:
+Customers should use the GitHub Pages order portal:
 
-**Order portal:** https://project29784.websitepublisher.ai/order
+**Order portal:** https://zorathvael.github.io/zorathvael-os/order/
 
-The portal supports **English and Bahasa Indonesia**. It can use the customer's browser language as the initial language and also provides a manual language selector.
+The portal supports **English and Bahasa Indonesia**. It detects the browser language and also provides a manual language selector. GitHub Issues is used only as the order-record transport behind the portal; the customer-facing flow starts on the dedicated order page.
 
 The current catalog uses fixed USDT prices:
 
@@ -129,7 +129,7 @@ The customer-facing payment rail is **USDT on BNB Smart Chain (BEP20)**.
 
 The official payment address is displayed directly on the customer order portal. Customers must send the exact USDT amount for the selected service through **BEP20 / BNB Smart Chain only**. ERC20, TRC20, or other networks must not be used.
 
-The portal now requires the customer to submit the **BSC transaction hash** after payment. The Core verifies the hash deterministically against BSC: chain ID, transaction success, USDT contract, recipient wallet, finalized block state, and received amount.
+The portal requires the customer to submit the **BSC transaction hash** after payment. The page validates the hash format and opens a structured GitHub order record. The Core then verifies the hash deterministically against BSC: chain ID, transaction success, USDT contract, recipient wallet, finalized block state, and received amount.
 
 A transaction hash cannot be reused as a second payment because the profit ledger records verified transaction hashes idempotently.
 
@@ -186,11 +186,7 @@ The GitHub Actions delivery worker requires these repository secrets:
 - `AGENTMAIL_API_KEY`
 - `AGENTMAIL_INBOX_ID`
 
-The portal-intake worker additionally requires:
-
-- `WPS_TOKEN` — a WebsitePublisher project access key with access to the portal lead-capture API.
-
-The portal worker is scheduled every two minutes and safely skips when `WPS_TOKEN` has not been configured; it does not turn missing configuration into a failed workflow.
+The customer order portal does not require a WebsitePublisher account or `WPS_TOKEN`. Order intake is handled by GitHub Pages + GitHub Issues + GitHub Actions.
 
 The AgentMail free tier currently supports 3 inboxes and 3,000 emails/month without a credit card. The Core does not require a paid AI API or SMTP server for this delivery path.
 
@@ -282,7 +278,7 @@ The repository currently contains an executable foundation for:
 - Automated workflows
 - Public-problem discovery
 - Commercial qualification
-- Customer order intake with BSC transaction-hash submission
+- Customer order intake through GitHub Pages with BSC transaction-hash submission
 - Deterministic USDT BEP20 payment verification and TX-hash idempotency
 - Evidence-based delivery generation
 - Autonomous AgentMail email delivery
@@ -309,7 +305,7 @@ The next proof point is:
 
 Open the current order form:
 
-[Open the Zorathvael customer order portal](https://project29784.websitepublisher.ai/order)
+[Open the Zorathvael customer order portal](https://zorathvael.github.io/zorathvael-os/order/)
 
 ### Developers
 
