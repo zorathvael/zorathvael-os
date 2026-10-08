@@ -8,6 +8,9 @@ from pathlib import Path
 from .revenue import Lead, buyer_intent_score, commercial_relevance_score, offers
 
 
+ORDER_PORTAL_URL = "https://project29784.websitepublisher.ai/order"
+
+
 @dataclass(frozen=True)
 class OutreachEvent:
     event_id: str
@@ -76,7 +79,7 @@ def build_email_outreach_message(lead: Lead, recipient: str) -> str:
         f"{lead.url}\n\n"
         "The deliverable is based only on public repository evidence; no credentials are required.\n\n"
         f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}.\n"
-        "If you want the diagnostic, reply to this email and I will send the order instructions. "
+        f"Order securely through the Zorathvael portal: {ORDER_PORTAL_URL}?service={lead.offer_id}\n\n"
         "If this is not relevant, reply with 'no thanks' and we will not contact this address again.\n\n"
         "— Zorathvael Core\n"
         f"Reference: {lead.url}\n"
@@ -92,9 +95,7 @@ def build_outreach_message(lead: Lead) -> str:
         f"Zorathvael can deliver {offer.name.lower()} for this case. "
         f"The fixed price is {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
         "No repository credentials are required; the service uses public repository evidence. "
-        "If you want it, open the order form here: "
-        "https://github.com/zorathvael/zorathvael-os/issues/new?template=order.yml&title=%5BORDER%5D%20"
-        f"{lead.offer_id}"
+        f"Order securely through the Zorathvael portal: {ORDER_PORTAL_URL}?service={lead.offer_id}"
     )
 
 
