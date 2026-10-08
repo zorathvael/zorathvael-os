@@ -36,6 +36,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          AGENTMAIL_API_KEY: ${{ secrets.AGENTMAIL_API_KEY }}
+          AGENTMAIL_INBOX_ID: ${{ secrets.AGENTMAIL_INBOX_ID }}
           ZORATHVAEL_LEAD_LIMIT: "20"
           ZORATHVAEL_CONTACT_DISCOVERY_LIMIT: "10"
           ZORATHVAEL_OUTREACH_LIMIT: "3"
