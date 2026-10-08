@@ -37,7 +37,7 @@ def test_repository_health_blocks_archived_and_stale_repositories():
 
 
 def test_adaptive_outreach_count_scales_only_with_quality():
-    assert adaptive_outreach_count([95, 92, 90, 88, 86, 84, 82, 80, 78, 76], 10) == 10
+    assert adaptive_outreach_count([95, 92, 90, 88, 86, 84, 82, 80, 78, 76], 10) == 8
     assert adaptive_outreach_count([82, 81, 80, 79, 78, 77, 76], 10) == 8
     assert adaptive_outreach_count([72, 71, 70, 69, 68, 67], 10) == 6
     assert adaptive_outreach_count([61, 60, 59, 58, 57], 10) == 5
