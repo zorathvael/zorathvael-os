@@ -1,6 +1,6 @@
 from decimal import Decimal
 from lib.profit_engine.payment_verification import PaymentIntent, PaymentVerifier
-TX='0xabc'
+TX='0x' + 'a' * 64
 TO='0x4ce7004e7127f8b2386eb355e088f127c24b3fac'
 TOKEN='0x55d398326f99059ff775485246999027b3197955'
 TOPIC='0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55aebf7f2d7'
