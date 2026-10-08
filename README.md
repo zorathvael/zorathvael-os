@@ -101,6 +101,14 @@ These are the current offers. They are intentionally narrow so demand and delive
 
 ## For Customers
 
+### Share a repository for Core analysis
+
+If you want Zorathvael Core to inspect a specific public repository instead of waiting for automatic discovery, open the repository intake form:
+
+[Share a repository with Zorathvael](https://github.com/zorathvael/zorathvael-os/issues/new?template=repository-intake.yml)
+
+You can provide the repository URL, an optional issue URL, and optional problem context. The intake workflow records the request, fetches public repository/issue evidence, scores the commercial signal using the same revenue qualification logic, and keeps the request in measured state. The intake path does not require repository credentials.
+
 ### What do I provide?
 
 The current services primarily work from publicly accessible evidence.

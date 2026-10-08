@@ -1,0 +1,106 @@
+name: Zorathvael Repository Intake
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: zorathvael-repository-intake
+  cancel-in-progress: false
+
+jobs:
+  intake:
+    if: >-
+      startsWith(github.event.issue.title, '[REPO]') &&
+      github.actor == 'zorathvael'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Parse and ingest repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY' > /tmp/repository-intake.json
+          import os, re, json
+          body = os.environ["ISSUE_BODY"]
+          fields = {}
+          matches = re.finditer(r"^###\\s+([^\\n]+)\\n(.*?)(?=^###\\s+|\\Z)", body, re.MULTILINE | re.DOTALL)
+          for match in matches:
+              fields[match.group(1).strip().lower()] = match.group(2).strip()
+          print(json.dumps({
+              "repository": fields.get("target repository", ""),
+              "issue_url": fields.get("specific issue (optional)", ""),
+              "context": fields.get("problem context", ""),
+          }))
+          PY
+
+          python - <<'PY'
+          import json, os, subprocess
+          payload = json.load(open("/tmp/repository-intake.json", encoding="utf-8"))
+          if not payload["repository"]:
+              raise SystemExit("target repository is required")
+          command = ["python", "scripts/ingest_repository_request.py", "--repository", payload["repository"]]
+          if payload["issue_url"]:
+              command += ["--issue-url", payload["issue_url"]]
+          if payload["context"]:
+              command += ["--context", payload["context"]]
+          result = subprocess.run(command, check=True, capture_output=True, text=True, env=os.environ)
+          print(result.stdout)
+          open("/tmp/repository-intake-result.json", "w", encoding="utf-8").write(result.stdout)
+          PY
+
+      - name: Comment intake result
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          payload = json.load(open("/tmp/repository-intake-result.json", encoding="utf-8"))
+          status = "qualified for the commercial queue" if payload["qualified"] else "queued for further qualification"
+          body = (
+              f"Zorathvael Core accepted {payload['repository']}.\n\n"
+              f"- Intake: **{status}**\n"
+              f"- Score: **{payload['score']}**\n"
+              f"- Offer candidate: **{payload['offer_id']}**\n"
+              f"- Commercial relevance: **{payload['commercial_relevance']}**\n\n"
+              "The repository is now part of the Core's measured intake state. "
+              "Do not post credentials or secrets in this issue."
+          )
+          subprocess.run([
+              "gh", "issue", "comment", os.environ["GITHUB_EVENT_ISSUE_NUMBER"],
+              "--repo", os.environ["GITHUB_REPOSITORY"], "--body", body
+          ], check=True)
+          PY
+
+      - name: Persist intake state
+        run: |
+          if [ -z "$(git status --porcelain -- data)" ]; then
+            echo "No intake state changes."
+            exit 0
+          fi
+          git config user.name "zorathvael"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/manual_repository_requests.jsonl data/revenue_leads.jsonl
+          git commit -m "feat: ingest manually shared repositories"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main; then
+              git push origin HEAD:main && exit 0
+            fi
+            git rebase --abort || true
+            git reset --hard origin/main
+            echo "Retrying repository intake persistence..."
+          done
+          exit 1

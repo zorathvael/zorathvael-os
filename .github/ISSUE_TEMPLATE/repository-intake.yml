@@ -1,0 +1,41 @@
+name: "Share a Repository for Zorathvael"
+description: "Send a public GitHub repository to the Core for problem discovery and commercial qualification."
+title: "[REPO] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Zorathvael Repository Intake
+        Share a public GitHub repository. You may also provide a specific issue and describe the problem you want investigated.
+        Do not post passwords, private keys, API tokens, or other secrets.
+  - type: input
+    id: target_repository
+    attributes:
+      label: Target repository
+      description: "Public GitHub repository, e.g. https://github.com/owner/repo"
+      placeholder: "https://github.com/owner/repo"
+    validations:
+      required: true
+  - type: input
+    id: issue_url
+    attributes:
+      label: Specific issue (optional)
+      description: "If there is a concrete problem, provide its public GitHub issue URL."
+      placeholder: "https://github.com/owner/repo/issues/123"
+    validations:
+      required: false
+  - type: textarea
+    id: problem_context
+    attributes:
+      label: Problem context
+      description: "Optional context about what you want Zorathvael Core to investigate."
+      placeholder: "Example: CI is failing intermittently and I want the likely root cause and recovery path."
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: "I confirm the repository and any issue supplied above are public and contain no secrets."
+          required: true
