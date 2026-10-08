@@ -230,6 +230,7 @@ def select_auto_outreach(
     now: datetime | None = None,
     daily_limit: int = DEFAULT_DAILY_GITHUB_LIMIT,
     repository_cooldown_days: int = DEFAULT_REPOSITORY_COOLDOWN_DAYS,
+    diagnostics: dict[str, object] | None = None,
 ) -> list[Lead]:
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     events = events or []
@@ -237,17 +238,42 @@ def select_auto_outreach(
     daily_remaining = max(int(daily_limit) - github_sends_today(events, now), 0) if safety_mode else max(int(limit), 0)
     hard_limit = min(max(int(limit), 0), DEFAULT_MAX_PER_RUN, daily_remaining)
 
-    candidates = [
-        lead for lead in leads
-        if lead.url not in already_contacted
-        and _explicit_intent(lead)
-        and buyer_intent_score(lead) >= 45
-        and commercial_relevance_score(lead) >= 70
-        and (
-            not safety_mode
-            or not repository_recently_contacted(lead.repository, events, now, repository_cooldown_days)
-        )
-    ]
+    diagnostic_counts = {
+        "total_leads": len(leads),
+        "already_contacted": 0,
+        "explicit_intent_missing": 0,
+        "buyer_intent_below_45": 0,
+        "commercial_relevance_below_70": 0,
+        "repository_cooldown": 0,
+        "eligible_before_health": 0,
+        "health_lookup_failed": 0,
+        "health_below_55": 0,
+        "eligible_after_health": 0,
+        "daily_quota_exhausted": int(hard_limit <= 0),
+    }
+
+    candidates: list[Lead] = []
+    for lead in leads:
+        if lead.url in already_contacted:
+            diagnostic_counts["already_contacted"] += 1
+            continue
+        if not _explicit_intent(lead):
+            diagnostic_counts["explicit_intent_missing"] += 1
+            continue
+        if buyer_intent_score(lead) < 45:
+            diagnostic_counts["buyer_intent_below_45"] += 1
+            continue
+        if commercial_relevance_score(lead) < 70:
+            diagnostic_counts["commercial_relevance_below_70"] += 1
+            continue
+        if safety_mode and repository_recently_contacted(
+            lead.repository, events, now, repository_cooldown_days
+        ):
+            diagnostic_counts["repository_cooldown"] += 1
+            continue
+        candidates.append(lead)
+
+    diagnostic_counts["eligible_before_health"] = len(candidates)
 
     scored: list[tuple[Lead, int]] = []
     health_cache: dict[str, tuple[int, dict[str, int], list[str]]] = {}
@@ -267,7 +293,11 @@ def select_auto_outreach(
                 lead.repository, lead.external_id, token=token, now=now
             )
         health, _, reasons = health_cache[lead.repository]
+        if health == 0 and "github_health_lookup_failed" in reasons:
+            diagnostic_counts["health_lookup_failed"] += 1
+            continue
         if health < 55 or reasons:
+            diagnostic_counts["health_below_55"] += 1
             continue
         quality = round(
             buyer_intent_score(lead) * 0.30
@@ -277,8 +307,21 @@ def select_auto_outreach(
         )
         scored.append((lead, quality))
 
+    diagnostic_counts["eligible_after_health"] = len(scored)
     scored.sort(key=lambda item: item[1], reverse=True)
     if not scored or hard_limit <= 0:
+        if diagnostics is not None:
+            diagnostics.clear()
+            diagnostics.update({
+                **diagnostic_counts,
+                "daily_sends": github_sends_today(events, now) if safety_mode else 0,
+                "daily_limit": int(daily_limit),
+                "daily_remaining": daily_remaining,
+                "hard_limit": hard_limit,
+                "scored_candidates": len(scored),
+                "selected_target": 0,
+                "selected": 0,
+            })
         return []
 
     # Strict per-lead gates use the repository's published lead score.
@@ -296,7 +339,23 @@ def select_auto_outreach(
     else:
         target = 0
 
-    return [lead for lead, _ in ranked[:target]]
+    selected = [lead for lead, _ in ranked[:target]]
+    if diagnostics is not None:
+        diagnostics.clear()
+        diagnostics.update({
+            **diagnostic_counts,
+            "daily_sends": github_sends_today(events, now) if safety_mode else 0,
+            "daily_limit": int(daily_limit),
+            "daily_remaining": daily_remaining,
+            "hard_limit": hard_limit,
+            "scored_candidates": len(scored),
+            "ranked_candidates": len(ranked),
+            "high_quality_80_plus": len(high_quality),
+            "qualified_70_plus": len(qualified_70),
+            "selected_target": target,
+            "selected": len(selected),
+        })
+    return selected
 
 
 def build_email_outreach_message(lead: Lead, recipient: str) -> str:
