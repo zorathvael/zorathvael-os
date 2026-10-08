@@ -405,6 +405,19 @@ Changes should:
 
 ## License
 
-MIT License.
+Zorathvael Core is licensed under the **Business Source License 1.1 (BSL 1.1)**.
+
+This is a source-available business license, not an Open Source license before the Change Date. It permits copying, modification, derivative works, redistribution, and non-production use, while production use requires a separate commercial license because the Additional Use Grant is **None**.
+
+For this release line:
+- **Licensor:** Zorathvael
+- **Licensed Work:** Zorathvael Core
+- **Additional Use Grant:** None
+- **Change Date:** 2028-10-08
+- **Change License:** GNU GPL v2 or later
+
+The Change Date is subject to the BSL 1.1 rule that the Change License takes effect on the stated Change Date or the fourth anniversary of the first public distribution of a specific version, whichever comes first.
+
+Third-party components and dependencies remain subject to their own licenses. The repository's LICENSE file applies to Zorathvael-authored work.
 
 Created by Zorathvael.
