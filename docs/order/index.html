@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zorathvael Core — Order</title>
+<meta name="description" content="Order Zorathvael Core automation services and submit a BSC transaction hash for automated verification.">
+<style>
+:root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#111827;background:#f6f7fb}
+*{box-sizing:border-box}body{margin:0}.wrap{max-width:920px;margin:auto;padding:28px 18px 60px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:24px;margin:16px 0;box-shadow:0 8px 30px rgba(15,23,42,.05)}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.05;margin:8px 0 12px}.lead{color:#4b5563;font-size:17px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+.service{border:1px solid #dbe0e8;border-radius:14px;padding:16px;cursor:pointer}.service.selected{border:2px solid #111827;background:#f9fafb}.service h3{margin:0 0 8px}.price{font-size:22px;font-weight:800}.muted{color:#6b7280;font-size:13px}
+label{display:block;font-weight:700;margin:15px 0 7px}input,textarea,select{width:100%;padding:13px;border:1px solid #cfd5df;border-radius:10px;font:inherit}textarea{min-height:90px}
+.pay{background:#111827;color:#fff}.address{font-family:ui-monospace,SFMono-Regular,monospace;word-break:break-all;background:#1f2937;padding:12px;border-radius:10px;margin:10px 0}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{border:0;border-radius:10px;padding:12px 16px;font-weight:800;cursor:pointer}.primary{background:#111827;color:#fff}.copy{background:#fff;color:#111827}.notice{padding:12px;border-radius:10px;background:#fff7ed;color:#9a3412;font-size:14px;line-height:1.5}
+.lang{position:fixed;right:14px;top:14px;border:1px solid #d1d5db;background:#fff;border-radius:10px;padding:8px}
+small{color:#6b7280}.success{display:none;padding:14px;border-radius:10px;background:#ecfdf5;color:#065f46;line-height:1.5}
+a{color:inherit;font-weight:700}
+</style>
+</head>
+<body>
+<select id="lang" class="lang" aria-label="Language"><option value="en">English</option><option value="id">Bahasa Indonesia</option></select>
+<main class="wrap">
+<section>
+<div class="muted">ZORATHVAEL CORE</div>
+<h1 data-en="Order a verified automation service." data-id="Pesan layanan otomasi terverifikasi.">Order a verified automation service.</h1>
+<p class="lead" data-en="Choose a service, pay the fixed USDT amount on BNB Smart Chain, then submit the transaction hash. The Core verifies the payment and starts processing automatically." data-id="Pilih layanan, bayar jumlah USDT tetap di BNB Smart Chain, lalu kirim transaction hash. Core memverifikasi pembayaran dan memulai proses secara otomatis.">Choose a service, pay the fixed USDT amount on BNB Smart Chain, then submit the transaction hash. The Core verifies the payment and starts processing automatically.</p>
+</section>
+
+<section class="card">
+<h2 data-en="1. Choose a service" data-id="1. Pilih layanan">1. Choose a service</h2>
+<div class="grid" id="services">
+<div class="service selected" data-service="ci_failure_recovery" data-usdt="10"><h3>CI Failure Recovery</h3><div class="price">10 USDT</div><div class="muted">Rp149,000 reference</div></div>
+<div class="service" data-service="public_repo_audit" data-usdt="10"><h3>AI Automation Audit</h3><div class="price">10 USDT</div><div class="muted">Rp149,000 reference</div></div>
+<div class="service" data-service="automation_blueprint" data-usdt="20"><h3>Automation Blueprint</h3><div class="price">20 USDT</div><div class="muted">Rp299,000 reference</div></div>
+</div>
+<small data-en="USDT prices are fixed. IDR values are reference prices only." data-id="Harga USDT bersifat tetap. Nilai IDR hanya harga referensi.">USDT prices are fixed. IDR values are reference prices only.</small>
+</section>
+
+<section class="card pay">
+<h2 data-en="2. Pay with USDT (BEP20)" data-id="2. Bayar dengan USDT (BEP20)">2. Pay with USDT (BEP20)</h2>
+<p><b data-en="Amount:" data-id="Jumlah:">Amount:</b> <span id="amount">10 USDT</span></p>
+<p><b data-en="Network:" data-id="Jaringan:">Network:</b> BNB Smart Chain (BEP20)</p>
+<div class="address" id="address">0x4ce7004e7127f8b2386eb355e088f127c24b3fac</div>
+<div class="row"><button class="copy" id="copy" type="button" data-en="Copy address" data-id="Salin alamat">Copy address</button></div>
+<p class="notice" data-en="Send USDT on BNB Smart Chain only. Do not use ERC20, TRC20, or another network. Send at least the exact amount shown above." data-id="Kirim USDT hanya melalui BNB Smart Chain. Jangan gunakan ERC20, TRC20, atau jaringan lain. Kirim minimal jumlah tepat yang ditampilkan di atas.">Send USDT on BNB Smart Chain only. Do not use ERC20, TRC20, or another network. Send at least the exact amount shown above.</p>
+</section>
+
+<section class="card">
+<h2 data-en="3. Submit order + transaction hash" data-id="3. Kirim order + transaction hash">3. Submit order + transaction hash</h2>
+<p class="muted" data-en="Pay first, then paste the BSC transaction hash below. Your submission opens a GitHub order record; Core then verifies the transaction automatically." data-id="Bayar terlebih dahulu, lalu tempel transaction hash BSC di bawah. Pengiriman akan membuat catatan order GitHub; Core kemudian memverifikasi transaksi secara otomatis.">Pay first, then paste the BSC transaction hash below. Your submission opens a GitHub order record; Core then verifies the transaction automatically.</p>
+<form id="order">
+<label for="email" data-en="Delivery email" data-id="Email pengiriman">Delivery email</label>
+<input id="email" type="email" required autocomplete="email" placeholder="you@example.com">
+<label for="repo" data-en="Public GitHub repository" data-id="Repository GitHub publik">Public GitHub repository</label>
+<input id="repo" type="url" required placeholder="https://github.com/owner/repository">
+<label for="issue" data-en="Optional GitHub issue URL" data-id="URL issue GitHub (opsional)">Optional GitHub issue URL</label>
+<input id="issue" type="url" placeholder="https://github.com/owner/repository/issues/123">
+<label for="tx" data-en="BSC transaction hash" data-id="Transaction hash BSC">BSC transaction hash</label>
+<input id="tx" type="text" required pattern="0x[a-fA-F0-9]{64}" minlength="66" maxlength="66" placeholder="0x + 64 hexadecimal characters" spellcheck="false" autocomplete="off">
+<label for="problem" data-en="Problem / context (optional)" data-id="Masalah / konteks (opsional)">Problem / context (optional)</label>
+<textarea id="problem" placeholder="Describe the problem if useful."></textarea>
+<div class="success" id="success"></div>
+<br><button class="primary" type="submit" data-en="Create order record" data-id="Buat catatan order">Create order record</button>
+<p class="muted" data-en="GitHub account sign-in is required to create the order record. No private keys or secrets are requested." data-id="Login GitHub diperlukan untuk membuat catatan order. Tidak ada private key atau secret yang diminta.">GitHub account sign-in is required to create the order record. No private keys or secrets are requested.</p>
+</form>
+</section>
+</main>
+<script>
+const WALLET="0x4ce7004e7127f8b2386eb355e088f127c24b3fac";
+const REPO="zorathvael/zorathvael-os";
+let selected=document.querySelector(".service.selected");
+function lang(){return localStorage.getItem("zc_lang")||(navigator.language||"en").toLowerCase().startsWith("id")?"id":"en"}
+function setLang(l){localStorage.setItem("zc_lang",l);document.documentElement.lang=l;document.querySelectorAll("[data-en]").forEach(e=>e.textContent=e.dataset[l]);document.getElementById("lang").value=l}
+document.getElementById("lang").onchange=e=>setLang(e.target.value);setLang(lang());
+document.querySelectorAll(".service").forEach(el=>el.onclick=()=>{document.querySelectorAll(".service").forEach(x=>x.classList.remove("selected"));el.classList.add("selected");selected=el;document.getElementById("amount").textContent=el.dataset.usdt+" USDT"});
+document.getElementById("copy").onclick=async()=>{await navigator.clipboard.writeText(WALLET);document.getElementById("copy").textContent=lang()==="id"?"Tersalin":"Copied"};
+document.getElementById("order").onsubmit=e=>{
+ e.preventDefault();
+ const tx=document.getElementById("tx").value.trim();
+ if(!/^0x[a-fA-F0-9]{64}$/.test(tx)){alert("Invalid BSC transaction hash.");return}
+ const service=selected.dataset.service, amount=selected.dataset.usdt;
+ const title="[ORDER] "+service+" — "+document.getElementById("email").value.trim();
+ const body=[
+ "### Zorathvael Core Customer Order",
+ "",
+ "**Product:** "+service,
+ "**Target Repository:** "+document.getElementById("repo").value.trim(),
+ "**Customer Email:** "+document.getElementById("email").value.trim(),
+ "**Payment Method:** usdt_bep20",
+ "**Amount:** "+amount+" USDT",
+ "**Payment Destination:** "+WALLET,
+ "**TX Hash:** "+tx,
+ "**Optional Issue URL:** "+document.getElementById("issue").value.trim(),
+ "**Problem:** "+document.getElementById("problem").value.trim(),
+ "",
+ "<!-- zorathvael-order-portal:github-pages-v1 -->"
+ ].join("\n");
+ const url="https://github.com/"+REPO+"/issues/new?title="+encodeURIComponent(title)+"&body="+encodeURIComponent(body);
+ window.location.href=url;
+};
+</script>
+</body>
+</html>
