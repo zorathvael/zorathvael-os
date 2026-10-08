@@ -6,13 +6,11 @@ Licensor: Zorathvael
 
 Licensed Work: Zorathvael Core
 
-Additional Use Grant: None.
+Additional Use Grant: None
 
 Change Date: 2028-10-08
 
 Change License: Version 2 or later of the GNU General Public License as published by the Free Software Foundation.
-
-Notice: The Licensed Work includes the Zorathvael-authored source code and materials in this repository. Third-party components remain subject to their own applicable licenses.
 
 Terms
 
@@ -32,6 +30,8 @@ This License does not grant you any right in any trademark or logo of Licensor o
 
 TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSED WORK IS PROVIDED ON AN “AS IS” BASIS. LICENSOR HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS, EXPRESS OR IMPLIED, INCLUDING (WITHOUT LIMITATION) WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND TITLE.
 
+MariaDB hereby grants you permission to use this License’s text to license your works, and to refer to it using the trademark “Business Source License”, as long as you comply with the Covenants of Licensor below.
+
 Covenants of Licensor
 
 In consideration of the right to use this License’s text and the “Business Source License” name and trademark, Licensor covenants to MariaDB, and to all other recipients of the licensed work to be provided by Licensor:
@@ -45,6 +45,8 @@ Not to modify this License in any other way.
 License text copyright © 2024 MariaDB plc, All Rights Reserved.
 “Business Source License” is a trademark of MariaDB plc.
 
-MariaDB hereby grants you permission to use this License’s text to license your works, and to refer to it using the trademark “Business Source License”, as long as you comply with the Covenants of Licensor above.
+Notice
 
-This License is source-available and is not an Open Source license before the Change Date.
+The Business Source License is not an Open Source license. However, the Licensed Work will eventually be made available under an Open Source License, as stated in this License.
+
+The license applies to Zorathvael-authored work in this repository. Third-party components and dependencies remain subject to their respective licenses.
