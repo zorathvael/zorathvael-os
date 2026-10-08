@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: zorathvael-revenue-acquisition
@@ -36,6 +37,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZORATHVAEL_CONTACT_DISCOVERY_LIMIT: "10"
         run: PYTHONPATH=. python scripts/discover_contacts.py
+      - name: Validate outreach transport
+        env:
+          ZORATHVAEL_OUTREACH_TOKEN: ${{ secrets.ZORATHVAEL_OUTREACH_TOKEN }}
+          ZORATHVAEL_SMTP_HOST: ${{ secrets.ZORATHVAEL_SMTP_HOST }}
+          ZORATHVAEL_SMTP_USERNAME: ${{ secrets.ZORATHVAEL_SMTP_USERNAME }}
+          ZORATHVAEL_SMTP_PASSWORD: ${{ secrets.ZORATHVAEL_SMTP_PASSWORD }}
+          ZORATHVAEL_EMAIL_FROM: ${{ secrets.ZORATHVAEL_EMAIL_FROM }}
+        run: |
+          if [ -z "$ZORATHVAEL_OUTREACH_TOKEN" ] && { [ -z "$ZORATHVAEL_SMTP_HOST" ] || [ -z "$ZORATHVAEL_SMTP_USERNAME" ] || [ -z "$ZORATHVAEL_SMTP_PASSWORD" ] || [ -z "$ZORATHVAEL_EMAIL_FROM" ]; }; then
+            echo "::error::No external outreach transport is configured. Set ZORATHVAEL_OUTREACH_TOKEN (recommended) or complete SMTP secrets."
+            exit 1
+          fi
+          if [ -n "$ZORATHVAEL_OUTREACH_TOKEN" ]; then
+            echo "External GitHub outreach token is configured."
+          else
+            echo "SMTP outreach transport is configured; GitHub external comments require ZORATHVAEL_OUTREACH_TOKEN."
+          fi
       - name: Execute qualified outreach
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -94,6 +94,7 @@ def build_outreach_message(lead: Lead) -> str:
         "No repository credentials are required; the service uses public repository evidence. "
         "If you want it, open the order form here: "
         "https://github.com/zorathvael/zorathvael-os/issues/new?template=order.yml&title=%5BORDER%5D%20"
+        f"{lead.offer_id}"
     )
 
 

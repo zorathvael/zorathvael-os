@@ -28,3 +28,23 @@ def test_ledger_records_measured_net_profit(tmp_path: Path) -> None:
     assert summary["trades"] == 2
     assert summary["wins"] == 1
     assert summary["net_profit"] == 20
+
+
+def test_select_auto_outreach_accepts_qualified_failure_signal() -> None:
+    from lib.profit_engine.outreach import select_auto_outreach
+    from lib.profit_engine.revenue import Lead
+
+    lead = Lead(
+        source="test",
+        external_id="1",
+        title="CI build failed",
+        url="https://github.com/example/repo/issues/1",
+        repository="example/repo",
+        author="owner",
+        evidence=("build failed", "4 comments"),
+        score=80,
+        offer_id="ci_failure_recovery",
+        contact_url="https://github.com/owner",
+        discovered_at="2026-10-08T00:00:00+00:00",
+    )
+    assert select_auto_outreach([lead], set(), limit=1) == [lead]
