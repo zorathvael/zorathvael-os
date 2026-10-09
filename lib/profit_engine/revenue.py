@@ -103,10 +103,14 @@ def extract_problem_context(title: str, body: str, max_chars: int = 360) -> str:
         "doesn't work", "wish to", "want to",
     )
     meta_markers = (
-        "the user's rule", "while you were away", "one-line recap", "canonical runtime handoff",
-        "this ticket began as", "this issue now covers", "collect created at",
-        "report p50/p95", "qualify the prepared", "release-readiness follow-up",
-        "treat that as a hypothesis", "the vm ledger is canonical",
+        "the user's rule", "the user’s rule", "while you were away", "one-line recap",
+        "canonical runtime handoff", "this ticket began as", "this issue now covers",
+        "collect created at", "report p50/p95", "qualify the prepared",
+        "release-readiness follow-up", "treat that as a hypothesis",
+        "the vm ledger is canonical", "the full register lives", "source of truth",
+        "queue cut from it", "work phase 1", "work phase 2", "file one qa finding",
+        "you have authority to", "anything marked", "needs a second user",
+        "create it", "phase 1's further checks", "phase 2",
     )
     excerpt = next((
         p for p in paragraphs
@@ -119,6 +123,49 @@ def extract_problem_context(title: str, body: str, max_chars: int = 360) -> str:
     # Never personalize a sales message with arbitrary first-paragraph text.
     # If no problem-focused excerpt survives, the issue title is the safer fallback.
     return excerpt or (title or "")[:max_chars]
+
+
+def has_actionable_problem_context(title: str, problem_context: str, offer_id: str) -> bool:
+    """Require a concrete, offer-aligned problem before drafting or sending outreach."""
+    context = extract_problem_context(title, problem_context)
+    text = f"{title} {context}".lower()
+    if not text.strip():
+        return False
+
+    meta_markers = (
+        "the full register lives", "source of truth", "queue cut from it",
+        "work phase 1", "work phase 2", "file one qa finding",
+        "you have authority to", "anything marked", "needs a second user",
+        "while you were away", "one-line recap", "the user's rule",
+        "canonical runtime handoff", "weekly execution log", "release checkpoint",
+        "create it", "phase 1's further checks",
+    )
+    if any(marker in text for marker in meta_markers):
+        return False
+
+    if offer_id == "ci_failure_recovery":
+        markers = (
+            "fail", "failed", "failure", "error", "exception", "timeout", "timed out",
+            "crash", "flaky", "cannot find", "could not find", "unable to find",
+            "does not work", "doesn't work", "not working", "cannot deploy",
+            "can't deploy", "blocks release", "blocking release",
+        )
+        return any(marker in text for marker in markers)
+    if offer_id == "public_repo_audit":
+        markers = (
+            "manual process", "manual work", "repetitive", "bottleneck", "inefficient",
+            "slow workflow", "takes too long", "time-consuming", "time consuming",
+            "duplicated work", "duplicate work", "reduce manual", "reduce effort",
+            "too much time", "hard to maintain", "pain point", "waste time",
+        )
+        return any(marker in text for marker in markers)
+    if offer_id == "automation_blueprint":
+        markers = (
+            "how to automate", "want to automate", "is there a way to automate",
+            "script this", "workflow automation", "webhook integration",
+        )
+        return any(marker in text for marker in markers)
+    return False
 
 
 def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str, ...]]:
@@ -202,6 +249,8 @@ def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
             continue
         matching_offer = select_offer(lead.score, lead.evidence)
         if matching_offer is None:
+            continue
+        if not has_actionable_problem_context(lead.title, lead.problem_context, matching_offer.product_id):
             continue
         if lead.offer_id != matching_offer.product_id:
             lead = replace(lead, offer_id=matching_offer.product_id)
@@ -341,10 +390,14 @@ def render_drafts(leads: list[Lead], path: str = "data/outreach_drafts.md") -> N
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
     lines = ["# Zorathvael Revenue Acquisition Queue", "", "> Drafts only. Zorathvael does not automatically contact third parties.", ""]
-    for index, lead in enumerate(leads, 1):
+    actionable_leads = [
+        lead for lead in leads
+        if has_actionable_problem_context(lead.title, lead.problem_context, lead.offer_id)
+    ]
+    for index, lead in enumerate(actionable_leads, 1):
         offer = offers()[lead.offer_id]
         evidence = ", ".join(lead.evidence) if lead.evidence else "intent signal"
-        problem_context = lead.problem_context or lead.title
+        problem_context = extract_problem_context(lead.title, lead.problem_context)
         if offer.product_id == "ci_failure_recovery":
             message = (
                 f"I noticed this specific problem in your issue: {problem_context}. "

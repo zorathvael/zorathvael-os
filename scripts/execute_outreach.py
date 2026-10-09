@@ -17,7 +17,7 @@ from lib.profit_engine.outreach import (
     make_event,
     select_auto_outreach,
 )
-from lib.profit_engine.revenue import Lead
+from lib.profit_engine.revenue import Lead, has_actionable_problem_context
 
 
 def load_leads(path: str = "data/revenue_leads.jsonl") -> list[Lead]:
@@ -172,6 +172,17 @@ def main() -> int:
         return 2
 
     for lead in selected:
+        # Defense in depth: never publish or email without a concrete,
+        # offer-aligned problem excerpt, even if selection rules change later.
+        if not has_actionable_problem_context(lead.title, lead.problem_context, lead.offer_id):
+            blocked.append({"lead_url": lead.url, "reason": "problem_context_not_actionable"})
+            append_event(make_event(
+                "outreach_blocked",
+                lead,
+                {"reason": "problem_context_not_actionable"},
+            ))
+            continue
+
         # Email is the primary route when a public email was discovered and
         # an SMTP transport is configured. GitHub is the fallback route.
         if lead.contact_email and email_configured():
