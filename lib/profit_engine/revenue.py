@@ -77,6 +77,9 @@ NON_BUYING_META_NOISE: tuple[str, ...] = (
 )
 
 
+ORDER_PORTAL_URL = "https://zorathvael.github.io/zorathvael-os/order/"
+
+
 def offers() -> dict[str, ProductOffer]:
     return {offer.product_id: offer for offer in DEFAULT_OFFERS}
 
@@ -296,19 +299,19 @@ def render_drafts(leads: list[Lead], path: str = "data/outreach_drafts.md") -> N
             message = (
                 f"I noticed this specific problem in your issue: {problem_context}. "
                 "I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. "
-                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the recovery diagnostic, open the Zorathvael order form."
+                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the recovery diagnostic, open the Zorathvael order form: {ORDER_PORTAL_URL}?service={lead.offer_id}."
             )
         elif offer.product_id == "automation_blueprint":
             message = (
                 f"I noticed this specific workflow need in your issue: {problem_context}. "
                 "I can map the current process, identify the highest-value automation opportunity, and return a practical implementation plan. "
-                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the blueprint, open the Zorathvael order form."
+                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the blueprint, open the Zorathvael order form: {ORDER_PORTAL_URL}?service={lead.offer_id}."
             )
         else:
             message = (
                 f"I noticed this specific problem in your issue: {problem_context}. "
                 "I can audit the public repository for relevant bottlenecks and return a prioritized, evidence-linked action plan. "
-                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the audit, open the Zorathvael order form."
+                f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the audit, open the Zorathvael order form: {ORDER_PORTAL_URL}?service={lead.offer_id}."
             )
         lines.extend([
             f"## {index}. {lead.repository}#{lead.external_id} — score {lead.score}/100",
