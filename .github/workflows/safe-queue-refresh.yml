@@ -1,0 +1,120 @@
+name: Safe Outreach Queue Refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      lead_limit:
+        description: "Maximum public GitHub issues to inspect per query"
+        required: false
+        default: "20"
+        type: string
+
+permissions:
+  contents: write
+  issues: read
+
+concurrency:
+  group: zorathvael-safe-queue-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      ZORATHVAEL_LEAD_LIMIT: ${{ inputs.lead_limit }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Install runtime dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m pytest -q
+
+      - name: Refresh lead queue and draft messages only
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python scripts/revenue_cycle.py | tee /tmp/queue-refresh.json
+
+      - name: Validate generated drafts
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import json
+          from pathlib import Path
+          from lib.profit_engine.revenue import has_actionable_problem_context, select_offer
+
+          leads_path = Path("data/revenue_leads.jsonl")
+          drafts_path = Path("data/outreach_drafts.md")
+          leads = [json.loads(line) for line in leads_path.read_text(encoding="utf-8").splitlines() if line.strip()] if leads_path.exists() else []
+          invalid = []
+          for lead in leads:
+              offer = select_offer(int(lead.get("score", 0)), tuple(lead.get("evidence", [])))
+              if offer is None:
+                  continue
+              if not has_actionable_problem_context(lead.get("title", ""), lead.get("problem_context", ""), offer.product_id):
+                  invalid.append(lead.get("url", lead.get("title", "<unknown>")))
+          draft_text = drafts_path.read_text(encoding="utf-8") if drafts_path.exists() else ""
+          stale_meta = ("the full register lives", "while you were away", "one-line recap", "queue cut from it")
+          found_stale = [marker for marker in stale_meta if marker in draft_text.lower()]
+          summary = {
+              "lead_records_checked": len(leads),
+              "invalid_actionable_context_records": len(invalid),
+              "stale_meta_markers_in_drafts": found_stale,
+              "draft_file_exists": drafts_path.exists(),
+          }
+          print(json.dumps(summary, indent=2))
+          if invalid or found_stale:
+              raise SystemExit("Queue validation failed; do not publish outreach.")
+          print("Queue validation passed. This workflow does not send or publish outreach.")
+          PY
+
+      - name: Publish safe refresh summary
+        if: always()
+        run: |
+          {
+            echo "## Safe Outreach Queue Refresh"
+            echo
+            echo "This workflow only refreshes leads and draft messages. It does not publish comments or send email."
+            echo
+            echo '### Validation output'
+            echo 'See the Validate generated drafts step for the machine-readable validation summary.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Persist refreshed queue
+        if: success()
+        run: |
+          set -euo pipefail
+          changes="$(git status --porcelain -- data)"
+          if [ -z "$changes" ]; then
+            echo "No queue state changes."
+            exit 0
+          fi
+          git config user.name "zorathvael"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git commit -m "chore: refresh validated outreach queue"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              echo "Validated queue persisted."
+              exit 0
+            fi
+          done
+          echo "::error::Could not persist refreshed queue after 3 attempts."
+          exit 1
