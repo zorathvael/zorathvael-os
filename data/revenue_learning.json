@@ -17,7 +17,7 @@
       "demand_status": "insufficient_outreach_sample",
       "not_interested": 0,
       "objections": 0,
-      "outreach_sent": 1,
+      "outreach_sent": 2,
       "paid_orders": 0,
       "payment_rate_per_outreach": 0.0,
       "positive_interest": 0,
@@ -26,7 +26,7 @@
       "responses_observed": 0
     }
   },
-  "outreach_sent": 11,
+  "outreach_sent": 12,
   "paid_orders": 0,
   "responses_observed": 0,
   "revenue_usdt": 0
