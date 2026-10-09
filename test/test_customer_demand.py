@@ -96,3 +96,25 @@ def test_rendered_draft_includes_a_working_order_portal_url(tmp_path):
     render_drafts([lead], str(output))
     draft = output.read_text(encoding="utf-8")
     assert "https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery" in draft
+
+
+def test_email_observer_reports_missing_imap_configuration(monkeypatch, capsys):
+    import json
+    from scripts import observe_email_responses
+
+    for name in (
+        "ZORATHVAEL_IMAP_HOST",
+        "ZORATHVAEL_IMAP_USERNAME",
+        "ZORATHVAEL_IMAP_PASSWORD",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+    assert observe_email_responses.main() == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["status"] == "disabled_missing_configuration"
+    assert set(result["missing_configuration"]) == {
+        "ZORATHVAEL_IMAP_HOST",
+        "ZORATHVAEL_IMAP_USERNAME",
+        "ZORATHVAEL_IMAP_PASSWORD",
+    }
+    assert result["email_response_observed"] == 0
