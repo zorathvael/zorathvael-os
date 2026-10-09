@@ -27,3 +27,49 @@ def test_problem_context_prefers_problem_sentence_and_strips_html_comments():
 
 def test_problem_context_falls_back_to_issue_title():
     assert extract_problem_context("CI build failed", "") == "CI build failed"
+
+
+def test_outreach_message_uses_issue_context_and_a_specific_value_proposition():
+    from lib.profit_engine.outreach import build_outreach_message
+    from lib.profit_engine.revenue import Lead
+
+    lead = Lead(
+        source="test",
+        external_id="7",
+        title="Deployment fails",
+        url="https://github.com/example/repo/issues/7",
+        repository="example/repo",
+        author="maintainer",
+        evidence=("deployment failed",),
+        score=90,
+        offer_id="ci_failure_recovery",
+        contact_url="https://github.com/maintainer",
+        discovered_at="2026-10-09T00:00:00+00:00",
+        problem_context="The deployment fails with a timeout after the build succeeds.",
+    )
+    message = build_outreach_message(lead)
+    assert lead.problem_context in message
+    assert "failing workflow" in message.lower() or "error fingerprint" in message.lower()
+    assert "10 USDT" in message
+    assert "Would this outcome be useful" in message
+
+
+def test_demand_snapshot_marks_small_samples_inconclusive():
+    from lib.profit_engine.outreach import OutreachEvent
+    from lib.profit_engine.revenue_learning import build_learning_snapshot
+
+    events = [
+        OutreachEvent(
+            event_id=f"sent:{i}",
+            event_type="outreach_sent",
+            lead_url=f"https://github.com/example/repo/issues/{i}",
+            repository="example/repo",
+            issue_number=str(i),
+            offer_id="ci_failure_recovery",
+            occurred_at="2026-10-09T00:00:00+00:00",
+            metadata={"channel": "github_issue_comment"},
+        )
+        for i in range(4)
+    ]
+    snapshot = build_learning_snapshot(events=events, orders=[])
+    assert snapshot["offer_stats"]["ci_failure_recovery"]["demand_status"] == "insufficient_outreach_sample"
