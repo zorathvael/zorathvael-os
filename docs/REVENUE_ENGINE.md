@@ -22,7 +22,7 @@ Pricing is launch pricing and can be changed in the catalog.
 
 ## Acquisition
 
-The revenue-cycle workflow runs every six hours. It searches GitHub issues for explicit automation and integration pain signals and writes a ranked acquisition queue.
+The revenue-cycle workflow runs every two hours. It searches GitHub issues for explicit automation and integration pain signals and writes a ranked acquisition queue.
 
 Outbound contact is guarded by explicit problem-intent checks, repository health, duplicate prevention, repository cooldown, and a daily send cap. When an external outreach token or email transport is configured, the workflow can send the selected message automatically. Messages must stay problem-specific and transparent about scope and price; they must not claim a diagnosis has already been completed.
 
