@@ -23,7 +23,23 @@ from lib.profit_engine.revenue import (
 )
 
 
-def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
+def merge_leads(
+    path: str,
+    fresh: list[Lead],
+    diagnostics: dict[str, int] | None = None,
+) -> list[Lead]:
+    cleanup = {
+        "records_loaded_before_merge": 0,
+        "fresh_leads_merged": len(fresh),
+        "dropped_below_score": 0,
+        "dropped_without_strong_signal": 0,
+        "dropped_meta_issue": 0,
+        "dropped_without_offer_fit": 0,
+        "dropped_expired_or_invalid_date": 0,
+        "offer_reassigned": 0,
+        "context_replaced_with_title": 0,
+        "retained_after_cleanup": 0,
+    }
     target = Path(path)
     existing: dict[str, dict] = {}
     if target.exists():
@@ -31,6 +47,7 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
             if line.strip():
                 row = json.loads(line)
                 existing[row["url"]] = row
+    cleanup["records_loaded_before_merge"] = len(existing)
     for lead in fresh:
         prior = existing.get(lead.url, {})
         existing[lead.url] = {
@@ -47,28 +64,41 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
     retained = {}
     for url, row in existing.items():
         if int(row.get("score", 0)) < 30:
+            cleanup["dropped_below_score"] += 1
             continue
         if not any(signal in set(row.get("evidence", [])) for signal, _ in STRONG_SIGNALS):
+            cleanup["dropped_without_strong_signal"] += 1
             continue
         if is_non_buying_meta_issue(row.get("title", ""), ""):
+            cleanup["dropped_meta_issue"] += 1
             continue
         matching_offer = select_offer(int(row.get("score", 0)), tuple(row.get("evidence", [])))
         if matching_offer is None:
+            cleanup["dropped_without_offer_fit"] += 1
             continue
         # Repair legacy offer assignments and stale/problematic context before
         # these records can inflate qualified-lead metrics or enter drafts.
+        if row.get("offer_id") != matching_offer.product_id:
+            cleanup["offer_reassigned"] += 1
         row["offer_id"] = matching_offer.product_id
-        row["problem_context"] = extract_problem_context(
-            row.get("title", ""), row.get("problem_context", "")
-        )
+        prior_context = str(row.get("problem_context", ""))
+        row["problem_context"] = extract_problem_context(row.get("title", ""), prior_context)
+        if prior_context and row["problem_context"] != prior_context:
+            cleanup["context_replaced_with_title"] += 1
         try:
             discovered = datetime.fromisoformat(str(row.get("discovered_at", "")).replace("Z", "+00:00"))
             if discovered < cutoff:
+                cleanup["dropped_expired_or_invalid_date"] += 1
                 continue
         except ValueError:
+            cleanup["dropped_expired_or_invalid_date"] += 1
             continue
         retained[url] = row
     existing = retained
+    cleanup["retained_after_cleanup"] = len(existing)
+    if diagnostics is not None:
+        diagnostics.clear()
+        diagnostics.update(cleanup)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in existing.values()), encoding="utf-8")
     return [
@@ -143,7 +173,8 @@ def main() -> int:
         key=lambda lead: (buyer_intent_score(lead), commercial_relevance_score(lead), lead.score, lead.discovered_at),
         reverse=True,
     )
-    all_leads = merge_leads("data/revenue_leads.jsonl", fresh)
+    lead_queue_diagnostics: dict[str, int] = {}
+    all_leads = merge_leads("data/revenue_leads.jsonl", fresh, diagnostics=lead_queue_diagnostics)
     outreach_ready = rank_outreach_leads(all_leads, limit=10)
     commercially_relevant = [lead for lead in all_leads if commercial_relevance_score(lead) >= 55]
     refresh_metrics(len(all_leads), len(commercially_relevant), len(outreach_ready))
@@ -155,6 +186,7 @@ def main() -> int:
     )
     print(json.dumps({
         "new_leads": len(fresh),
+        "lead_queue_diagnostics": lead_queue_diagnostics,
         "qualified_leads_total": len(all_leads),
         "commercially_relevant_leads": len(commercially_relevant),
         "outreach_ready_leads": len(outreach_ready),
