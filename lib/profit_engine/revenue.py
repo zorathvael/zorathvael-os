@@ -40,6 +40,7 @@ class Lead:
     discovered_at: str
     contact_email: str | None = None
     contact_source: str = "none"
+    problem_context: str = ""
 
 
 DEFAULT_OFFERS = (
@@ -78,6 +79,27 @@ NON_BUYING_META_NOISE: tuple[str, ...] = (
 
 def offers() -> dict[str, ProductOffer]:
     return {offer.product_id: offer for offer in DEFAULT_OFFERS}
+
+
+def extract_problem_context(title: str, body: str, max_chars: int = 360) -> str:
+    """Keep a short, public, problem-relevant excerpt for personalized outreach."""
+    import html
+
+    text = html.unescape(re.sub(r"<!--.*?-->", " ", body or "", flags=re.S))
+    text = re.sub(r"```.*?```", " ", text, flags=re.S)
+    text = re.sub(r"!\[[^]]*\]\([^)]*\)", " ", text)
+    text = re.sub(r"\[([^]]+)\]\([^)]*\)", r"\1", text)
+    text = text.replace(chr(96), " ")
+    text = re.sub(r"[#>*_~]", " ", text)
+    paragraphs = [re.sub(r"\s+", " ", part).strip() for part in re.split(r"\n\s*\n", text)]
+    markers = ("fail", "error", "broken", "block", "cannot", "can't", "unable", "timeout",
+               "crash", "slow", "manual", "need", "looking for", "automate", "problem", "issue")
+    excerpt = next((p for p in paragraphs if len(p) >= 35 and any(m in p.lower() for m in markers)), "")
+    if not excerpt:
+        excerpt = next((p for p in paragraphs if len(p) >= 35), "")
+    if len(excerpt) > max_chars:
+        excerpt = excerpt[:max_chars].rsplit(" ", 1)[0]
+    return excerpt or (title or "")[:max_chars]
 
 
 def score_lead(title: str, body: str, comments: int = 0) -> tuple[int, tuple[str, ...]]:
@@ -229,7 +251,12 @@ class GitHubLeadScout:
             if score < 30 or is_commercial_noise(title, body) or is_non_buying_meta_issue(title, body):
                 continue
             offer = select_offer(score, evidence)
-            results.append(Lead("github_issue_search", str(item.get("number")), item.get("title", "").strip(), item.get("html_url", ""), repository, author, evidence, score, offer.product_id, item.get("user", {}).get("html_url", ""), now))
+            results.append(Lead(
+                "github_issue_search", str(item.get("number")), title,
+                item.get("html_url", ""), repository, author, evidence, score,
+                offer.product_id, item.get("user", {}).get("html_url", ""), now,
+                problem_context=extract_problem_context(title, body),
+            ))
         return sorted(results, key=lambda lead: (buyer_intent_score(lead), commercial_relevance_score(lead), lead.score, lead.discovered_at), reverse=True)
 
 
@@ -264,22 +291,23 @@ def render_drafts(leads: list[Lead], path: str = "data/outreach_drafts.md") -> N
     for index, lead in enumerate(leads, 1):
         offer = offers()[lead.offer_id]
         evidence = ", ".join(lead.evidence) if lead.evidence else "intent signal"
+        problem_context = lead.problem_context or lead.title
         if offer.product_id == "ci_failure_recovery":
             message = (
-                f"I found your public issue: {lead.title}. The issue contains a concrete CI/deployment failure signal. "
-                "I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. "
+                f"I noticed this specific problem in your issue: {problem_context}. "
+                "I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. "
                 f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the recovery diagnostic, open the Zorathvael order form."
             )
         elif offer.product_id == "automation_blueprint":
             message = (
-                f"I found your public issue: {lead.title}. The issue shows a concrete automation/integration need. "
-                "I can map the current workflow, prioritize the highest-value automation opportunities, and provide implementation steps. "
+                f"I noticed this specific workflow need in your issue: {problem_context}. "
+                "I can map the current process, identify the highest-value automation opportunity, and return a practical implementation plan. "
                 f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the blueprint, open the Zorathvael order form."
             )
         else:
             message = (
-                f"I found your public issue: {lead.title}. I can audit this public repository for concrete automation bottlenecks, "
-                "prioritize the highest-value opportunities, and give you an actionable report. "
+                f"I noticed this specific problem in your issue: {problem_context}. "
+                "I can audit the public repository for relevant bottlenecks and return a prioritized, evidence-linked action plan. "
                 f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. If you want the audit, open the Zorathvael order form."
             )
         lines.extend([
