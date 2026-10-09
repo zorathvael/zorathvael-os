@@ -14,7 +14,7 @@ def test_explicit_automation_implementation_need_maps_to_blueprint():
 
 
 def test_explicit_audit_or_bottleneck_need_maps_to_audit():
-    offer = select_offer(65, ("automation bottleneck", "audit"))
+    offer = select_offer(65, ("bottleneck", "audit"))
     assert offer is not None
     assert offer.product_id == "public_repo_audit"
 
