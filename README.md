@@ -374,6 +374,7 @@ The README stays at the product and system level. Detailed implementation behavi
 - Developer Guide: [docs/DeveloperGuide.md](docs/DeveloperGuide.md)
 - Deployment Guide: [docs/Deployment.md](docs/Deployment.md)
 - Revenue Engine: [docs/REVENUE_ENGINE.md](docs/REVENUE_ENGINE.md)
+- Customer Demand Research: [docs/CUSTOMER_DEMAND_RESEARCH.md](docs/CUSTOMER_DEMAND_RESEARCH.md)
 
 See the [docs directory](docs/) for deeper technical and operational details.
 
