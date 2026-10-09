@@ -50,7 +50,8 @@ DEFAULT_OFFERS = (
 )
 
 STRONG_SIGNALS: tuple[tuple[str, int], ...] = (
-    ("need help", 32), ("looking for", 30), ("how to automate", 30), ("automate", 26),
+    ("need help", 32), ("looking for", 30), ("how to automate", 30), ("audit", 24),
+    ("bottleneck", 22), ("inefficient", 20), ("slow workflow", 20), ("automate", 26),
     ("automation", 26), ("manual process", 24), ("repetitive", 22), ("workflow automation", 22),
     ("webhook integration", 20), ("reduce manual", 20), ("script this", 20), ("want to automate", 28),
     ("is there a way to automate", 30), ("automating", 24), ("github actions failed", 36),
@@ -192,15 +193,43 @@ def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
     )[: max(limit, 0)]
 
 
-def select_offer(score: int, evidence: tuple[str, ...] = ()) -> ProductOffer:
+def select_offer(score: int, evidence: tuple[str, ...] = ()) -> ProductOffer | None:
+    """Return an offer only when public evidence supports a specific problem-solution fit."""
+    if int(score) < 30:
+        return None
+
+    signals = {str(item).strip().lower() for item in evidence}
     failure_signals = {
         "github actions failed", "actions failed", "workflow failed", "failing workflow",
         "ci failed", "build failed", "deployment failed", "deploy failed", "pipeline failed",
         "cant deploy", "cannot deploy",
     }
-    if failure_signals.intersection(evidence):
+    if signals.intersection(failure_signals):
         return offers()["ci_failure_recovery"]
-    return offers()["automation_blueprint"] if score >= 55 else offers()["public_repo_audit"]
+
+    # A request to implement a named automation is stronger than a generic
+    # mention of automation and can justify a blueprint directly.
+    implementation_signals = {
+        "how to automate", "want to automate", "is there a way to automate",
+        "script this", "workflow automation", "webhook integration",
+    }
+    if signals.intersection(implementation_signals):
+        return offers()["automation_blueprint"]
+
+    # Diagnostic-first offer for a stated bottleneck or repetitive/manual process.
+    audit_signals = {
+        "audit", "bottleneck", "inefficient", "slow workflow", "manual process",
+        "repetitive", "reduce manual",
+    }
+    if signals.intersection(audit_signals):
+        return offers()["public_repo_audit"]
+
+    # A generic automation mention justifies investigation, not an implementation promise.
+    generic_automation_signals = {"automate", "automation", "automating", "api", "integration"}
+    if signals.intersection(generic_automation_signals):
+        return offers()["public_repo_audit"]
+
+    return None
 
 
 def make_opportunity(lead: Lead, prior_conversion: float = 0.02) -> Opportunity:
@@ -254,6 +283,8 @@ class GitHubLeadScout:
             if score < 30 or is_commercial_noise(title, body) or is_non_buying_meta_issue(title, body):
                 continue
             offer = select_offer(score, evidence)
+            if offer is None:
+                continue
             results.append(Lead(
                 "github_issue_search", str(item.get("number")), title,
                 item.get("html_url", ""), repository, author, evidence, score,
