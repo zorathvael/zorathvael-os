@@ -59,6 +59,14 @@ def _text_from_message(message: email.message.Message) -> str:
     return str(payload or "")
 
 
+def _imap_port() -> int:
+    return int(os.getenv("ZORATHVAEL_IMAP_PORT", "").strip() or "993")
+
+
+def _imap_folder() -> str:
+    return os.getenv("ZORATHVAEL_IMAP_FOLDER", "").strip() or "INBOX"
+
+
 def main() -> int:
     host = os.getenv("ZORATHVAEL_IMAP_HOST", "").strip()
     username = os.getenv("ZORATHVAEL_IMAP_USERNAME", "").strip()
@@ -105,10 +113,10 @@ def main() -> int:
         }, indent=2, sort_keys=True))
         return 0
 
-    mail = imaplib.IMAP4_SSL(host, int(os.getenv("ZORATHVAEL_IMAP_PORT", "993")))
+    mail = imaplib.IMAP4_SSL(host, _imap_port())
     try:
         mail.login(username, password)
-        mail.select(os.getenv("ZORATHVAEL_IMAP_FOLDER", "INBOX"), readonly=True)
+        mail.select(_imap_folder(), readonly=True)
         status, data = mail.uid("search", None, "ALL")
         if status != "OK":
             raise RuntimeError("imap_search_failed")
