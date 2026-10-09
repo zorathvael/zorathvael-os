@@ -2,18 +2,7 @@
 
 > Drafts only. Zorathvael does not automatically contact third parties.
 
-## 1. harshii0509/Fork#36 — score 83/100
-- Commercial score: 100/100
-- Buyer-intent score: 80/100
-- Issue: https://github.com/harshii0509/Fork/issues/36
-- Public profile: https://www.harshux.com/
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: need help, build failed, api, ai, build, failed, 1 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: "While you were away": a one-line recap of the whole workspace. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
-
-## 2. dotnet/runtime#112423 — score 80/100
+## 1. dotnet/runtime#112423 — score 80/100
 - Commercial score: 100/100
 - Buyer-intent score: 75/100
 - Issue: https://github.com/dotnet/runtime/issues/112423
@@ -24,29 +13,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: [9.0][source-build] Could not find BROTLIDEC using the following names: brotlidec. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 3. JiRaska/open-bank-oss#11442 — score 100/100
-- Commercial score: 100/100
-- Buyer-intent score: 70/100
-- Issue: https://github.com/JiRaska/open-bank-oss/issues/11442
-- Public profile: https://github.com/JiRaska
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: bottleneck, automation, build failed, workflow, api, build, failed, 158 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: CI: measure and reduce required aggregate queue latency. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
-
-## 4. Coil-Legal/coil#12 — score 100/100
-- Commercial score: 100/100
-- Buyer-intent score: 55/100
-- Issue: https://github.com/Coil-Legal/coil/issues/12
-- Public profile: https://github.com/iandolan
-- Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: looking for, audit, automation, api, ai, build, failed, 1720 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: The full register lives at docs/TOOL-READINESS.md in the repo and is the source of truth; this issue is the queue cut from it. Work Phase 1's further checks tool by tool in the order written, then Phase 2. File one QA finding issue per real finding. Anything marked needs a second user or needs a clean firm : create it. You have authority to create users on. I can audit the public repository for relevant bottlenecks and return a prioritized, evidence-linked action plan. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=public_repo_audit.
-
-## 5. shubhodeep1/coding-workflows#6749 — score 56/100
+## 2. shubhodeep1/coding-workflows#6749 — score 56/100
 - Commercial score: 100/100
 - Buyer-intent score: 55/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/6749
@@ -55,31 +22,9 @@ Suggested message:
 - Evidence: workflow failed, workflow, ai, failed, 14 comments
 
 Suggested message:
-> I noticed this specific problem in your issue: Workflow heal: AI Review failed 1x for shubhodeep1/drhyg_ecommerce_automation#64 (editor_empty_noop). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+> I noticed this specific problem in your issue: Workflow heal: AI Review failed 1x for shubhodeep1/drhyg ecommerce automation 64 (editor empty noop). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 6. mrchypark/goauthy#113 — score 55/100
-- Commercial score: 100/100
-- Buyer-intent score: 55/100
-- Issue: https://github.com/mrchypark/goauthy/issues/113
-- Public profile: https://mrchypark.github.io/
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: ci failed, workflow, api, failed, 14 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: [GA010-CAPACITY-001][P3] Define and verify SaaS outbound resource isolation from IAM traffic. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
-
-## 7. nickderobertis/ai-orchestrator#1604 — score 100/100
-- Commercial score: 100/100
-- Buyer-intent score: 45/100
-- Issue: https://github.com/nickderobertis/ai-orchestrator/issues/1604
-- Public profile: https://github.com/nickderobertis
-- Offer: AI Automation Audit — 10 USDT / Rp149,000
-- Evidence: looking for, audit, automation, api, ai, build, failed, 1 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: fix(tests): prove a step did not wait by observing its held double, not the clock. I can audit the public repository for relevant bottlenecks and return a prioritized, evidence-linked action plan. Fixed price: 10 USDT or Rp149,000. If you want the audit, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=public_repo_audit.
-
-## 8. remotion-dev/remotion#8375 — score 81/100
+## 3. remotion-dev/remotion#8375 — score 81/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/remotion-dev/remotion/issues/8375
@@ -90,7 +35,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: CI: Track flaky tests. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 9. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
+## 4. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/vinayakss007/nucrm-bigplan-by-vm-enterprise-v2/issues/2426
@@ -101,13 +46,68 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: CI Build fails non-deterministically on next/font/google: builds need live egress to Google Fonts and nothing caches or vendors it. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 10. softwarebyze/Backgammon-Mastermind#159 — score 61/100
+## 5. shubhodeep1/coding-workflows#6608 — score 56/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
-- Issue: https://github.com/softwarebyze/Backgammon-Mastermind/issues/159
-- Public profile: https://ebenfeld.tech
+- Issue: https://github.com/shubhodeep1/coding-workflows/issues/6608
+- Public profile: https://github.com/shubhodeep1
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: build failed, integration, workflow, build, failed, 3 comments
+- Evidence: workflow failed, workflow, ai, failed, 8 comments
 
 Suggested message:
-> I noticed this specific problem in your issue: Release: v1.1.0 — correctness, recovery, and startup. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+> I noticed this specific problem in your issue: Workflow heal: Internal: AI Review & Autofix [pr:6594] failed 18x for shubhodeep1/coding-workflows 6594 (identical failure cap). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 6. shubhodeep1/coding-workflows#6843 — score 54/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/shubhodeep1/coding-workflows/issues/6843
+- Public profile: https://github.com/shubhodeep1
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: ci failed, workflow, ai, failed, 6 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: Automated CI failure triage (generation 1 of max 3). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 7. shubhodeep1/coding-workflows#6832 — score 54/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/shubhodeep1/coding-workflows/issues/6832
+- Public profile: https://github.com/shubhodeep1
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: ci failed, workflow, ai, failed, 5 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: CI failure: CI on PR #6830. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 8. dotnet/runtime#130133 — score 50/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/dotnet/runtime/issues/130133
+- Public profile: https://github.com/kotlarmilos
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: build failed, build, failed, 4 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: [ci-scan] Wasm.Build.Tests ManagedToNativeGenerator task host node crash. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 9. dotnet/runtime#130858 — score 48/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/dotnet/runtime/issues/130858
+- Public profile: https://github.com/svick
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: build failed, build, failed, 3 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: CI failure on 8.0: Failed to install xharness because of missing DotnetToolSettings.xml. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 10. flathub/io.github.TeamWheelWizard.WheelWizard#58 — score 46/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/flathub/io.github.TeamWheelWizard.WheelWizard/issues/58
+- Public profile: https://github.com/flathubbot
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: build failed, bot, build, failed
+
+Suggested message:
+> I noticed this specific problem in your issue: Stable build failed. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
