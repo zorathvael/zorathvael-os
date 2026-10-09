@@ -115,6 +115,7 @@ def main() -> int:
     default_queries = [
         f'is:issue is:open updated:>={recent_since} ("need help" OR "looking for" OR "how to automate" OR "want to automate" OR "manual process")',
         f'is:issue is:open updated:>={recent_since} ("workflow failed" OR "actions failed" OR "ci failed" OR "build failed" OR "deployment failed" OR "deploy failed")',
+        f'is:issue is:open updated:>={recent_since} ("audit" OR "bottleneck" OR "inefficient" OR "repetitive" OR "slow workflow")',
     ]
     configured = os.getenv("ZORATHVAEL_LEAD_QUERY", "").strip()
     queries = [configured] if configured else default_queries
