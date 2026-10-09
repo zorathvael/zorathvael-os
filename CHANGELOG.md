@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Fixed
+- Add an offer-aligned actionable-problem gate before drafting, selecting, emailing, or posting outreach; reject operational checklists and meta-instructions as customer context.
+
+### Fixed
 - Reject arbitrary first-paragraph text and known operational recaps from outreach personalization.
 - Revalidate retained lead records against supported problem-to-offer fit and repair stale offer assignments before qualification metrics are refreshed.
 - Report explicit lead-cleanup counters so each acquisition run explains why records were dropped or corrected.
