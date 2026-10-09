@@ -6,7 +6,7 @@ import re
 import urllib.parse
 import urllib.request
 from urllib.error import HTTPError
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -148,10 +148,12 @@ def buyer_intent_score(lead: Lead) -> int:
         score += 35
     if "looking for" in evidence:
         score += 30
-    if "want to automate" in evidence or "is there a way to automate" in evidence:
-        score += 25
-    if "manual process" in evidence or "reduce manual" in evidence:
+    if evidence & {"how to automate", "want to automate", "is there a way to automate"}:
+        score += 30
+    if evidence & {"manual process", "reduce manual", "repetitive"}:
         score += 20
+    if evidence & {"audit", "bottleneck", "inefficient", "slow workflow"}:
+        score += 15
     if any(item.endswith(" comments") and int(item.split()[0]) >= 10 for item in evidence):
         score += 10
     return min(score, 100)
@@ -183,6 +185,11 @@ def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
     for lead in leads:
         if is_commercial_noise(lead.title, "") or is_non_buying_meta_issue(lead.title, ""):
             continue
+        matching_offer = select_offer(lead.score, lead.evidence)
+        if matching_offer is None:
+            continue
+        if lead.offer_id != matching_offer.product_id:
+            lead = replace(lead, offer_id=matching_offer.product_id)
         current = deduped.get(lead.url)
         if current is None or (commercial_relevance_score(lead), lead.score, buyer_intent_score(lead)) > (commercial_relevance_score(current), current.score, buyer_intent_score(current)):
             deduped[lead.url] = lead
