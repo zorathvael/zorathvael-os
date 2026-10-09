@@ -224,11 +224,8 @@ def select_offer(score: int, evidence: tuple[str, ...] = ()) -> ProductOffer | N
     if signals.intersection(audit_signals):
         return offers()["public_repo_audit"]
 
-    # A generic automation mention justifies investigation, not an implementation promise.
-    generic_automation_signals = {"automate", "automation", "automating", "api", "integration"}
-    if signals.intersection(generic_automation_signals):
-        return offers()["public_repo_audit"]
-
+    # Generic mentions such as "automation", "API", or "integration" do not
+    # prove a concrete problem or justify selling a product.
     return None
 
 
