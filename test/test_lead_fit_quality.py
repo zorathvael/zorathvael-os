@@ -40,7 +40,8 @@ def test_merge_leads_drops_legacy_generic_fit_and_repairs_stale_offer(tmp_path):
     ]
     path.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
 
-    leads = merge_leads(str(path), [])
+    diagnostics = {}
+    leads = merge_leads(str(path), [], diagnostics=diagnostics)
 
     assert [lead.url for lead in leads] == ["https://github.com/example/repo/issues/2"]
     assert leads[0].offer_id == "ci_failure_recovery"
@@ -48,3 +49,8 @@ def test_merge_leads_drops_legacy_generic_fit_and_repairs_stale_offer(tmp_path):
     persisted = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
     assert len(persisted) == 1
     assert persisted[0]["offer_id"] == "ci_failure_recovery"
+    assert diagnostics["records_loaded_before_merge"] == 2
+    assert diagnostics["dropped_without_offer_fit"] == 1
+    assert diagnostics["offer_reassigned"] == 1
+    assert diagnostics["context_replaced_with_title"] == 1
+    assert diagnostics["retained_after_cleanup"] == 1

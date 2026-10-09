@@ -65,7 +65,7 @@ Lead conversion starts with a conservative prior and is recalibrated from actual
 
 ## Safety boundary
 
-The acquisition engine discovers public opportunities but does not automatically contact third parties. The customer-initiated checkout is the transaction boundary.
+Public issue discovery can lead to automated, problem-specific GitHub issue-comment outreach when the required write token is configured. Outreach is gated by offer fit, buyer intent, repository health, duplicate prevention, repository cooldown, and daily limits. The customer-initiated checkout remains the transaction boundary; a public comment is not an order, consent to private contact, or proof of demand.
 
 The delivery engine uses public GitHub repository data only and does not request private credentials.
 
