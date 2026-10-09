@@ -55,25 +55,30 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. python - <<'PY'
           import json
+          import re
           from pathlib import Path
           from lib.profit_engine.revenue import has_actionable_problem_context, select_offer
 
           leads_path = Path("data/revenue_leads.jsonl")
           drafts_path = Path("data/outreach_drafts.md")
           leads = [json.loads(line) for line in leads_path.read_text(encoding="utf-8").splitlines() if line.strip()] if leads_path.exists() else []
-          invalid = []
-          for lead in leads:
-              offer = select_offer(int(lead.get("score", 0)), tuple(lead.get("evidence", [])))
-              if offer is None:
-                  continue
-              if not has_actionable_problem_context(lead.get("title", ""), lead.get("problem_context", ""), offer.product_id):
-                  invalid.append(lead.get("url", lead.get("title", "<unknown>")))
           draft_text = drafts_path.read_text(encoding="utf-8") if drafts_path.exists() else ""
+          lead_by_url = {lead.get("url"): lead for lead in leads}
+          draft_urls = re.findall(r"^- Issue: (https?://\\S+)", draft_text, flags=re.M)
+          invalid = []
+          for url in draft_urls:
+              lead = lead_by_url.get(url)
+              if not lead:
+                  invalid.append({"url": url, "reason": "draft URL not present in lead queue"})
+                  continue
+              offer = select_offer(int(lead.get("score", 0)), tuple(lead.get("evidence", [])))
+              if offer is None or not has_actionable_problem_context(lead.get("title", ""), lead.get("problem_context", ""), offer.product_id):
+                  invalid.append({"url": url, "reason": "no actionable offer-aligned problem context"})
           stale_meta = ("the full register lives", "while you were away", "one-line recap", "queue cut from it")
           found_stale = [marker for marker in stale_meta if marker in draft_text.lower()]
           summary = {
-              "lead_records_checked": len(leads),
-              "invalid_actionable_context_records": len(invalid),
+              "drafts_checked": len(draft_urls),
+              "invalid_drafts": invalid,
               "stale_meta_markers_in_drafts": found_stale,
               "draft_file_exists": drafts_path.exists(),
           }
