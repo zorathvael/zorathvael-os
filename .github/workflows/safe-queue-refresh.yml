@@ -64,7 +64,7 @@ jobs:
           leads = [json.loads(line) for line in leads_path.read_text(encoding="utf-8").splitlines() if line.strip()] if leads_path.exists() else []
           draft_text = drafts_path.read_text(encoding="utf-8") if drafts_path.exists() else ""
           lead_by_url = {lead.get("url"): lead for lead in leads}
-          draft_urls = re.findall(r"^- Issue: (https?://\\S+)", draft_text, flags=re.M)
+          draft_urls = re.findall(r"^- Issue: (https?://\S+)", draft_text, flags=re.M)
           invalid = []
           for url in draft_urls:
               lead = lead_by_url.get(url)
