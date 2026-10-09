@@ -360,15 +360,16 @@ def select_auto_outreach(
 
 def build_email_outreach_message(lead: Lead, recipient: str) -> str:
     offer = offers()[lead.offer_id]
+    context = lead.problem_context or lead.title
     return (
         f"Hello @{lead.author},\n\n"
-        f"I found your public issue: {lead.title}\n"
-        f"Zorathvael can provide a {offer.name} for this specific problem.\n"
-        f"{lead.url}\n\n"
-        "The deliverable is based only on public repository evidence; no credentials are required.\n\n"
-        f"Fixed price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}.\n"
-        f"Order securely through the Zorathvael portal: {ORDER_PORTAL_URL}?service={lead.offer_id}\n\n"
-        "If this is not relevant, reply with 'no thanks' and we will not contact this address again.\n\n"
+        f"I read your issue, especially this problem detail: {context}\n\n"
+        f"For this case, {offer.name} would provide a focused, evidence-linked deliverable: {offer.description} "
+        "I have not assumed the root cause; the diagnosis would be based on public evidence.\n\n"
+        f"Fixed scope and price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
+        "Would this outcome be useful for resolving the problem you described? If so, the order details are here: "
+        f"{ORDER_PORTAL_URL}?service={lead.offer_id}\n\n"
+        "No repository credentials are required. If this is not relevant, reply 'no thanks' and I will not contact you again.\n\n"
         "— Zorathvael Core\n"
         f"Reference: {lead.url}\n"
     )
@@ -376,14 +377,16 @@ def build_email_outreach_message(lead: Lead, recipient: str) -> str:
 
 def build_outreach_message(lead: Lead) -> str:
     offer = offers()[lead.offer_id]
+    context = lead.problem_context or lead.title
     return (
         f"{OUTREACH_MARKER}\n"
-        f"Hi @{lead.author} — I found this public issue ({lead.title}) while looking for "
-        "specific problems where I can provide a concrete outcome. "
-        f"Zorathvael can deliver {offer.name.lower()} for this case. "
-        f"The fixed price is {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
-        "No repository credentials are required; the service uses public repository evidence. "
-        f"Order securely through the Zorathvael portal: {ORDER_PORTAL_URL}?service={lead.offer_id}"
+        f"Hi @{lead.author} — I read your issue, especially this problem detail: {context}. "
+        f"For this case, {offer.name} would return a focused deliverable: {offer.description} "
+        "I have not assumed the root cause; the work would be based on public evidence. "
+        f"Fixed scope and price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
+        "Would this outcome be useful for resolving the problem you described? "
+        f"If so, the order details are here: {ORDER_PORTAL_URL}?service={lead.offer_id}. "
+        "No repository credentials are required. If this is not relevant, please say so and I will not follow up."
     )
 
 
