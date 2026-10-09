@@ -28,6 +28,17 @@ Outbound contact is guarded by explicit problem-intent checks, repository health
 
 GitHub issue comments are flat rather than threaded. The response observer therefore treats post-outreach comments as heuristic evidence, records only demand-relevant classifications, and does not count neutral discussion as customer interest.
 
+### Email response observation setup
+
+The manual 9-stage workflow must receive these repository **Actions secrets** for IMAP response observation:
+
+- `ZORATHVAEL_IMAP_HOST`
+- `ZORATHVAEL_IMAP_USERNAME`
+- `ZORATHVAEL_IMAP_PASSWORD`
+- `ZORATHVAEL_IMAP_PORT` (optional; defaults to `993`)
+
+`ZORATHVAEL_IMAP_FOLDER` is an optional Actions variable (defaults to `INBOX`). Configure the inbox credentials for the mailbox that receives replies to the configured SMTP sender. Do not put credentials in repository files. The workflow now passes these values into the observer and the observer emits structured status when configuration is missing or no email outreach events exist. A configured IMAP connection still needs a successful manual run to validate credentials, mailbox access, and actual response matching. GitHub issue-comment response observation remains a separate channel.
+
 ## Checkout
 
 A buyer opens the Buy a Zorathvael Automation Product issue form.

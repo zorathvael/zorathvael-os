@@ -186,6 +186,10 @@ The GitHub Actions delivery worker requires these repository secrets:
 - `AGENTMAIL_API_KEY`
 - `AGENTMAIL_INBOX_ID`
 
+### Outreach reply tracking
+
+The manual Core workflow passes the IMAP response-observer configuration from GitHub Actions secrets. To track replies sent to the outreach mailbox, configure `ZORATHVAEL_IMAP_HOST`, `ZORATHVAEL_IMAP_USERNAME`, and `ZORATHVAEL_IMAP_PASSWORD`; `ZORATHVAEL_IMAP_PORT` is optional (default `993`). Optionally set the Actions variable `ZORATHVAEL_IMAP_FOLDER` (default `INBOX`). These must refer to the inbox that receives replies for the configured SMTP sender. The workflow reports a structured disabled status when required configuration is missing; successful workflow execution alone does not prove the mailbox connection or reply matching works.
+
 The customer order portal does not require a WebsitePublisher account or `WPS_TOKEN`. Order intake is handled by GitHub Pages + GitHub Issues + GitHub Actions.
 
 The AgentMail free tier currently supports 3 inboxes and 3,000 emails/month without a credit card. The Core does not require a paid AI API or SMTP server for this delivery path.
