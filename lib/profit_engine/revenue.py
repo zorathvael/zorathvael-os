@@ -6,7 +6,7 @@ import re
 import urllib.parse
 import urllib.request
 from urllib.error import HTTPError
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -50,9 +50,10 @@ DEFAULT_OFFERS = (
 )
 
 STRONG_SIGNALS: tuple[tuple[str, int], ...] = (
-    ("need help", 32), ("looking for", 30), ("how to automate", 30), ("automate", 26),
-    ("automation", 26), ("manual process", 24), ("repetitive", 22), ("workflow automation", 22),
-    ("webhook integration", 20), ("reduce manual", 20), ("script this", 20), ("want to automate", 28),
+    ("need help", 32), ("looking for", 30), ("how to automate", 30), ("audit", 30),
+    ("bottleneck", 32), ("inefficient", 30), ("slow workflow", 30), ("automate", 26),
+    ("automation", 26), ("manual process", 32), ("repetitive", 30), ("workflow automation", 22),
+    ("webhook integration", 20), ("reduce manual", 30), ("script this", 20), ("want to automate", 30),
     ("is there a way to automate", 30), ("automating", 24), ("github actions failed", 36),
     ("actions failed", 34), ("workflow failed", 34), ("failing workflow", 34), ("ci failed", 32),
     ("build failed", 32), ("deployment failed", 34), ("deploy failed", 32), ("pipeline failed", 30),
@@ -147,10 +148,12 @@ def buyer_intent_score(lead: Lead) -> int:
         score += 35
     if "looking for" in evidence:
         score += 30
-    if "want to automate" in evidence or "is there a way to automate" in evidence:
-        score += 25
-    if "manual process" in evidence or "reduce manual" in evidence:
+    if evidence & {"how to automate", "want to automate", "is there a way to automate"}:
+        score += 30
+    if evidence & {"manual process", "reduce manual", "repetitive"}:
         score += 20
+    if evidence & {"audit", "bottleneck", "inefficient", "slow workflow"}:
+        score += 15
     if any(item.endswith(" comments") and int(item.split()[0]) >= 10 for item in evidence):
         score += 10
     return min(score, 100)
@@ -182,6 +185,11 @@ def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
     for lead in leads:
         if is_commercial_noise(lead.title, "") or is_non_buying_meta_issue(lead.title, ""):
             continue
+        matching_offer = select_offer(lead.score, lead.evidence)
+        if matching_offer is None:
+            continue
+        if lead.offer_id != matching_offer.product_id:
+            lead = replace(lead, offer_id=matching_offer.product_id)
         current = deduped.get(lead.url)
         if current is None or (commercial_relevance_score(lead), lead.score, buyer_intent_score(lead)) > (commercial_relevance_score(current), current.score, buyer_intent_score(current)):
             deduped[lead.url] = lead
@@ -192,15 +200,40 @@ def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
     )[: max(limit, 0)]
 
 
-def select_offer(score: int, evidence: tuple[str, ...] = ()) -> ProductOffer:
+def select_offer(score: int, evidence: tuple[str, ...] = ()) -> ProductOffer | None:
+    """Return an offer only when public evidence supports a specific problem-solution fit."""
+    if int(score) < 30:
+        return None
+
+    signals = {str(item).strip().lower() for item in evidence}
     failure_signals = {
         "github actions failed", "actions failed", "workflow failed", "failing workflow",
         "ci failed", "build failed", "deployment failed", "deploy failed", "pipeline failed",
         "cant deploy", "cannot deploy",
     }
-    if failure_signals.intersection(evidence):
+    if signals.intersection(failure_signals):
         return offers()["ci_failure_recovery"]
-    return offers()["automation_blueprint"] if score >= 55 else offers()["public_repo_audit"]
+
+    # A request to implement a named automation is stronger than a generic
+    # mention of automation and can justify a blueprint directly.
+    implementation_signals = {
+        "how to automate", "want to automate", "is there a way to automate",
+        "script this", "workflow automation", "webhook integration",
+    }
+    if signals.intersection(implementation_signals):
+        return offers()["automation_blueprint"]
+
+    # Diagnostic-first offer for a stated bottleneck or repetitive/manual process.
+    audit_signals = {
+        "audit", "bottleneck", "inefficient", "slow workflow", "manual process",
+        "repetitive", "reduce manual",
+    }
+    if signals.intersection(audit_signals):
+        return offers()["public_repo_audit"]
+
+    # Generic mentions such as "automation", "API", or "integration" do not
+    # prove a concrete problem or justify selling a product.
+    return None
 
 
 def make_opportunity(lead: Lead, prior_conversion: float = 0.02) -> Opportunity:
@@ -254,6 +287,8 @@ class GitHubLeadScout:
             if score < 30 or is_commercial_noise(title, body) or is_non_buying_meta_issue(title, body):
                 continue
             offer = select_offer(score, evidence)
+            if offer is None:
+                continue
             results.append(Lead(
                 "github_issue_search", str(item.get("number")), title,
                 item.get("html_url", ""), repository, author, evidence, score,

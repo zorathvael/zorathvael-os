@@ -68,14 +68,21 @@ jobs:
           python - <<'PY'
           import json, os, subprocess
           payload = json.load(open("/tmp/repository-intake-result.json", encoding="utf-8"))
-          status = "qualified for the commercial queue" if payload["qualified"] else "queued for further qualification"
+          if payload["qualified"]:
+              status = "qualified for the commercial queue"
+          elif payload["status"] == "needs_problem_clarification":
+              status = "needs a clearer problem statement before a product can be recommended"
+          else:
+              status = "queued for further qualification"
+          offer_label = payload["offer_id"] or "not assigned — no evidence-backed fit yet"
           body = (
               f"Zorathvael Core accepted {payload['repository']}.\n\n"
               f"- Intake: **{status}**\n"
               f"- Score: **{payload['score']}**\n"
-              f"- Offer candidate: **{payload['offer_id']}**\n"
+              f"- Offer candidate: **{offer_label}**\n"
               f"- Commercial relevance: **{payload['commercial_relevance']}**\n\n"
-              "The repository is now part of the Core's measured intake state. "
+              "The Core will not force an unrelated product onto a problem. "
+              "If no offer is assigned, provide a concrete issue URL or describe the blocked workflow, current workaround, and desired outcome. "
               "Do not post credentials or secrets in this issue."
           )
           subprocess.run([

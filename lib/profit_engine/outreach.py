@@ -4,12 +4,12 @@ import json
 import urllib.error
 import urllib.parse
 import urllib.request
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from .revenue import Lead, buyer_intent_score, commercial_relevance_score, offers
+from .revenue import Lead, buyer_intent_score, commercial_relevance_score, offers, select_offer
 
 
 ORDER_PORTAL_URL = "https://zorathvael.github.io/zorathvael-os/order/"
@@ -37,7 +37,10 @@ def _explicit_intent(lead: Lead) -> bool:
         "need help", "looking for", "github actions failed", "actions failed",
         "workflow failed", "failing workflow", "ci failed", "build failed",
         "deployment failed", "deploy failed", "pipeline failed", "cant deploy",
-        "cannot deploy",
+        "cannot deploy", "how to automate", "want to automate",
+        "is there a way to automate", "manual process", "reduce manual",
+        "script this", "workflow automation", "webhook integration",
+        "audit", "bottleneck", "inefficient", "slow workflow", "repetitive",
     }))
 
 
@@ -244,6 +247,8 @@ def select_auto_outreach(
         "explicit_intent_missing": 0,
         "buyer_intent_below_45": 0,
         "commercial_relevance_below_70": 0,
+        "problem_solution_fit_missing": 0,
+        "offer_reassigned": 0,
         "repository_cooldown": 0,
         "eligible_before_health": 0,
         "health_lookup_failed": 0,
@@ -257,6 +262,13 @@ def select_auto_outreach(
         if lead.url in already_contacted:
             diagnostic_counts["already_contacted"] += 1
             continue
+        matching_offer = select_offer(lead.score, lead.evidence)
+        if matching_offer is None:
+            diagnostic_counts["problem_solution_fit_missing"] += 1
+            continue
+        if lead.offer_id != matching_offer.product_id:
+            lead = replace(lead, offer_id=matching_offer.product_id)
+            diagnostic_counts["offer_reassigned"] += 1
         if not _explicit_intent(lead):
             diagnostic_counts["explicit_intent_missing"] += 1
             continue
