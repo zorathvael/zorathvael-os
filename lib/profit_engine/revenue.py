@@ -50,10 +50,10 @@ DEFAULT_OFFERS = (
 )
 
 STRONG_SIGNALS: tuple[tuple[str, int], ...] = (
-    ("need help", 32), ("looking for", 30), ("how to automate", 30), ("audit", 24),
-    ("bottleneck", 22), ("inefficient", 20), ("slow workflow", 20), ("automate", 26),
-    ("automation", 26), ("manual process", 24), ("repetitive", 22), ("workflow automation", 22),
-    ("webhook integration", 20), ("reduce manual", 20), ("script this", 20), ("want to automate", 28),
+    ("need help", 32), ("looking for", 30), ("how to automate", 30), ("audit", 30),
+    ("bottleneck", 32), ("inefficient", 30), ("slow workflow", 30), ("automate", 26),
+    ("automation", 26), ("manual process", 32), ("repetitive", 30), ("workflow automation", 22),
+    ("webhook integration", 20), ("reduce manual", 30), ("script this", 20), ("want to automate", 30),
     ("is there a way to automate", 30), ("automating", 24), ("github actions failed", 36),
     ("actions failed", 34), ("workflow failed", 34), ("failing workflow", 34), ("ci failed", 32),
     ("build failed", 32), ("deployment failed", 34), ("deploy failed", 32), ("pipeline failed", 30),
