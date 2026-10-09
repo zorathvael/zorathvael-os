@@ -54,3 +54,37 @@ def test_merge_leads_drops_legacy_generic_fit_and_repairs_stale_offer(tmp_path):
     assert diagnostics["offer_reassigned"] == 1
     assert diagnostics["context_replaced_with_title"] == 1
     assert diagnostics["retained_after_cleanup"] == 1
+
+
+
+def test_actionable_context_gate_rejects_coil_legal_checklist_and_workspace_recap():
+    from lib.profit_engine.revenue import has_actionable_problem_context
+
+    coil_context = (
+        "The full register lives at docs/TOOL-READINESS.md in the repo and is the source of truth; "
+        "this issue is the queue cut from it. Work Phase 1's further checks tool by tool in the order written, "
+        "then Phase 2. File one QA finding issue per real finding. Anything marked needs a second user "
+        "or needs a clean firm: create it. You have authority to create users on."
+    )
+    assert not has_actionable_problem_context("Tool readiness checks", coil_context, "public_repo_audit")
+    assert not has_actionable_problem_context(
+        "Workspace recap", "While you were away: a one-line recap of the whole workspace.",
+        "ci_failure_recovery",
+    )
+
+
+def test_actionable_context_gate_accepts_specific_failure_and_operational_pain():
+    from lib.profit_engine.revenue import has_actionable_problem_context
+
+    assert has_actionable_problem_context(
+        "CI build failed", "The deployment fails with a timeout and blocks every release.",
+        "ci_failure_recovery",
+    )
+    assert has_actionable_problem_context(
+        "Manual release process", "The release process is repetitive and takes too long.",
+        "public_repo_audit",
+    )
+    assert not has_actionable_problem_context(
+        "Automation audit", "Please follow phase 1 and phase 2 and file one QA finding per item.",
+        "public_repo_audit",
+    )
