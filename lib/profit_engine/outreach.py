@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from .revenue import Lead, buyer_intent_score, commercial_relevance_score, offers, select_offer
+from .revenue import Lead, buyer_intent_score, commercial_relevance_score, has_actionable_problem_context, offers, select_offer
 
 
 ORDER_PORTAL_URL = "https://zorathvael.github.io/zorathvael-os/order/"
@@ -248,6 +248,7 @@ def select_auto_outreach(
         "buyer_intent_below_45": 0,
         "commercial_relevance_below_70": 0,
         "problem_solution_fit_missing": 0,
+        "problem_context_not_actionable": 0,
         "offer_reassigned": 0,
         "repository_cooldown": 0,
         "eligible_before_health": 0,
@@ -265,6 +266,9 @@ def select_auto_outreach(
         matching_offer = select_offer(lead.score, lead.evidence)
         if matching_offer is None:
             diagnostic_counts["problem_solution_fit_missing"] += 1
+            continue
+        if not has_actionable_problem_context(lead.title, lead.problem_context, matching_offer.product_id):
+            diagnostic_counts["problem_context_not_actionable"] += 1
             continue
         if lead.offer_id != matching_offer.product_id:
             lead = replace(lead, offer_id=matching_offer.product_id)
