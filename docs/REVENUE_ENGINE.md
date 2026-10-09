@@ -42,7 +42,7 @@ QRIS is supported, but automatic verification requires a trusted merchant/provid
 
 ## Customer-demand validation
 
-The issue title alone is not sufficient product research. The scout retains a bounded excerpt from the public issue body so outreach can name the actual pain and explain the matching deliverable. Reply intent is categorized into positive interest, requests for details, price objections, fit objections, timing objections, and explicit disinterest.
+The issue title alone is not sufficient product research. The scout retains a bounded excerpt from the public issue body so outreach can name the actual pain and explain the matching deliverable. Product assignment now requires evidence that fits a supported problem category: active CI/deployment failure, an explicit automation implementation request, or a stated bottleneck/manual-process audit need. Generic help requests and low-quality signals do not receive a product assignment; repository intake requests with no clear fit are sent back for problem clarification.
 
 These categories are weak qualitative evidence, not statistically validated customer research. Small samples are labeled inconclusive. A product hypothesis should be strengthened by repeated independent problem instances, specific customer replies, and—most importantly—verified paid orders. Keyword matches, issue comments, or outreach sends are not proof of product-market fit.
 
