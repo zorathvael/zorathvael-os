@@ -72,3 +72,8 @@ The delivery engine uses public GitHub repository data only and does not request
 ## Zero-budget architecture
 
 The engine runs on standard GitHub-hosted runners. GitHub documents standard runners as free for public repositories. The repository can therefore run the acquisition and payment-verification loops without a paid server.
+
+
+## Outreach publication quality gate
+
+Before a lead can enter the outreach queue or be sent by email/GitHub, its title and extracted context must contain a concrete symptom or operational pain aligned with the assigned offer. CI recovery requires a failure symptom; repository audit requires explicit operational pain (for example manual/repetitive work or a bottleneck); automation blueprint requires an explicit implementation request. Workspace recaps, execution checklists, and repository-operating instructions are rejected. The same guard is applied at selection and again immediately before external delivery.
