@@ -73,3 +73,26 @@ def test_demand_snapshot_marks_small_samples_inconclusive():
     ]
     snapshot = build_learning_snapshot(events=events, orders=[])
     assert snapshot["offer_stats"]["ci_failure_recovery"]["demand_status"] == "insufficient_outreach_sample"
+
+
+def test_rendered_draft_includes_a_working_order_portal_url(tmp_path):
+    from lib.profit_engine.revenue import Lead, render_drafts
+
+    lead = Lead(
+        source="test",
+        external_id="8",
+        title="CI workflow fails on deploy",
+        url="https://github.com/example/repo/issues/8",
+        repository="example/repo",
+        author="maintainer",
+        evidence=("workflow failed",),
+        score=90,
+        offer_id="ci_failure_recovery",
+        contact_url="https://github.com/maintainer",
+        discovered_at="2026-10-09T00:00:00+00:00",
+        problem_context="The CI workflow fails during deployment and blocks releases.",
+    )
+    output = tmp_path / "drafts.md"
+    render_drafts([lead], str(output))
+    draft = output.read_text(encoding="utf-8")
+    assert "https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery" in draft
