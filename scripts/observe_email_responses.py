@@ -63,8 +63,20 @@ def main() -> int:
     host = os.getenv("ZORATHVAEL_IMAP_HOST", "").strip()
     username = os.getenv("ZORATHVAEL_IMAP_USERNAME", "").strip()
     password = os.getenv("ZORATHVAEL_IMAP_PASSWORD", "").strip()
-    if not all((host, username, password)):
-        print("email_response_observer: IMAP transport not configured")
+    missing_config = [
+        name for name, value in (
+            ("ZORATHVAEL_IMAP_HOST", host),
+            ("ZORATHVAEL_IMAP_USERNAME", username),
+            ("ZORATHVAEL_IMAP_PASSWORD", password),
+        )
+        if not value
+    ]
+    if missing_config:
+        print(json.dumps({
+            "status": "disabled_missing_configuration",
+            "missing_configuration": missing_config,
+            "email_response_observed": 0,
+        }, indent=2, sort_keys=True))
         return 0
 
     leads = {
@@ -85,7 +97,12 @@ def main() -> int:
     }
 
     if not sent:
-        print("email_response_observer: no email outreach events")
+        print(json.dumps({
+            "status": "ready_no_email_outreach_events",
+            "email_outreach_events": 0,
+            "tracked_contacts": len(leads),
+            "email_response_observed": 0,
+        }, indent=2, sort_keys=True))
         return 0
 
     mail = imaplib.IMAP4_SSL(host, int(os.getenv("ZORATHVAEL_IMAP_PORT", "993")))
@@ -138,8 +155,10 @@ def main() -> int:
             observed += 1
 
         print(json.dumps({
-            "email_response_observed": observed,
+            "status": "observed",
+            "email_outreach_events": len(sent),
             "tracked_contacts": len(leads),
+            "email_response_observed": observed,
         }, indent=2, sort_keys=True))
     finally:
         try:
