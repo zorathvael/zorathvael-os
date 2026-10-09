@@ -385,7 +385,7 @@ def build_outreach_message(lead: Lead) -> str:
         "I have not assumed the root cause; the work would be based on public evidence. "
         f"Fixed scope and price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
         "Would this outcome be useful for resolving the problem you described? "
-        f"If so, the order details are here: {ORDER_PORTAL_URL}?service={lead.offer_id}. "
+        f"If so, the order details are here: {ORDER_PORTAL_URL}?service={lead.offer_id} "
         "No repository credentials are required. If this is not relevant, please say so and I will not follow up."
     )
 
