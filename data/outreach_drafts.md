@@ -101,13 +101,13 @@ Suggested message:
 Suggested message:
 > I found your public issue: Workflow heal: Internal: AI Review & Autofix [pr:6594] failed 18x for shubhodeep1/coding-workflows#6594 (identical_failure_cap). The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
 
-## 10. FastLED/FastLED#4737 — score 52/100
+## 10. shubhodeep1/coding-workflows#6832 — score 54/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
-- Issue: https://github.com/FastLED/FastLED/issues/4737
-- Public profile: https://github.com/zackees
+- Issue: https://github.com/shubhodeep1/coding-workflows/issues/6832
+- Public profile: https://github.com/shubhodeep1
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: build failed, workflow, build, failed, 2 comments
+- Evidence: ci failed, workflow, ai, failed, 5 comments
 
 Suggested message:
-> I found your public issue: meta(memory): reduce default flash/RAM usage across all measured platforms. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
+> I found your public issue: CI failure: CI on PR #6830. The issue contains a concrete CI/deployment failure signal. I can diagnose the failing workflow/job/step, identify the error fingerprint and likely cause, and give you a concrete remediation path. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form.
