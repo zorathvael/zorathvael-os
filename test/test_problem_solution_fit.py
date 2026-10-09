@@ -46,3 +46,24 @@ def test_manual_repository_intake_does_not_assign_an_unrelated_product(monkeypat
     assert result["status"] == "needs_problem_clarification"
     assert result["offer_id"] is None
     assert result["lead_created"] is False
+
+
+def test_ranked_legacy_lead_is_reassigned_to_the_evidence_matched_offer():
+    from lib.profit_engine.revenue import Lead, rank_outreach_leads
+
+    lead = Lead(
+        source="test",
+        external_id="88",
+        title="GitHub Actions workflow failed",
+        url="https://github.com/example/repo/issues/88",
+        repository="example/repo",
+        author="maintainer",
+        evidence=("workflow failed", "build failed"),
+        score=90,
+        offer_id="automation_blueprint",
+        contact_url="https://github.com/maintainer",
+        discovered_at="2026-10-09T00:00:00+00:00",
+    )
+    ranked = rank_outreach_leads([lead])
+    assert len(ranked) == 1
+    assert ranked[0].offer_id == "ci_failure_recovery"
