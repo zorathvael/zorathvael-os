@@ -369,7 +369,7 @@ def build_email_outreach_message(lead: Lead, recipient: str) -> str:
         f"Fixed scope and price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
         "Would this outcome be useful for resolving the problem you described? If so, the order details are here: "
         f"{ORDER_PORTAL_URL}?service={lead.offer_id}\n\n"
-        "No repository credentials are required. If this is not relevant, reply 'no thanks' and I will not contact you again.\n\n"
+        "No credentials are required; this uses public repository evidence only. If this is not relevant, reply 'no thanks' and I will not contact you again.\n\n"
         "— Zorathvael Core\n"
         f"Reference: {lead.url}\n"
     )
@@ -381,12 +381,12 @@ def build_outreach_message(lead: Lead) -> str:
     return (
         f"{OUTREACH_MARKER}\n"
         f"Hi @{lead.author} — I read your issue, especially this problem detail: {context}. "
-        f"For this case, {offer.name} would return a focused deliverable: {offer.description} "
+        f"Zorathvael's {offer.name} would return a focused deliverable: {offer.description} "
         "I have not assumed the root cause; the work would be based on public evidence. "
         f"Fixed scope and price: {offer.price_usdt:g} USDT or Rp{offer.price_idr:,}. "
         "Would this outcome be useful for resolving the problem you described? "
         f"If so, the order details are here: {ORDER_PORTAL_URL}?service={lead.offer_id} "
-        "No repository credentials are required. If this is not relevant, please say so and I will not follow up."
+        "No credentials are required; this uses public repository evidence only. If this is not relevant, please say so and I will not follow up."
     )
 
 
