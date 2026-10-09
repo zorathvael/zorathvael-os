@@ -19,6 +19,7 @@ from lib.profit_engine.revenue import (
     is_non_buying_meta_issue,
     score_lead,
     select_offer,
+    extract_problem_context,
 )
 
 GITHUB_RE = re.compile(r"^https://github\.com/([^/]+)/([^/#?]+?)/?$")
@@ -146,6 +147,7 @@ def ingest(repository_url: str, issue_url: str = "", context: str = "", token: s
             offer.product_id,
             issue_data.get("user", {}).get("html_url", normalized_url),
             now,
+            problem_context=extract_problem_context(analysis_title, analysis_body),
         )
 
     record = {
