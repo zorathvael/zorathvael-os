@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Reject arbitrary first-paragraph text and known operational recaps from outreach personalization.
+- Revalidate retained lead records against supported problem-to-offer fit and repair stale offer assignments before qualification metrics are refreshed.
+
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
