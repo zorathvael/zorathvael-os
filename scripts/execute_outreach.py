@@ -94,7 +94,7 @@ def send_email(lead: Lead) -> str:
     username = os.environ["ZORATHVAEL_SMTP_USERNAME"]
     password = os.environ["ZORATHVAEL_SMTP_PASSWORD"]
     sender = os.environ["ZORATHVAEL_EMAIL_FROM"]
-    port = int(os.getenv("ZORATHVAEL_SMTP_PORT", "587"))
+    port = int(os.getenv("ZORATHVAEL_SMTP_PORT", "").strip() or "587")
     subject = f"Zorathvael — {lead.offer_id.replace('_', ' ')}: {lead.title}"
 
     message = EmailMessage()
