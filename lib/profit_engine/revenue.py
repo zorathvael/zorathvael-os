@@ -96,13 +96,28 @@ def extract_problem_context(title: str, body: str, max_chars: int = 360) -> str:
     text = text.replace(chr(96), " ")
     text = re.sub(r"[#>*_~]", " ", text)
     paragraphs = [re.sub(r"\s+", " ", part).strip() for part in re.split(r"\n\s*\n", text)]
-    markers = ("fail", "error", "broken", "block", "cannot", "can't", "unable", "timeout",
-               "crash", "slow", "manual", "need", "looking for", "automate", "problem", "issue")
-    excerpt = next((p for p in paragraphs if len(p) >= 35 and any(m in p.lower() for m in markers)), "")
-    if not excerpt:
-        excerpt = next((p for p in paragraphs if len(p) >= 35), "")
+    markers = (
+        "fail", "error", "broken", "block", "cannot", "can't", "unable", "timeout",
+        "crash", "slow", "manual", "need help", "looking for", "automate", "problem",
+        "issue", "bottleneck", "inefficient", "repetitive", "not working", "does not work",
+        "doesn't work", "wish to", "want to",
+    )
+    meta_markers = (
+        "the user's rule", "while you were away", "one-line recap", "canonical runtime handoff",
+        "this ticket began as", "this issue now covers", "collect created at",
+        "report p50/p95", "qualify the prepared", "release-readiness follow-up",
+        "treat that as a hypothesis", "the vm ledger is canonical",
+    )
+    excerpt = next((
+        p for p in paragraphs
+        if len(p) >= 35
+        and any(marker in p.lower() for marker in markers)
+        and not any(marker in p.lower() for marker in meta_markers)
+    ), "")
     if len(excerpt) > max_chars:
         excerpt = excerpt[:max_chars].rsplit(" ", 1)[0]
+    # Never personalize a sales message with arbitrary first-paragraph text.
+    # If no problem-focused excerpt survives, the issue title is the safer fallback.
     return excerpt or (title or "")[:max_chars]
 
 
