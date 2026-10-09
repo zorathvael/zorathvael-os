@@ -120,30 +120,38 @@ def ingest(repository_url: str, issue_url: str = "", context: str = "", token: s
     comments = int(issue_data.get("comments", 0) or 0)
     score, evidence = score_lead(analysis_title, analysis_body, comments)
     buying_noise = is_commercial_noise(analysis_title, analysis_body) or is_non_buying_meta_issue(analysis_title, analysis_body)
-    qualified = score >= 30 and not buying_noise
-    offer = select_offer(score, evidence)
+    offer = select_offer(score, evidence) if not buying_noise else None
+    qualified = score >= 30 and not buying_noise and offer is not None
+    needs_clarification = score >= 30 and not buying_noise and offer is None
+    status = (
+        "qualified" if qualified
+        else "needs_problem_clarification" if needs_clarification
+        else "queued"
+    )
     now = datetime.now(timezone.utc).isoformat()
     public_issue_url = parsed_issue[0] if parsed_issue else normalized_url
     key = request_key(repository, public_issue_url, context)
 
-    lead = Lead(
-        "manual_repository_intake",
-        str(parsed_issue[1]) if parsed_issue else key,
-        analysis_title,
-        public_issue_url,
-        repository,
-        issue_data.get("user", {}).get("login", ""),
-        evidence,
-        score,
-        offer.product_id,
-        issue_data.get("user", {}).get("html_url", normalized_url),
-        now,
-    )
+    lead = None
+    if offer is not None:
+        lead = Lead(
+            "manual_repository_intake",
+            str(parsed_issue[1]) if parsed_issue else key,
+            analysis_title,
+            public_issue_url,
+            repository,
+            issue_data.get("user", {}).get("login", ""),
+            evidence,
+            score,
+            offer.product_id,
+            issue_data.get("user", {}).get("html_url", normalized_url),
+            now,
+        )
 
     record = {
         "request_key": key,
         "source": "manual_repository_intake",
-        "status": "qualified" if qualified else "queued",
+        "status": status,
         "repository": repository,
         "repository_url": normalized_url,
         "issue_url": parsed_issue[0] if parsed_issue else "",
@@ -153,12 +161,12 @@ def ingest(repository_url: str, issue_url: str = "", context: str = "", token: s
         "repository_description": repo_description,
         "score": score,
         "evidence": list(evidence),
-        "commercial_relevance": commercial_relevance_score(lead) if qualified else 0,
-        "offer_id": offer.product_id,
+        "commercial_relevance": commercial_relevance_score(lead) if qualified and lead is not None else 0,
+        "offer_id": offer.product_id if offer is not None else None,
         "created_at": now,
     }
     created = append_unique(record, "data/manual_repository_requests.jsonl")
-    lead_created = append_lead(lead) if qualified and parsed_issue else False
+    lead_created = append_lead(lead) if qualified and parsed_issue and lead is not None else False
 
     return {
         "created": created,
@@ -168,7 +176,7 @@ def ingest(repository_url: str, issue_url: str = "", context: str = "", token: s
         "issue_url": parsed_issue[0] if parsed_issue else "",
         "score": score,
         "qualified": qualified,
-        "offer_id": offer.product_id,
+        "offer_id": offer.product_id if offer is not None else None,
         "commercial_relevance": record["commercial_relevance"],
         "status": record["status"],
     }
