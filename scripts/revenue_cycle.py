@@ -18,6 +18,8 @@ from lib.profit_engine.revenue import (
     rank_outreach_leads,
     render_drafts,
     is_non_buying_meta_issue,
+    select_offer,
+    extract_problem_context,
 )
 
 
@@ -50,6 +52,15 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
             continue
         if is_non_buying_meta_issue(row.get("title", ""), ""):
             continue
+        matching_offer = select_offer(int(row.get("score", 0)), tuple(row.get("evidence", [])))
+        if matching_offer is None:
+            continue
+        # Repair legacy offer assignments and stale/problematic context before
+        # these records can inflate qualified-lead metrics or enter drafts.
+        row["offer_id"] = matching_offer.product_id
+        row["problem_context"] = extract_problem_context(
+            row.get("title", ""), row.get("problem_context", "")
+        )
         try:
             discovered = datetime.fromisoformat(str(row.get("discovered_at", "")).replace("Z", "+00:00"))
             if discovered < cutoff:
