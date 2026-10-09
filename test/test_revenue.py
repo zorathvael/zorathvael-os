@@ -118,7 +118,8 @@ def test_auto_outreach_requires_explicit_buyer_intent_and_is_idempotent() -> Non
     selected = select_auto_outreach([lead], already_contacted=set(), limit=3)
 
     assert len(selected) == 1
-    message = build_outreach_message(lead)
+    assert selected[0].offer_id == "ci_failure_recovery"
+    message = build_outreach_message(selected[0])
     assert "CI failed" in message
     assert "Zorathvael" in message
     assert "order" in message.lower()
