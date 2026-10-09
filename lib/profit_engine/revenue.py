@@ -247,10 +247,10 @@ def rank_outreach_leads(leads: list[Lead], limit: int = 10) -> list[Lead]:
     for lead in leads:
         if is_commercial_noise(lead.title, "") or is_non_buying_meta_issue(lead.title, ""):
             continue
-        if not has_actionable_problem_context(lead.title, lead.problem_context, lead.offer_id):
-            continue
         matching_offer = select_offer(lead.score, lead.evidence)
         if matching_offer is None:
+            continue
+        if not has_actionable_problem_context(lead.title, lead.problem_context, matching_offer.product_id):
             continue
         if lead.offer_id != matching_offer.product_id:
             lead = replace(lead, offer_id=matching_offer.product_id)
