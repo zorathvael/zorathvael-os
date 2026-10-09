@@ -118,3 +118,12 @@ def test_email_observer_reports_missing_imap_configuration(monkeypatch, capsys):
         "ZORATHVAEL_IMAP_PASSWORD",
     }
     assert result["email_response_observed"] == 0
+
+
+def test_email_observer_uses_default_port_and_folder_for_empty_workflow_values(monkeypatch):
+    from scripts.observe_email_responses import _imap_folder, _imap_port
+
+    monkeypatch.setenv("ZORATHVAEL_IMAP_PORT", "")
+    monkeypatch.setenv("ZORATHVAEL_IMAP_FOLDER", "")
+    assert _imap_port() == 993
+    assert _imap_folder() == "INBOX"
