@@ -28,6 +28,7 @@ def load_leads(path: str = "data/revenue_leads.jsonl") -> list[Lead]:
             discovered_at=row.get("discovered_at", ""),
             contact_email=row.get("contact_email"),
             contact_source=row.get("contact_source", "none"),
+            problem_context=row.get("problem_context", ""),
         )
         for row in rows
     ]
@@ -54,6 +55,7 @@ def main() -> int:
             "contact_url": lead.contact_url,
             "contact_email": lead.contact_email,
             "contact_source": lead.contact_source,
+            "problem_context": lead.problem_context,
             "discovered_at": lead.discovered_at,
         }
         if lead.url in enriched:

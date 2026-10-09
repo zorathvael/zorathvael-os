@@ -38,6 +38,7 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
             "contact_url": lead.contact_url,
             "contact_email": lead.contact_email if lead.contact_email is not None else prior.get("contact_email"),
             "contact_source": lead.contact_source if lead.contact_source != "none" else prior.get("contact_source", "none"),
+            "problem_context": lead.problem_context or prior.get("problem_context", ""),
             "discovered_at": prior.get("discovered_at", lead.discovered_at),
         }
     cutoff = datetime.now(timezone.utc) - timedelta(days=int(os.getenv("ZORATHVAEL_LEAD_RETENTION_DAYS", "30")))
@@ -67,6 +68,7 @@ def merge_leads(path: str, fresh: list[Lead]) -> list[Lead]:
             offer_id=row["offer_id"], contact_url=row.get("contact_url", ""),
             discovered_at=row.get("discovered_at", ""),
             contact_email=row.get("contact_email"), contact_source=row.get("contact_source", "none"),
+            problem_context=row.get("problem_context", ""),
         )
         for row in existing.values()
     ]

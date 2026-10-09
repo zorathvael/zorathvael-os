@@ -10,6 +10,7 @@ from email.header import decode_header
 from pathlib import Path
 
 from lib.profit_engine.outreach import append_event, load_events, make_event
+from lib.profit_engine.customer_demand import classify_customer_response
 from lib.profit_engine.revenue import Lead
 
 
@@ -27,6 +28,7 @@ def load_leads(path: str = "data/revenue_leads.jsonl") -> list[Lead]:
             discovered_at=row.get("discovered_at", ""),
             contact_email=row.get("contact_email"),
             contact_source=row.get("contact_source", "none"),
+            problem_context=row.get("problem_context", ""),
         )
         for row in rows
     ]
@@ -129,6 +131,7 @@ def main() -> int:
                     "sender": sender,
                     "subject": subject,
                     "preview": re.sub(r"\s+", " ", body).strip()[:500],
+                    "response_intent": classify_customer_response(body),
                     "received_at": received_at.isoformat(),
                 },
             ))

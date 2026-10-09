@@ -22,9 +22,11 @@ Pricing is launch pricing and can be changed in the catalog.
 
 ## Acquisition
 
-The revenue-cycle workflow runs every six hours. It searches GitHub issues for explicit automation and integration pain signals and writes a ranked acquisition queue.
+The revenue-cycle workflow runs every two hours. It searches GitHub issues for explicit automation and integration pain signals and writes a ranked acquisition queue.
 
-The drafts are intentionally not auto-sent. Zorathvael can identify prospects and prepare a targeted offer without generating unsolicited public comments or spam.
+Outbound contact is guarded by explicit problem-intent checks, repository health, duplicate prevention, repository cooldown, and a daily send cap. When an external outreach token or email transport is configured, the workflow can send the selected message automatically. Messages must stay problem-specific and transparent about scope and price; they must not claim a diagnosis has already been completed.
+
+GitHub issue comments are flat rather than threaded. The response observer therefore treats post-outreach comments as heuristic evidence, records only demand-relevant classifications, and does not count neutral discussion as customer interest.
 
 ## Checkout
 
@@ -37,6 +39,12 @@ USDT BEP20 is the autonomous path:
 order -> payment -> BSC receipt -> confirmations -> ERC20 Transfer verification -> ledger -> delivery.
 
 QRIS is supported, but automatic verification requires a trusted merchant/provider feed. A static QR reference is not sufficient evidence of settlement.
+
+## Customer-demand validation
+
+The issue title alone is not sufficient product research. The scout retains a bounded excerpt from the public issue body so outreach can name the actual pain and explain the matching deliverable. Reply intent is categorized into positive interest, requests for details, price objections, fit objections, timing objections, and explicit disinterest.
+
+These categories are weak qualitative evidence, not statistically validated customer research. Small samples are labeled inconclusive. A product hypothesis should be strengthened by repeated independent problem instances, specific customer replies, and—most importantly—verified paid orders. Keyword matches, issue comments, or outreach sends are not proof of product-market fit.
 
 ## Economic integrity
 

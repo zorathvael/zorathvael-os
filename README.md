@@ -16,7 +16,7 @@ The Core can inspect public sources such as GitHub repositories and issues to id
 It filters low-intent and promotional noise before an opportunity enters the commercial workflow.
 
 ### Qualify opportunities
-Candidate problems are evaluated using evidence such as problem clarity, active failures, commercial relevance, expected value, effort, risk, and measured conversion results.
+Candidate problems are evaluated using evidence such as problem clarity, active failures, commercial relevance, expected value, effort, risk, and measured conversion results. The acquisition engine also preserves a short excerpt from the public issue body so an offer can refer to the actual problem rather than only the issue title.
 
 ### Execute useful work
 When a customer orders a supported service, the Core runs the appropriate workflow against the available evidence.
@@ -63,7 +63,7 @@ delivered
 AgentMail is used as the autonomous email transport; SMTP configuration is not required.
 
 ### Learn from outcomes
-The Core records measurable events such as leads, outreach, responses, orders, verified payments, deliveries, and realized revenue. These measurements are used to improve future opportunity selection.
+The Core records measurable events such as leads, outreach, response intent, objections, orders, verified payments, deliveries, and realized revenue. Response categories are heuristic signals, not proof of willingness to pay. A product is not considered market-validated merely because an issue matches its keywords; paid orders are the strongest demand evidence.
 
 ---
 
@@ -270,6 +270,12 @@ Zorathvael Core follows explicit operational boundaries:
 ---
 
 ## Current Status
+
+### Customer-demand validation and outreach
+
+Outreach copy is problem-first: it references the issue context, states a concrete deliverable and fixed price, and asks whether that outcome is useful. Replies are classified conservatively into positive interest, requests for details, price/fit/timing objections, and explicit disinterest. Neutral comments are not counted as demand responses. GitHub issue comments are not threaded, so response attribution remains heuristic and is labeled accordingly.
+
+Product-demand status remains inconclusive until enough outreach and response evidence exists. The system must not manufacture products solely because a keyword was found; offers should be prioritized using repeated problem patterns, explicit buyer intent, response/objection data, and paid-order outcomes.
 
 The repository currently contains an executable foundation for:
 

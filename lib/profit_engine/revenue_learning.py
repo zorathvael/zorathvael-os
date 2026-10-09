@@ -25,12 +25,38 @@ def build_learning_snapshot(events: list[OutreachEvent] | None = None, orders: l
     sent_by_offer = Counter(e.offer_id for e in sent)
     response_by_offer = Counter(e.offer_id for e in responses)
     paid_by_product = Counter(o.get("product_id", "") for o in paid)
+    response_intents_by_offer: dict[str, Counter[str]] = {}
+    for event in responses:
+        intent = str(event.metadata.get("response_intent", "unclassified"))
+        response_intents_by_offer.setdefault(event.offer_id, Counter())[intent] += 1
     stats = {}
     for offer in sorted(set(sent_by_offer) | set(response_by_offer) | set(paid_by_product)):
         s, r, p = sent_by_offer[offer], response_by_offer[offer], paid_by_product[offer]
-        stats[offer] = {"outreach_sent": s, "responses_observed": r, "paid_orders": p,
-                        "response_rate": round(r / s, 4) if s else 0.0,
-                        "payment_rate_per_outreach": round(p / s, 4) if s else 0.0}
+        intents = response_intents_by_offer.get(offer, Counter())
+        positive = intents["positive_interest"] + intents["request_for_details"]
+        objections = intents["price_objection"] + intents["fit_objection"] + intents["timing_objection"]
+        if p:
+            demand_status = "paid_demand_observed"
+        elif s < 5:
+            demand_status = "insufficient_outreach_sample"
+        elif r < 3:
+            demand_status = "insufficient_response_sample"
+        elif positive >= 2 and positive / r >= 0.30:
+            demand_status = "early_interest_signal"
+        else:
+            demand_status = "interest_not_yet_demonstrated"
+        stats[offer] = {
+            "outreach_sent": s,
+            "responses_observed": r,
+            "paid_orders": p,
+            "response_rate": round(r / s, 4) if s else 0.0,
+            "payment_rate_per_outreach": round(p / s, 4) if s else 0.0,
+            "response_intents": dict(intents),
+            "positive_interest": positive,
+            "objections": objections,
+            "not_interested": intents["not_interested"],
+            "demand_status": demand_status,
+        }
     return {
         "outreach_sent": len(sent), "responses_observed": len(responses),
         "paid_orders": len(paid), "delivered_orders": len(delivered),

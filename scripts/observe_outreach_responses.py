@@ -6,6 +6,7 @@ import urllib.request
 from datetime import datetime, timezone
 
 from lib.profit_engine.outreach import append_event, load_events, make_event
+from lib.profit_engine.customer_demand import classify_customer_response
 from lib.profit_engine.revenue import Lead
 
 
@@ -35,6 +36,7 @@ def main() -> int:
         for comment in comments if isinstance(comments, list) else []:
             cid = str(comment.get("id", ""))
             body = str(comment.get("body", ""))
+            response_intent = classify_customer_response(body)
             created_at = str(comment.get("created_at", ""))
             author = str(comment.get("user", {}).get("login", ""))
             if not cid or cid in observed or "zorathvael-outreach:v1" in body or author.lower() in {"github-actions[bot]", "zorathvael"}:
@@ -44,8 +46,19 @@ def main() -> int:
                     continue
             except ValueError:
                 continue
+            # Issue comments are flat, so attribution is heuristic. Ignore neutral
+            # comments to avoid counting unrelated discussion as customer interest.
+            if response_intent == "neutral":
+                continue
             lead = Lead("github_issue_search", event.issue_number, "", event.lead_url, event.repository, author, (), 0, event.offer_id, "", event.occurred_at)
-            append_event(make_event("response_observed", lead, {"comment_id": cid, "author": author, "channel": "github_issue_comment"}))
+            append_event(make_event("response_observed", lead, {
+                "comment_id": cid,
+                "author": author,
+                "channel": "github_issue_comment",
+                "response_intent": response_intent,
+                "response_text": body[:500],
+                "attribution_method": "post_outreach_comment_heuristic",
+            }))
             observed.add(cid)
             count += 1
     print(json.dumps({"responses_observed_now": count}, indent=2))
