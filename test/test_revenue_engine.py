@@ -2,7 +2,7 @@ from lib.profit_engine.revenue import Lead, make_opportunity, score_lead, select
 
 
 def test_high_intent_lead_scores_above_low_intent():
-    high, evidence = score_lead("Need help automate manual workflow", "Looking for API integration and webhook automation")
+    high, evidence = score_lead("Need help: how to automate manual workflow", "Looking for API integration and webhook integration")
     low, _ = score_lead("Question about documentation", "How do I install this?")
     assert high > low
     assert "automation" in evidence
