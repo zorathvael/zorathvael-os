@@ -10,7 +10,10 @@ class ToolRegistry:
     def __init__(self, tools=None):
         self.tools = {}
         for tool in tools or []:
-            self.register(tool)
+            if isinstance(tool, dict):
+                self.register(**tool)
+            else:
+                raise TypeError("Tools must be mappings with name, description, parameters, and handler.")
 
     def register(self, name, description, parameters, handler, requires_approval=False):
         if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]{0,127}", name):
@@ -18,7 +21,7 @@ class ToolRegistry:
         if name in self.tools:
             raise ValueError("Duplicate tool name")
         self.tools[name] = {"name": name, "description": description, "parameters": parameters,
-                             "handler": handler, "requires_approval": requires_approval}
+                            "handler": handler, "requires_approval": requires_approval}
 
     def declarations(self):
         return [{k: v for k, v in t.items() if k in ("name", "description", "parameters")}
@@ -79,7 +82,7 @@ class GeminiAgent:
                         try:
                             value = tool["handler"](args)
                             encoded = json.dumps(value, ensure_ascii=False, default=str)
-                            result = {"result": json.loads(encoded[:12000])} if len(encoded) <= 12000 else {"result_preview": encoded[:11900], "truncated": True}
+                            result = {"result": json.loads(encoded)} if len(encoded) <= 12000 else {"result_preview": encoded[:11900], "truncated": True}
                             event["status"] = "executed"
                         except Exception as exc:
                             result = {"error": type(exc).__name__ + ": " + str(exc)[:300]}
