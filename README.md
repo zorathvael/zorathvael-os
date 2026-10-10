@@ -235,6 +235,8 @@ The goal is to be better at turning specific real-world problems into measurable
 ### AI Router
 Routes AI tasks to the appropriate model or capability.
 
+The Gemini adapter uses `GEMINI_API_KEY` and `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). Gemini quota exhaustion or provider errors return a structured `local_heuristic` fallback instead of terminating the caller. HTTP 429 is not retried because it may represent exhausted daily quota. This fallback is a deterministic placeholder, not equivalent to a successful AI analysis; callers must preserve validation and approval gates. Other provider adapters are not implied to be live API integrations by this Gemini implementation.
+
 ### Memory Engine
 Maintains persistent project and execution context.
 
