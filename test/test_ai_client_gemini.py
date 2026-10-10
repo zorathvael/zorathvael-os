@@ -1,5 +1,5 @@
+import io
 import json
-import os
 import urllib.error
 from unittest.mock import patch
 
@@ -10,7 +10,7 @@ def test_gemini_quota_exhaustion_uses_local_fallback(monkeypatch):
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
     client = AIClient()
     error = urllib.error.HTTPError(
-        "https://generativelanguage.googleapis.com", 429, "quota exceeded", {}, None
+        "https://generativelanguage.googleapis.com", 429, "quota exceeded", {}, io.BytesIO(b"quota exceeded")
     )
     with patch("urllib.request.urlopen", side_effect=error):
         result = client.execute_request("gemini", "classify this task", timeout=0.1)
