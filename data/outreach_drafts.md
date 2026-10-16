@@ -90,7 +90,18 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: CI failure: CI on PR #6830. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 9. shubhodeep1/coding-workflows#7014 — score 52/100
+## 9. dotnet/runtime#135025 — score 52/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/dotnet/runtime/issues/135025
+- Public profile: https://github.com/rzikm
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: build failed, workflow, build, failed, 2 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: The required runtime CI build failed while acquiring WASI SDK 33.0: the GitHub release download returned HTTP 504 (Gateway Time-out). Build Analysis reported this build failure as unmatched. This is unrelated to the TAR destination-handling changes in the source PR: the failure is in MSBuild's DownloadFile task, before tool extraction or TAR tests, and the. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 10. shubhodeep1/coding-workflows#7014 — score 52/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/7014
@@ -100,14 +111,3 @@ Suggested message:
 
 Suggested message:
 > I noticed this specific problem in your issue: Automated CI failure triage (generation 1 of max 3). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
-
-## 10. dotnet/runtime#130133 — score 50/100
-- Commercial score: 100/100
-- Buyer-intent score: 45/100
-- Issue: https://github.com/dotnet/runtime/issues/130133
-- Public profile: https://github.com/kotlarmilos
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: build failed, build, failed, 4 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: [ci-scan] Wasm.Build.Tests ManagedToNativeGenerator task host node crash. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
