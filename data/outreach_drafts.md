@@ -94,7 +94,7 @@ Suggested message:
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/dotnet/runtime/issues/135025
-- Public profile: https://github.com/rzikm
+- Public profile: https://rzikm.github.io
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: build failed, workflow, build, failed, 2 comments
 
