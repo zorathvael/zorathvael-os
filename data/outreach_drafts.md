@@ -68,7 +68,18 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: CI Build fails non-deterministically on next/font/google: builds need live egress to Google Fonts and nothing caches or vendors it. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 7. shubhodeep1/coding-workflows#6608 — score 56/100
+## 7. schlessera/brain-kit#2334 — score 61/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/schlessera/brain-kit/issues/2334
+- Public profile: https://github.com/schlessera
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: build failed, integration, api, build, failed, 7 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: No skipped speech proof, relaxed audio/drain/unmount assertions, changed offline guards or raised deadlines. The maintainer's 2202 exception covers a different unavailable-Send observation and does not classify this failure. An isolated passing bundle is not a repair.. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 8. shubhodeep1/coding-workflows#6608 — score 56/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/6608
@@ -79,7 +90,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: Workflow heal: Internal: AI Review & Autofix [pr:6594] failed 18x for shubhodeep1/coding-workflows 6594 (identical failure cap). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 8. shubhodeep1/coding-workflows#6843 — score 54/100
+## 9. shubhodeep1/coding-workflows#6843 — score 54/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/6843
@@ -90,7 +101,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: Automated CI failure triage (generation 1 of max 3). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 9. shubhodeep1/coding-workflows#6832 — score 54/100
+## 10. shubhodeep1/coding-workflows#6832 — score 54/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/6832
@@ -100,14 +111,3 @@ Suggested message:
 
 Suggested message:
 > I noticed this specific problem in your issue: CI failure: CI on PR #6830. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
-
-## 10. dotnet/runtime#135025 — score 52/100
-- Commercial score: 100/100
-- Buyer-intent score: 45/100
-- Issue: https://github.com/dotnet/runtime/issues/135025
-- Public profile: https://rzikm.github.io
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: build failed, workflow, build, failed, 2 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: The required runtime CI build failed while acquiring WASI SDK 33.0: the GitHub release download returned HTTP 504 (Gateway Time-out). Build Analysis reported this build failure as unmatched. This is unrelated to the TAR destination-handling changes in the source PR: the failure is in MSBuild's DownloadFile task, before tool extraction or TAR tests, and the. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
