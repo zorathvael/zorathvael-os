@@ -72,7 +72,7 @@ Suggested message:
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/schlessera/brain-kit/issues/2334
-- Public profile: https://github.com/schlessera
+- Public profile: https://www.alainschlesser.com/
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: build failed, integration, api, build, failed, 7 comments
 
