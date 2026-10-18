@@ -46,16 +46,16 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: Workflow heal: AI Review failed 1x for shubhodeep1/drhyg ecommerce automation 64 (editor empty noop). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 5. remotion-dev/remotion#8375 — score 81/100
+## 5. remotion-dev/remotion#8375 — score 100/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/remotion-dev/remotion/issues/8375
-- Public profile: https://jonny.io
+- Public profile: https://github.com/JonnyBurger
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: failing workflow, webhook, integration, workflow, api, github actions, build, failed, 2 comments
+- Evidence: failing workflow, deployment failed, webhook, integration, workflow, api, github actions, deployment, build, failed, 3 comments
 
 Suggested message:
-> I noticed this specific problem in your issue: CI: Track flaky tests. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+> I noticed this specific problem in your issue: This issue tracks flaky CI failures that were confirmed by a retry or are likely infrastructure flakes. When a flake appears, add it here or increment the count if the same signature already exists.. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
 ## 6. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
 - Commercial score: 100/100
