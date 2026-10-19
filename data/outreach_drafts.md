@@ -50,7 +50,7 @@ Suggested message:
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/remotion-dev/remotion/issues/8375
-- Public profile: https://github.com/JonnyBurger
+- Public profile: https://jonny.io
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: failing workflow, deployment failed, webhook, integration, workflow, api, github actions, deployment, build, failed, 3 comments
 
