@@ -57,7 +57,18 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: This issue tracks flaky CI failures that were confirmed by a retry or are likely infrastructure flakes. When a flake appears, add it here or increment the count if the same signature already exists.. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 6. okou-ai/okou#43718 — score 66/100
+## 6. oracle/graalvm-reachability-metadata#11148 — score 76/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/oracle/graalvm-reachability-metadata/issues/11148
+- Public profile: https://github.com/graalvmbot
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: automation, build failed, api, build, failed, 2 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: Failure kind: native-image run OS: ubuntu-latest JDK: 25 Native-image mode: current-defaults Reproducer: env GVM TCK LV=1.5.7-19 GVM TCK NATIVE IMAGE MODE=current-defaults ./gradlew clean test -Pcoordinates=com.github.luben:zstd-jni:1.5.7-18 Runner log: https://github.com/oracle/graalvm-reachability-metadata/actions/runs/40248327697 Last 300 lines of the. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 7. okou-ai/okou#43718 — score 66/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/okou-ai/okou/issues/43718
@@ -68,7 +79,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: The job actually checked out 7fabd54038c8ebbe4d2172c0f07c929814d750e9 . The complete file is turbo/apps/api/src/signals/routes/ tests /webhooks-x-resource-usage.test.ts , SHA-256 51e55a2b79412d8fb94760b71b1ae891588ab14c77df80bab55df469a084ad30 ; the case is declared at line 104. The workflow failed separately in Google Meet API shard 3. That failure is. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 7. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
+## 8. vinayakss007/nucrm-bigplan-by-vm-enterprise-v2#2426 — score 63/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/vinayakss007/nucrm-bigplan-by-vm-enterprise-v2/issues/2426
@@ -79,7 +90,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: CI Build fails non-deterministically on next/font/google: builds need live egress to Google Fonts and nothing caches or vendors it. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 8. schlessera/brain-kit#2334 — score 61/100
+## 9. schlessera/brain-kit#2334 — score 61/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/schlessera/brain-kit/issues/2334
@@ -90,7 +101,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: No skipped speech proof, relaxed audio/drain/unmount assertions, changed offline guards or raised deadlines. The maintainer's 2202 exception covers a different unavailable-Send observation and does not classify this failure. An isolated passing bundle is not a repair.. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 9. shubhodeep1/coding-workflows#6608 — score 56/100
+## 10. shubhodeep1/coding-workflows#6608 — score 56/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/6608
@@ -100,14 +111,3 @@ Suggested message:
 
 Suggested message:
 > I noticed this specific problem in your issue: Workflow heal: Internal: AI Review & Autofix [pr:6594] failed 18x for shubhodeep1/coding-workflows 6594 (identical failure cap). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
-
-## 10. shubhodeep1/coding-workflows#6843 — score 54/100
-- Commercial score: 100/100
-- Buyer-intent score: 45/100
-- Issue: https://github.com/shubhodeep1/coding-workflows/issues/6843
-- Public profile: https://github.com/shubhodeep1
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: ci failed, workflow, ai, failed, 6 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: Automated CI failure triage (generation 1 of max 3). I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
