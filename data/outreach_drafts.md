@@ -28,7 +28,7 @@ Suggested message:
 - Commercial score: 100/100
 - Buyer-intent score: 60/100
 - Issue: https://github.com/scottjoyner/auto-finetune/issues/72
-- Public profile: https://github.com/scottjoyner
+- Public profile: https://debank.com/profile/0x4dea0eb50e61368ef2deb64a4272f0eb77aaa68e
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: audit, workflow failed, workflow, github actions, deployment, failed, 5 comments
 
