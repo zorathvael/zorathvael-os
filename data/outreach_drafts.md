@@ -6,7 +6,7 @@
 - Commercial score: 100/100
 - Buyer-intent score: 75/100
 - Issue: https://github.com/python/cpython/issues/161528
-- Public profile: https://github.com/vstinner
+- Public profile: http://vstinner.readthedocs.io/
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: looking for, build failed, build, failed
 
