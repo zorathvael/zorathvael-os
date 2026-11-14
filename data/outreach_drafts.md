@@ -6,7 +6,7 @@
 - Commercial score: 100/100
 - Buyer-intent score: 75/100
 - Issue: https://github.com/dotnet/runtime/issues/112423
-- Public profile: https://github.com/carlossanlop
+- Public profile: https://chayotejarocho.space
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: looking for, build failed, build, failed, 7 comments
 
