@@ -79,18 +79,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: A PR that adds a file under scripts/ , .github/workflows/ or prompts/ must also list it in docs/INVENTORY.md , or the "Inventory parity" CI step fails. The files touched grant the pipeline writes from an approved plan does not include docs/INVENTORY.md unless the plan happened to name it, so the implementer and the autofix editor may not make that edit. Add. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 8. oracle/graalvm-reachability-metadata#11148 — score 76/100
-- Commercial score: 100/100
-- Buyer-intent score: 45/100
-- Issue: https://github.com/oracle/graalvm-reachability-metadata/issues/11148
-- Public profile: https://www.graalvm.org/
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: automation, build failed, api, build, failed, 2 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: Failure kind: native-image run OS: ubuntu-latest JDK: 25 Native-image mode: current-defaults Reproducer: env GVM TCK LV=1.5.7-19 GVM TCK NATIVE IMAGE MODE=current-defaults ./gradlew clean test -Pcoordinates=com.github.luben:zstd-jni:1.5.7-18 Runner log: https://github.com/oracle/graalvm-reachability-metadata/actions/runs/40248327697 Last 300 lines of the. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
-
-## 9. developing-today/code#4905 — score 58/100
+## 8. developing-today/code#4905 — score 58/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/developing-today/code/issues/4905
@@ -101,7 +90,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: main CI failure — Daily Flake Sync & Config Optimization. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 10. dotnet/runtime#135025 — score 56/100
+## 9. dotnet/runtime#135025 — score 56/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/dotnet/runtime/issues/135025
@@ -111,3 +100,14 @@ Suggested message:
 
 Suggested message:
 > I noticed this specific problem in your issue: The required runtime CI build failed while acquiring WASI SDK 33.0: the GitHub release download returned HTTP 504 (Gateway Time-out). Build Analysis reported this build failure as unmatched. This is unrelated to the TAR destination-handling changes in the source PR: the failure is in MSBuild's DownloadFile task, before tool extraction or TAR tests, and the. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 10. Dodaios/Dodaios#1142 — score 53/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/Dodaios/Dodaios/issues/1142
+- Public profile: https://github.com/rubenluetke10-beep
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: build failed, integration, build, failed, 2 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: Reason. Engine does not re-export these for linking: the first WP16 editor build failed with unresolved FJsonObject:: and SWidget:: symbols in both DLLs.. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
