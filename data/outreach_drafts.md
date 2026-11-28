@@ -35,18 +35,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: Pushed 0216f71. One blocking duplex owner now feeds a bounded native input capture shared by event-woken profile readers and passive preview subscriptions. The preview's 750ms EventsState acquisition timer is removed. Ordered native edges, exact native Instants, original device timestamps, fresh baselines, source-scoped failure and reconnect fencing are. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 4. scottjoyner/auto-finetune#72 — score 97/100
-- Commercial score: 100/100
-- Buyer-intent score: 60/100
-- Issue: https://github.com/scottjoyner/auto-finetune/issues/72
-- Public profile: https://debank.com/profile/0x4dea0eb50e61368ef2deb64a4272f0eb77aaa68e
-- Offer: CI Failure Recovery — 10 USDT / Rp149,000
-- Evidence: audit, workflow failed, workflow, github actions, deployment, failed, 5 comments
-
-Suggested message:
-> I noticed this specific problem in your issue: Evidence (exact GitHub Actions run) In draft PR 70 at commit c323335765e74f0c63f9ad63296fb16da7907cc2 , GitHub Actions xwing-training-admission PASSED , and full-suite tests reported 1,138 passed, 3 skipped, 34 subtests passed , but the workflow failed its existing 69% coverage gate: 56.46% actual (6,534 / 11,572 statements covered; 5,038 uncovered) . This. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
-
-## 5. QwenLM/qwen-code#14724 — score 52/100
+## 4. QwenLM/qwen-code#14724 — score 52/100
 - Commercial score: 100/100
 - Buyer-intent score: 55/100
 - Issue: https://github.com/QwenLM/qwen-code/issues/14724
@@ -57,7 +46,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: - com.alibaba.qwen.code.managedagent.HostedAutomationSpringCrashIT.fg11c2SpringKillBeforeAnswerNeverFiresTwice - com.alibaba.qwen.code.managedagent.HostedAutomationSpringCrashIT.fg11c2TwoScannerRaceFiresOnce - com.alibaba.qwen.code.managedagent.HostedTeamMemberCommandMySqlIT.memberHarnessRestartDuringCommandWait. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 6. remotion-dev/remotion#8375 — score 100/100
+## 5. remotion-dev/remotion#8375 — score 100/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/remotion-dev/remotion/issues/8375
@@ -68,7 +57,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: This issue tracks flaky CI failures that were confirmed by a retry or are likely infrastructure flakes. When a flake appears, add it here or increment the count if the same signature already exists.. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 7. shubhodeep1/coding-workflows#10064 — score 76/100
+## 6. shubhodeep1/coding-workflows#10064 — score 76/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/shubhodeep1/coding-workflows/issues/10064
@@ -79,7 +68,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: A PR that adds a file under scripts/ , .github/workflows/ or prompts/ must also list it in docs/INVENTORY.md , or the "Inventory parity" CI step fails. The files touched grant the pipeline writes from an approved plan does not include docs/INVENTORY.md unless the plan happened to name it, so the implementer and the autofix editor may not make that edit. Add. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 8. developing-today/code#4905 — score 58/100
+## 7. developing-today/code#4905 — score 58/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/developing-today/code/issues/4905
@@ -90,7 +79,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: main CI failure — Daily Flake Sync & Config Optimization. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 9. dotnet/runtime#135025 — score 56/100
+## 8. dotnet/runtime#135025 — score 56/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/dotnet/runtime/issues/135025
@@ -101,7 +90,7 @@ Suggested message:
 Suggested message:
 > I noticed this specific problem in your issue: The required runtime CI build failed while acquiring WASI SDK 33.0: the GitHub release download returned HTTP 504 (Gateway Time-out). Build Analysis reported this build failure as unmatched. This is unrelated to the TAR destination-handling changes in the source PR: the failure is in MSBuild's DownloadFile task, before tool extraction or TAR tests, and the. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
 
-## 10. Dodaios/Dodaios#1142 — score 53/100
+## 9. Dodaios/Dodaios#1142 — score 53/100
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/Dodaios/Dodaios/issues/1142
@@ -111,3 +100,14 @@ Suggested message:
 
 Suggested message:
 > I noticed this specific problem in your issue: Reason. Engine does not re-export these for linking: the first WP16 editor build failed with unresolved FJsonObject:: and SWidget:: symbols in both DLLs.. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
+
+## 10. crewship-ai/crewship#5294 — score 51/100
+- Commercial score: 100/100
+- Buyer-intent score: 45/100
+- Issue: https://github.com/crewship-ai/crewship/issues/5294
+- Public profile: https://github.com/Srbino
+- Offer: CI Failure Recovery — 10 USDT / Rp149,000
+- Evidence: ci failed, api, deployment, failed, 2 comments
+
+Suggested message:
+> I noticed this specific problem in your issue: Main push CI failed on 2900ef73, c9b980a7 and dad4e4b3. The first run failed the CLI summed race erosion alarm (3626.996s 3360s); API was green at4998.635s. The next API aggregates were5447.060s and5324.432s 5200s. Required limits must not increase, coverage must not shrink. Merge-group warnings already exposed the problem before merges.. I can investigate the failing workflow/job/step, identify the error fingerprint and likely cause, and return prioritized remediation steps. Fixed price: 10 USDT or Rp149,000. If you want the recovery diagnostic, open the Zorathvael order form: https://zorathvael.github.io/zorathvael-os/order/?service=ci_failure_recovery.
