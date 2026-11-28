@@ -105,7 +105,7 @@ Suggested message:
 - Commercial score: 100/100
 - Buyer-intent score: 45/100
 - Issue: https://github.com/crewship-ai/crewship/issues/5294
-- Public profile: https://github.com/Srbino
+- Public profile: https://www.unify.cz
 - Offer: CI Failure Recovery — 10 USDT / Rp149,000
 - Evidence: ci failed, api, deployment, failed, 2 comments
 
